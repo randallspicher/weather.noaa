@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="32101">
+
+	<setting label="Location 1" type="lsep"/>
+		<setting id="Location1"       label="Lat,Long" subsetting="true" type="text" default=""/>
+		<setting label="Fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location1)" />
+		<setting id="Location1Name"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location1Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
+ 		<setting id="Location1cwa"                type="text" visible="false" default=""/>
+		<setting id="Location1Zone"               type="text" visible="false" default=""/>
+		<setting id="Location1forecastGrid_url"   type="text" visible="false" default=""/>
+		<setting id="Location1forecastHourly_url" type="text" visible="false" default=""/>
+		<setting id="Location1forecast_url"       type="text" visible="false" default=""/>
+
+	<setting label="Location 2" type="lsep"/>
+		<setting id="Location2"       label="Lat,Long" subsetting="true" type="text" default=""/>
+		<setting label="Fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location2)" />
+		<setting id="Location2Name"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location2Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
+ 		<setting id="Location2cwa"                type="text" visible="false" default=""/>
+		<setting id="Location2Zone"               type="text" visible="false" default=""/>
+		<setting id="Location2forecastGrid_url"   type="text" visible="false" default=""/>
+		<setting id="Location2forecastHourly_url" type="text" visible="false" default=""/>
+		<setting id="Location2forecast_url"       type="text" visible="false" default=""/>
+
+	<setting label="Location 3" type="lsep"/>
+		<setting id="Location3"       label="Lat,Long" subsetting="true" type="text" default=""/>
+		<setting label="Fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location3)" />
+		<setting id="Location3Name"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location3Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
+ 		<setting id="Location3cwa"                type="text" visible="false" default=""/>
+		<setting id="Location3Zone"               type="text" visible="false" default=""/>
+		<setting id="Location3forecastGrid_url"   type="text" visible="false" default=""/>
+		<setting id="Location3forecastHourly_url" type="text" visible="false" default=""/>
+		<setting id="Location3forecast_url"       type="text" visible="false" default=""/>
+
+
+	</category>
+<!-- 	
+	<category label="32104">
+		<setting label="32135" type="lsep"/>
+		<setting id="WMaps" label="32130" type="bool" default="false"/>
+		<setting id="Zoom" label="32128" type="slider" option="int" range="1,10" default="4" subsetting="true" enable="eq(-1,true)"/>
+	</category>
+-->
+<!-- 
+	<category label="32102">
+		<setting id="Weekend" label="32122" type="enum" lvalues="32123|32124|32125" default="0"/>
+		<setting id="LatLon" label="32121" type="bool" default="false"/>
+		<setting id="Debug" label="32129" type="bool" default="false"/>
+	</category>
+-->
+	<!-- 
+	<category label="32103">
+		<setting id="Location1" label="32111" type="text" default=""/>
+		<setting id="Location1ID" label="32116" type="text" subsetting="true" default=""/>
+		<setting type="sep"/>
+		<setting id="Location2" label="32112" type="text" enable="!eq(-3,)" default=""/>
+		<setting id="Location2ID" label="32117" type="text" subsetting="true" enable="!eq(-3,)" default=""/>
+		<setting type="sep"/>
+		<setting id="Location3" label="32113" type="text" enable="!eq(-3,)" default=""/>
+		<setting id="Location3ID" label="32118" type="text" subsetting="true" enable="!eq(-3,)" default=""/>
+		<setting type="sep"/>
+		<setting id="Location4" label="32114" type="text" enable="!eq(-3,)" default=""/>
+		<setting id="Location4ID" label="32119" type="text" subsetting="true" enable="!eq(-3,)" default=""/>
+		<setting type="sep"/>
+		<setting id="Location5" label="32115" type="text" enable="!eq(-3,)" default=""/>
+		<setting id="Location5ID" label="32120" type="text" subsetting="true" enable="!eq(-3,)" default=""/>
+		<setting type="sep"/>
+		<setting id="Station" label="32126" type="bool" default="false"/>
+		<setting id="StationID" label="32127" type="text" subsetting="true" enable="!eq(-1,false)" default=""/>
+	</category>
+	-->
+</settings>
