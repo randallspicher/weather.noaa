@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="weather.noaa" name="NOAA (weather.gov)" version="0.0.1" provider-name="randall">
+<addon id="weather.noaa" name="NOAA (weather.gov)" version="0.8.1" provider-name="randall">
 	<requires>
 		<import addon="xbmc.python" version="2.25.0"/>
-		<import addon="script.openweathermap.maps" version="0.02.0"/>
+		<!-- <import addon="script.openweathermap.maps" version="0.02.0"/>-->
 		<import addon="script.module.dateutil" version="2.7.3"/>
 	</requires>
 	<extension point="xbmc.python.weather" library="default.py"/>
@@ -13,12 +13,12 @@
 		<description lang="en_GB">Weather forecast provided by NOAA (http://weather.gov/)</description>
 		<description lang="en_NZ">Weather forecast provided by NOAA (http://weather.gov/)</description>
 		<description lang="en_US">Weather forecast provided by NOAA (http://weather.gov/)</description>
-		<language></language>
+		<language>en_US</language>
 		<platform>all</platform>
 		<license>GNU GENERAL PUBLIC LICENSE Version 2</license>
 		<forum></forum>
-		<website></website>
+		<website>https://github.com/randallspicher/weather.noaa</website>
 		<email></email>
-		<source></source>
+		<source>https://github.com/randallspicher/weather.noaa</source>
 	</extension>
 </addon>
