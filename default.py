@@ -3,6 +3,7 @@
 import os, sys, dateutil, time, urllib2, unicodedata, random, string
 import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import json
+
 #import dateutil.parser
 from datetime import datetime
 from dateutil import tz
@@ -12,12 +13,12 @@ from dateutil import parser
 
 ADDON		= xbmcaddon.Addon()
 ADDONNAME	= ADDON.getAddonInfo('name')
-ADDONID	= ADDON.getAddonInfo('id')
+ADDONID		= ADDON.getAddonInfo('id')
 CWD		= ADDON.getAddonInfo('path').decode("utf-8")
-ADDONVERSION = ADDON.getAddonInfo('version')
+ADDONVERSION	= ADDON.getAddonInfo('version')
 LANGUAGE	= ADDON.getLocalizedString
 RESOURCE	= xbmc.translatePath( os.path.join( CWD, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
-PROFILE	= xbmc.translatePath(ADDON.getAddonInfo('profile')).decode('utf-8')
+PROFILE		= xbmc.translatePath(ADDON.getAddonInfo('profile')).decode('utf-8')
 
 sys.path.append(RESOURCE)
 
@@ -30,10 +31,10 @@ from utils import *
 #STATION	= ADDON.getSetting('Station')
 #MAPS		= ADDON.getSetting('WMaps')
 #ZOOM		= str(int(ADDON.getSetting('Zoom')) + 2)
-WEATHER_ICON	 = xbmc.translatePath('%s.png').decode("utf-8")
+WEATHER_ICON	= xbmc.translatePath('%s.png').decode("utf-8")
 DATEFORMAT	= xbmc.getRegion('dateshort')
 TIMEFORMAT	= xbmc.getRegion('meridiem')
-KODILANGUAGE	 = xbmc.getLanguage().lower()
+KODILANGUAGE	= xbmc.getLanguage().lower()
 MAXDAYS		= 10
 
 
@@ -41,11 +42,11 @@ def clear():
 	set_property('Current.Condition'	, 'N/A')
 	set_property('Current.Temperature'	, '0')
 	set_property('Current.Wind'		, '0')
-	set_property('Current.WindDirection' , 'N/A')
-	set_property('Current.Humidity'	, '0')
+	set_property('Current.WindDirection'	, 'N/A')
+	set_property('Current.Humidity'		, '0')
 	set_property('Current.FeelsLike'	, '0')
-	set_property('Current.UVIndex'	, '0')
-	set_property('Current.DewPoint'	, '0')
+	set_property('Current.UVIndex'		, '0')
+	set_property('Current.DewPoint'		, '0')
 	set_property('Current.OutlookIcon'	, 'na.png')
 	set_property('Current.FanartCode'	, 'na')
 	for count in range (0, MAXDAYS+1):
@@ -65,7 +66,9 @@ def refresh_locations():
 		else:
 			ADDON.setSetting('Location%sID' % count, '')
 			ADDON.setSetting('Location%sdeg' % count, '')
+
 		set_property('Location%s' % count, loc_name)
+
 	set_property('Locations', str(locations))
 	log('available locations: %s' % str(locations))
 
@@ -122,6 +125,7 @@ def convert_date(stamp):
 		localdate = time.strftime('%m-%d-%Y', date_time)
 	else:
 		localdate = time.strftime('%Y-%m-%d', date_time)
+
 	if TIMEFORMAT != '/':
 		localtime = time.strftime('%I:%M%p', date_time)
 	else:
@@ -290,6 +294,7 @@ def dailyforecast(num):
 		if item['isDaytime'] == False:
 			set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
 			set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
+
 		set_property('Day%i.Outlook'		% (count), item['shortForecast'])
 
 		#set_property('Day%i.Details'		% (count+1), item['detailedForecast'])
@@ -370,27 +375,31 @@ def currentforecast(num):
 	weathercode = WEATHER_CODES.get(code)
 	#set_property('Current.Location', loc)
 	set_property('Current.RemoteIcon',icon) 
-        set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
+	set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
 	set_property('Current.FanartCode', weathercode)
 	set_property('Current.Condition', FORECAST.get(data.get('textDescription'), data.get('textDescription')))
 	try:
 		set_property('Current.Humidity'	, str(round(data.get('relativeHumidity').get('value'))))
-        except:
-                set_property('Current.Humidity'        , '')
-                
-        try:
-                temp=int(round(data.get('temperature').get('value')))
-                #xbmc.log('raw temp %s' % data.get('temperature').get('value'),level=xbmc.LOGNOTICE)
-                #xbmc.log('temp %s' % temp,level=xbmc.LOGNOTICE)
-                set_property('Current.Temperature',str(temp)) # api values are in C
-        except:
-                set_property('Current.Temperature','') 
-        try:
-                set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value') * 3.6))))
-        except:
-                set_property('Current.Wind', '')
+	except:
+		set_property('Current.Humidity'		, '')
+				
+	try:
+		temp=int(round(data.get('temperature').get('value')))
+		#xbmc.log('raw temp %s' % data.get('temperature').get('value'),level=xbmc.LOGNOTICE)
+		#xbmc.log('temp %s' % temp,level=xbmc.LOGNOTICE)
+		set_property('Current.Temperature',str(temp)) # api values are in C
+	except:
+		set_property('Current.Temperature','') 
+	try:
+		set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value') * 3.6))))
+	except:
+		set_property('Current.Wind','')
 
-	set_property('Current.WindDirection'	, xbmc.getLocalizedString(WIND_DIR(int(round(data.get('windDirection').get('value'))))))
+	try:
+		set_property('Current.WindDirection', xbmc.getLocalizedString(WIND_DIR(int(round(data.get('windDirection').get('value'))))))
+	except:
+		set_property('Current.WindDirection', '')
+
 	#set_property('Current.Precipitation',	str(round(data.get('precipitationLast3Hours').get('value') *	0.04 ,2)) + ' in')
 	if (rain != ''):
 		set_property('Current.ChancePrecipitaion', str(rain)+'%');
@@ -400,14 +409,15 @@ def currentforecast(num):
 	try:
 		set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), data.get('windSpeed').get('value') * 3.6, data.get('relativeHumidity').get('value'), False))
 	except:
-                set_property('Current.FeelsLike', '')
+		set_property('Current.FeelsLike', '')
 
 #	if 'calc' in data['last'] and 'dewpoint' in data['last']['calc']:
 #		if data['last']['main']['temp'] - data['last']['calc']['dewpoint'] > 100:
-        try:
-                set_property('Current.DewPoint', str(int(round(data.get('relativeHumidity').get('value'))))) # api values are in C
-        except:
-                set_property('Current.DewPoint', '') 
+	try:
+		set_property('Current.DewPoint', str(int(round(data.get('relativeHumidity').get('value'))))) # api values are in C
+	except:
+		set_property('Current.DewPoint', '') 
+
 #		else:
 #			set_property('Current.DewPoint'	, str(int(round(data['last']['calc']['dewpoint'])) - 273)) # api values are in K
 #	else:
@@ -421,8 +431,11 @@ def currentforecast(num):
 #		set_property('Current.Cloudiness'	, data['last']['clouds'][0].get('condition',''))
 #	if 'wind' in data['last'] and 'gust' in data['last']['wind']:
 
-	set_property('Current.WindGust'		, SPEED(data.get('windGust').get('value',0)) + SPEEDUNIT)
-
+	try:
+		set_property('Current.WindGust'	, SPEED(data.get('windGust').get('value',0)) + SPEEDUNIT)
+	except:
+		set_property('Current.WindGust'	, '')
+		
 #	if 'rain' in data['last'] and '1h' in data['last']['rain']:
 #		if 'F' in TEMPUNIT:
 #			set_property('Current.Precipitation', str(round(data['last']['rain']['1h'] *	0.04 ,2)) + ' in')
@@ -916,7 +929,9 @@ def hourlyforecast(num):
 		#	else:
 		#		set_property('Hourly.%i.WindGust'		% (count+1), '')
 		#set_property('Hourly.%i.Cloudiness'		% (count+1), str(item['clouds'].get('all','')) + '%')
+
 		set_property('Hourly.%i.Temperature'		% (count+1),	str(item['temperature'])+item['temperatureUnit'])
+		
 		#set_property('Hourly.%i.HighTemperature'	% (count+1), TEMP(item['main']['temp_max']) + TEMPUNIT)
 		#set_property('Hourly.%i.LowTemperature'	% (count+1), TEMP(item['main']['temp_min']) + TEMPUNIT)
 		#set_property('Hourly.%i.DewPoint'			% (count+1), DEW_POINT(item['main']['temp'], item['main']['humidity']) + TEMPUNIT)
@@ -943,6 +958,7 @@ def hourlyforecast(num):
 		#	else:
 		#		set_property('Hourly.%i.Snow'		% (count+1), '')
 		#	precip = rain + snow
+
 		if rain !='':
 			set_property('Hourly.%i.Precipitation'	% (count+1), rain + '%')
 			set_property('Hourly.%i.ChancePrecipitation'	% (count+1), rain + '%')
@@ -974,7 +990,9 @@ def hourlyforecast(num):
 		#		set_property('Hourly.%i.Snow'		% (count+1), '')
 		#	precip = rain + snow
 		#	set_property('Hourly.%i.Precipitation'	% (count+1), str(int(round(precip))) + ' mm')
+
 	count = 1
+
 #	if daynum == '':
 #		return
 #	for item in (data['list']):
@@ -1064,18 +1082,18 @@ class MyMonitor(xbmc.Monitor):
 log('version %s started with argv: %s' % (ADDONVERSION, sys.argv[1]))
 
 MONITOR = MyMonitor()
-set_property('Forecast.IsFetched'       , 'true')
-set_property('Current.IsFetched'        , 'true')
-set_property('Today.IsFetched'          , '')
-set_property('Daily.IsFetched'          , 'true')
-set_property('Detailed.IsFetched'       , 'true')
+set_property('Forecast.IsFetched'	, 'true')
+set_property('Current.IsFetched'	, 'true')
+set_property('Today.IsFetched'		, '')
+set_property('Daily.IsFetched'		, 'true')
+set_property('Detailed.IsFetched'	, 'true')
 set_property('Weekend.IsFetched'	, '')
-set_property('36Hour.IsFetched'	        , '')
-set_property('Hourly.IsFetched'	        , 'true')
-set_property('Alerts.IsFetched'	        , 'true')
-set_property('NOAA.IsFetched'           , 'true')
-set_property('WeatherProvider'          , 'NOAA')
-#set_property('WeatherProviderLogo', xbmc.translatePath(os.path.join(CWD, 'resources', 'graphics', 'banner.png')))
+set_property('36Hour.IsFetched'		, '')
+set_property('Hourly.IsFetched'		, 'true')
+set_property('Alerts.IsFetched'		, 'true')
+set_property('NOAA.IsFetched'		, 'true')
+set_property('WeatherProvider'		, 'NOAA')
+set_property('WeatherProviderLogo', xbmc.translatePath(os.path.join(CWD, 'resources', 'graphics', 'banner.png')))
 
 
 #if not APPID:
