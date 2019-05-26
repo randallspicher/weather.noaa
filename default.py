@@ -226,9 +226,26 @@ def location(locstr,prefix):
 		except:
 			log('failed to parse location data')
 			return None
-		if odata != '' and 'properties' in data:
-			station=odata['features'][0]['properties']['stationIdentifier']
-			ADDON.setSetting(prefix+'Station',station)
+		if odata != '' and 'features' in odata:
+			stations={}
+			stationlist=[]
+			
+			for count, item in enumerate(odata['features']):
+				stationId=item['properties']['stationIdentifier']
+				stationName=item['properties']['name']
+				stationlist.append(stationName)
+				stations[stationName]=stationId
+
+			xbmc.log('stationlist: %s' % stationlist,level=xbmc.LOGNOTICE)
+			xbmc.log('stations: %s' % stations,level=xbmc.LOGNOTICE)
+
+			dialog = xbmcgui.Dialog()
+			i=dialog.select("Select local weather station for current weather",stationlist)
+			xbmc.log('selected station name: %s' % stationlist[i],level=xbmc.LOGNOTICE)
+			xbmc.log('selected station: %s' % stations[stationlist[i]],level=xbmc.LOGNOTICE)
+
+			ADDON.setSetting(prefix+'Station',stations[stationlist[i]])
+			ADDON.setSetting(prefix+'StationName',stationlist[i])
 
 
 def dailyforecast(num):
@@ -1111,7 +1128,7 @@ if sys.argv[1].startswith('Location'):
 	if text != '':
 		log("calling location with %s and %s" % (text, sys.argv[1]))
 		location(text,sys.argv[1])
-		#locationdeg = text
+		
 else:
 
 	#locationname = ADDON.getSetting('LocationName%s' % sys.argv[1])

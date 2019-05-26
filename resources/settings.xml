@@ -6,6 +6,7 @@
 		<setting id="Location1"       label="Lat,Long" subsetting="true" type="text" default=""/>
 		<setting label="Fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location1)" />
 		<setting id="Location1Name"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location1StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location1Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
  		<setting id="Location1cwa"                type="text" visible="false" default=""/>
 		<setting id="Location1Zone"               type="text" visible="false" default=""/>
@@ -17,6 +18,7 @@
 		<setting id="Location2"       label="Lat,Long" subsetting="true" type="text" default=""/>
 		<setting label="Fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location2)" />
 		<setting id="Location2Name"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location2StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location2Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
  		<setting id="Location2cwa"                type="text" visible="false" default=""/>
 		<setting id="Location2Zone"               type="text" visible="false" default=""/>
@@ -28,6 +30,7 @@
 		<setting id="Location3"       label="Lat,Long" subsetting="true" type="text" default=""/>
 		<setting label="Fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location3)" />
 		<setting id="Location3Name"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location3StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location3Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
  		<setting id="Location3cwa"                type="text" visible="false" default=""/>
 		<setting id="Location3Zone"               type="text" visible="false" default=""/>
