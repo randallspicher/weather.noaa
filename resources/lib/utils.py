@@ -22,6 +22,9 @@ def log(txt):
 def set_property(name, value):
 	WEATHER_WINDOW.setProperty(name, str(value))
 
+def clear_property(name):
+	WEATHER_WINDOW.clearProperty(name)
+
 #http://openweathermap.org/current#multi
 		# kodi lang name		# openweathermap code
 LANG = { 'afrikaans'		: '',

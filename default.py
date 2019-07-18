@@ -200,7 +200,8 @@ def location(locstr,prefix):
 		locationLatLong=lat+','+lon
 
 		cwa=			data['properties']['cwa']
-		forecastZone=		data['properties']['forecastZone']
+		#forecastZone=		data['properties']['forecastZone']
+		forecastZone=		data['properties']['county']
 		zone=forecastZone.rsplit('/',1)[1]
 		forecastGridData_url =	data['properties']['forecastGridData']
 		forecastHourly_url =	data['properties']['forecastHourly']
@@ -236,13 +237,13 @@ def location(locstr,prefix):
 				stationlist.append(stationName)
 				stations[stationName]=stationId
 
-			xbmc.log('stationlist: %s' % stationlist,level=xbmc.LOGNOTICE)
-			xbmc.log('stations: %s' % stations,level=xbmc.LOGNOTICE)
+			#xbmc.log('stationlist: %s' % stationlist,level=xbmc.LOGNOTICE)
+			#xbmc.log('stations: %s' % stations,level=xbmc.LOGNOTICE)
 
 			dialog = xbmcgui.Dialog()
 			i=dialog.select("Select local weather station for current weather",stationlist)
-			xbmc.log('selected station name: %s' % stationlist[i],level=xbmc.LOGNOTICE)
-			xbmc.log('selected station: %s' % stations[stationlist[i]],level=xbmc.LOGNOTICE)
+			#xbmc.log('selected station name: %s' % stationlist[i],level=xbmc.LOGNOTICE)
+			#xbmc.log('selected station: %s' % stations[stationlist[i]],level=xbmc.LOGNOTICE)
 
 			ADDON.setSetting(prefix+'Station',stations[stationlist[i]])
 			ADDON.setSetting(prefix+'StationName',stationlist[i])
@@ -594,7 +595,29 @@ def currentforecast(num):
 #	except:
 #		set_property('Today.Sunset'			, '')
 
-# def daily_props(data):
+#def full_daily_props():
+#	mastermap = {}
+#	#https://api.weather.gov/gridpoints/OKX/57,70
+#	forecast_url=ADDON.getSetting('Location'+str(num)+'forecastGrid_url')		
+#	log('forecast url: %s' % forecast_url)
+#			
+#	##current_props(current_weather,loc)
+#
+#	grid_data = get_data(forecast_url)
+#	#log('daily data: %s' % daily_data)
+#	try:
+#		grid_weather = json.loads(grid_data)
+#	except:
+#		log('parsing daily data failed')
+#		_weather = ''
+#	if grid_weather and grid_weather != '' and 'properties' in grid_weather:
+#		data=grid_weather['properties']
+#	else:
+#		return None
+#
+#	for count, item in enumerate(data['periods']):
+	
+
 #	if not 'periods' in data:
 #		return
 # # standard properties
@@ -879,6 +902,54 @@ def currentforecast(num):
 #			daynum = get_month(item['dt'], 'ds').split(' ')[0]
 #			return daynum
 
+#https://api.weather.gov/alerts/active/zone/CTZ006
+#https://api.weather.gov/alerts/active/zone/CTC009
+def alerts(num):
+	
+	a_zone=ADDON.getSetting('Location'+str(num)+'Zone')
+	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
+	alert_data=get_data(url)
+	#xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
+	for count in range (1, 10):
+		set_property('Alerts.%i.event'	% (count),'')	
+	
+	try:
+		alerts = json.loads(alert_data)
+	except:
+		xbmc.log('parsing alert data failed' ,level=xbmc.LOGNOTICE)
+		alerts = ''
+	if alerts and alerts != '' and 'features' in alerts:
+		data=alerts['features']
+		#xbmc.log('data: %s' % data,level=xbmc.LOGNOTICE)
+		set_property('Alerts.IsFetched'		, 'true')
+
+	else:
+		set_property('Alerts.IsFetched'		, 'false')
+		xbmc.log('Failed to find alert data' ,level=xbmc.LOGNOTICE)
+		return None
+	for count, item in enumerate(data):
+		
+		thisdata=item['properties']
+		
+		
+		set_property('Alerts.%i.status'		% (count+1), str(thisdata['status']))	
+		set_property('Alerts.%i.messageType'	% (count+1), str(thisdata['messageType']))	
+		set_property('Alerts.%i.category'	% (count+1), str(thisdata['category']))	
+		set_property('Alerts.%i.severity'	% (count+1), str(thisdata['severity']))	
+		set_property('Alerts.%i.certainty'	% (count+1), str(thisdata['certainty']))	
+		set_property('Alerts.%i.urgency'	% (count+1), str(thisdata['urgency']))	
+		set_property('Alerts.%i.event'		% (count+1), str(thisdata['event']))	
+		set_property('Alerts.%i.headline'	% (count+1), str(thisdata['headline']))	
+		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
+		set_property('Alerts.%i.instruction'	% (count+1), str(thisdata['instruction']))	
+		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
+		set_property('Alerts.%i.response'	% (count+1), str(thisdata['response']))	
+
+	
+
+
+
+
 def hourlyforecast(num):
 		
 	forecastHourly_url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')		
@@ -1007,7 +1078,7 @@ def hourlyforecast(num):
 		#		set_property('Hourly.%i.Snow'		% (count+1), '')
 		#	precip = rain + snow
 		#	set_property('Hourly.%i.Precipitation'	% (count+1), str(int(round(precip))) + ' mm')
-
+	
 	count = 1
 
 #	if daynum == '':
@@ -1092,6 +1163,10 @@ def hourlyforecast(num):
 #				set_property('36Hour.%i.TemperatureHeading'	% (count+1), xbmc.getLocalizedString(391))
 #				break
 
+
+
+
+
 class MyMonitor(xbmc.Monitor):
 	def __init__(self, *args, **kwargs):
 		xbmc.Monitor.__init__(self)
@@ -1107,7 +1182,6 @@ set_property('Detailed.IsFetched'	, 'true')
 set_property('Weekend.IsFetched'	, '')
 set_property('36Hour.IsFetched'		, '')
 set_property('Hourly.IsFetched'		, 'true')
-set_property('Alerts.IsFetched'		, 'true')
 set_property('NOAA.IsFetched'		, 'true')
 set_property('WeatherProvider'		, 'NOAA')
 set_property('WeatherProviderLogo', xbmc.translatePath(os.path.join(CWD, 'resources', 'graphics', 'banner.png')))
@@ -1142,6 +1216,7 @@ else:
 		dailyforecast(num)
 		hourlyforecast(num)
 		currentforecast(num)
+		alerts(num)
 	else:
 		log('no location provided')
 		clear()
