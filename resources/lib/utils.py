@@ -297,7 +297,9 @@ def SPEED(mps):
 
 
 def FtoC(Fahrenheit):
-	Celsius = (Fahrenheit - 32) * 5.0/9.0 
+	#xbmc.log('Fahrenheit %s' % Fahrenheit,level=xbmc.LOGNOTICE)
+
+	Celsius = (float(Fahrenheit) - 32.0) * 5.0/9.0 
 	return str(int(round(Celsius))) 
 		
 

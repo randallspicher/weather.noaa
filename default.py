@@ -306,6 +306,8 @@ def dailyforecast(num):
 		startstamp=get_timestamp(starttime)
 		set_property('Day%i.isDaytime'		% (count),str(item['isDaytime']))
 		set_property('Day%i.Title'		% (count), item['name'])
+		#xbmc.log('temperature %s' % item['temperature'],level=xbmc.LOGNOTICE)
+
 		if item['isDaytime'] == True:
 			set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
 			set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
