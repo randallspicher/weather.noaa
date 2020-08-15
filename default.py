@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
+from urllib.request import urlopen
+
+
 #import os, sys, dateutil, time, urllib.request, unicodedata, random, string
 import os, sys, time
-from future.moves.urllib.request import urlopen
-import xbmc, xbmcgui, xbmcaddon, xbmcvfs
+#from future.moves.urllib.request import urlopen
+import xbmc, xbmcgui, xbmcaddon
 #import xbmc, xbmcaddon
 import json
+
+
+
 #from urllib import request
 
 
@@ -14,8 +22,7 @@ import json
 #from dateutil import tz
 from dateutil.parser import parse
 #from builtins import None
-from utils import FtoC, MONTH_NAME_LONG, MONTH_NAME_SHORT, set_property, clear_property, log, WEEK_DAY_SHORT, WEEK_DAY_LONG,\
-	clear_property
+from utils import FtoC, MONTH_NAME_LONG, MONTH_NAME_SHORT, set_property, clear_property, log, WEEK_DAY_SHORT, WEEK_DAY_LONG
 from utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT
 
 ADDON           = xbmcaddon.Addon()
