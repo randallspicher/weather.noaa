@@ -1,28 +1,34 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-import os, sys, dateutil, time, urllib2, unicodedata, random, string
+#import os, sys, dateutil, time, urllib.request, unicodedata, random, string
+import os, sys, time
+from future.moves.urllib.request import urlopen
 import xbmc, xbmcgui, xbmcaddon, xbmcvfs
+#import xbmc, xbmcaddon
 import json
-
-#import dateutil.parser
-from datetime import datetime
-from dateutil import tz
-from dateutil import parser
+#from urllib import request
 
 
+#from datetime import datetime
+#from dateutil import tz
+from dateutil.parser import parse
+#from builtins import None
+from utils import FtoC, MONTH_NAME_LONG, MONTH_NAME_SHORT, set_property, clear_property, log, WEEK_DAY_SHORT, WEEK_DAY_LONG,\
+	clear_property
+from utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT
 
-ADDON		= xbmcaddon.Addon()
-ADDONNAME	= ADDON.getAddonInfo('name')
-ADDONID		= ADDON.getAddonInfo('id')
-CWD		= ADDON.getAddonInfo('path').decode("utf-8")
-ADDONVERSION	= ADDON.getAddonInfo('version')
-LANGUAGE	= ADDON.getLocalizedString
-RESOURCE	= xbmc.translatePath( os.path.join( CWD, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
-PROFILE		= xbmc.translatePath(ADDON.getAddonInfo('profile')).decode('utf-8')
+ADDON           = xbmcaddon.Addon()
+ADDONNAME       = ADDON.getAddonInfo('name')
+ADDONID         = ADDON.getAddonInfo('id')
+CWD             = ADDON.getAddonInfo('path').decode("utf-8")
+ADDONVERSION    = ADDON.getAddonInfo('version')
+LANGUAGE        = ADDON.getLocalizedString
+RESOURCE        = xbmc.translatePath( os.path.join( CWD, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
+PROFILE         = xbmc.translatePath(ADDON.getAddonInfo('profile')).decode('utf-8')
 
 sys.path.append(RESOURCE)
 
-from utils import *
 
 #APPID		= ADDON.getSetting('API')
 #BASE_URL	= 'https://api.weather.gov/'
@@ -76,12 +82,14 @@ def get_initial(loc):
 	url = 'https://api.weather.gov/points/%s' % loc
 	log("url:"+url)
 	try:
-		req = urllib2.urlopen(url)
-		response = req.read()
-		req.close()
+# 		req = urllib.request(url)
+		with urlopen(url) as response:
+			responsedata = response.read().decode('utf-8')
+# 		req.close()
+#		responsedata=urlopen(url)
 	except:
-		response = ''
-	return response
+		responsedata = ''
+	return responsedata
 	
 def code_from_icon(icon):
 		icon=icon.rsplit('?', 1)[0]
@@ -97,21 +105,21 @@ def code_from_icon(icon):
 		
 
 def get_data(url):
-	#url = BASE_URL % search_string
+
 	try:
-		req = urllib2.urlopen(url)
-		response = req.read()
-		req.close()
+		xbmc.log('url: %s' % url,level=xbmc.LOGNOTICE)
+		responsedata = urlopen(url, timeout=15).read().decode('utf-8')
+		xbmc.log('responsedata: %s' % responsedata,level=xbmc.LOGNOTICE)
 	except:
-		response = ''
-	return response
+		responsedata = ''
+	return responsedata
 
 def get_timestamp(datestr):
 	#"2019-04-29T16:00:00-04:00"
 	#iso_fmt = '%Y-%m-%dT%H:%M:%S%z'
 	#newtext = datestr[:21] + datestr[23:]
 	#datestamp=datetime.datetime.strptime(datestr,iso_fmt)
-	datestamp=dateutil.parser.parse(datestr)
+	datestamp=parse(datestr)
 	return time.mktime(datestamp.timetuple())
 
 
@@ -165,15 +173,16 @@ def get_month(stamp, form):
 	return label
 
 def geoip():
+	url='http://freegeoip.net/json/'
 	try:
-		req = urllib2.urlopen('http://freegeoip.net/json/')
-		response = req.read()
-		req.close()
+		with urlopen(url) as response:
+			responsedata = response.read().decode('utf-8')
+
 	except:
-		response = ''
+		responsedata = ''
 		log('failed to retrieve geoip location')
-	if response:
-		data = json.loads(response)
+	if responsedata:
+		data = json.loads(responsedata)
 		if data and data.has_key('city') and data.has_key('country_name'):
 			city, country = data['city'], data['country_name']
 			return '%s, %s' % (city, country)
@@ -314,12 +323,11 @@ def dailyforecast(num):
 		if item['isDaytime'] == False:
 			set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
 			set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
-
 		set_property('Day%i.Outlook'		% (count), item['shortForecast'])
-
 		#set_property('Day%i.Details'		% (count+1), item['detailedForecast'])
 		set_property('Day%i.OutlookIcon'	% (count), weathercode)
 		set_property('Day%i.RemoteIcon'		% (count), icon)
+
 		# NOTE: Day props are 0 based, but Daily/Hourly are 1 based
 		set_property('Daily.%i.isDaytime'	% (count+1),str(item['isDaytime']))
 		set_property('Daily.%i.Outlook'		% (count+1), item['detailedForecast'])
@@ -334,8 +342,8 @@ def dailyforecast(num):
 		if item['isDaytime'] == True:
 			set_property('Daily.%i.LongDay'		% (count+1), item['name'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
-			set_property('Daily.%i.TempDay'		% (count+1), str(item['temperature'])+item['temperatureUnit'])
-			set_property('Daily.%i.HighTemperature'	% (count+1), str(item['temperature'])+item['temperatureUnit'])
+			set_property('Daily.%i.TempDay'		% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
+			set_property('Daily.%i.HighTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
 			set_property('Daily.%i.TempNight'	% (count+1), '')
 			set_property('Daily.%i.LowTemperature'	% (count+1), '')
 		if item['isDaytime'] == False:
@@ -343,8 +351,8 @@ def dailyforecast(num):
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (n)")
 			set_property('Daily.%i.TempDay'		% (count+1), '')
 			set_property('Daily.%i.HighTemperature'	% (count+1), '')
-			set_property('Daily.%i.TempNight'	% (count+1), str(item['temperature'])+item['temperatureUnit'])
-			set_property('Daily.%i.LowTemperature'	% (count+1), str(item['temperature'])+item['temperatureUnit'])
+			set_property('Daily.%i.TempNight'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
+			set_property('Daily.%i.LowTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
 		#set_property('Daily.%i.LongDay'		% (count+1), get_weekday(startstamp, 'l'))
 		#set_property('Daily.%i.ShortDay'		% (count+1), get_weekday(startstamp,'s'))
 		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
@@ -353,12 +361,13 @@ def dailyforecast(num):
 		else:
 			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'ml'))
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
+		
 		if (rain !=''):
 			set_property('Daily.%i.Precipitation'	% (count+1), rain + '%')
 		else:
 			set_property('Daily.%i.Precipitation'	% (count+1), '')
 			
-#		set_property('Daily.%i.WindDegree'	% (count+1), str(item.get('deg','')) + u'°')
+#		set_property('Daily.%i.WindDegree'	% (count+1), str(item.get('deg','')) + u'\N{DEGREE SIGN}')
 #		set_property('Daily.%i.Humidity'	% (count+1), str(item.get('humidity','')) + '%')
 #		set_property('Daily.%i.TempMorn'	% (count+1), TEMP(item['temp']['morn']) + TEMPUNIT)
 #		set_property('Daily.%i.TempDay'		% (count+1), TEMP(item['temp']['day']) + TEMPUNIT)
@@ -370,11 +379,139 @@ def dailyforecast(num):
 #		set_property('Daily.%i.DewPoint'	% (count+1), DEW_POINT(item['temp']['day'], item['humidity']) + TEMPUNIT)
 
 
+def dailyforecastfallback(num):
+
+	latlong=ADDON.getSetting('Location'+str(num))
+	latitude =latlong.rsplit(',',1)[0]
+	longitude=latlong.rsplit(',',1)[1]
+
+	forecast_url="https://forecast.weather.gov/MapClick.php?lon="+longitude+"&lat="+latitude+"&FcstType=json"
+	log('forecast url: %s' % forecast_url)
+
+	daily_data = get_data(forecast_url)
+	log('daily data: %s' % daily_data)
+	try:
+		daily_weather = json.loads(daily_data)
+	except:
+		log('parsing daily data failed')
+		daily_weather = ''
+		return None
+	
+	####	[{"Title": t, "Score": s} for t, s in zip(titles, scores)]if daily_weather and daily_weather != '' and 'data' in daily_weather:
+	if daily_weather and daily_weather != '' and 'data' in daily_weather:
+
+		dailydata=[
+			{"startPeriodName": a,
+			 "startValidTime": b,
+			 "tempLabel": c,
+			 "temperature": d,
+			 "pop": e,
+			 "weather": f,
+			 "iconLink": g,
+			 "hazard": h,
+			 "hazardUrl": i,
+			 "text": j
+			} 
+			for a,b,c,d,e,f,g,h,i,j in zip(
+				daily_weather['time']['startPeriodName'], 
+				daily_weather['time']['startValidTime'],
+				daily_weather['time']['tempLabel'],
+				daily_weather['data']['temperature'],
+				daily_weather['data']['pop'],
+				daily_weather['data']['weather'],
+				daily_weather['data']['iconLink'],
+				daily_weather['data']['hazard'],
+				daily_weather['data']['hazardUrl'],
+				daily_weather['data']['text']
+			)]
+	else:
+		return None
+
+
+
+	for count, item in enumerate(dailydata):
+		#code = str(item['weather'][0].get('id',''))
+
+		icon = item['iconLink']
+
+		#https://api.weather.gov/icons/land/night/ovc?size=small
+		icon=icon.rsplit('?', 1)[0]
+		code, rain=code_from_icon(icon)
+		#xbmc.log('icon %s' % icon,level=xbmc.LOGNOTICE)
+		#xbmc.log('code %s' % code,level=xbmc.LOGNOTICE)
+		weathercode = WEATHER_CODES.get(code)
+
+		starttime=item['startValidTime']
+		startstamp=get_timestamp(starttime)
+		set_property('Day%i.Title'		% (count), item['startPeriodName'])
+
+		if item['tempLabel'] == 'High':
+			set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
+		if item['tempLabel'] == 'Low':
+			set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
+		set_property('Day%i.Outlook'		% (count), item['weather'])
+		set_property('Day%i.Details'		% (count), item['text'])
+		set_property('Day%i.OutlookIcon'	% (count), weathercode)
+		set_property('Day%i.RemoteIcon'		% (count), icon)
+
+		# NOTE: Day props are 0 based, but Daily/Hourly are 1 based
+		####set_property('Daily.%i.isDaytime'	% (count+1),str(item['isDaytime']))
+		set_property('Daily.%i.Outlook'		% (count+1), item['text'])
+		set_property('Daily.%i.ShortOutlook'	% (count+1), item['weather'])
+		
+		set_property('Daily.%i.RemoteIcon'	% (count+1), icon)
+		set_property('Daily.%i.OutlookIcon'	% (count+1), WEATHER_ICON % weathercode)
+		set_property('Daily.%i.FanartCode'	% (count+1), weathercode)
+		##set_property('Daily.%i.WindDirection'	% (count+1), item['windDirection'])
+		##set_property('Daily.%i.WindSpeed'	% (count+1), item['windSpeed'])
+
+		if item['tempLabel'] == 'High':
+			set_property('Daily.%i.LongDay'		% (count+1), item['startPeriodName'])
+			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
+			set_property('Daily.%i.TempDay'		% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
+			set_property('Daily.%i.HighTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
+			set_property('Daily.%i.TempNight'	% (count+1), '')
+			set_property('Daily.%i.LowTemperature'	% (count+1), '')
+		if item['tempLabel'] == 'Low':
+			set_property('Daily.%i.LongDay'		% (count+1), item['startPeriodName'])
+			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (n)")
+			set_property('Daily.%i.TempDay'		% (count+1), '')
+			set_property('Daily.%i.HighTemperature'	% (count+1), '')
+			set_property('Daily.%i.TempNight'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
+			set_property('Daily.%i.LowTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
+		#set_property('Daily.%i.LongDay'		% (count+1), get_weekday(startstamp, 'l'))
+		#set_property('Daily.%i.ShortDay'		% (count+1), get_weekday(startstamp,'s'))
+		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
+			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'dl'))
+			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ds'))
+		else:
+			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'ml'))
+			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
+		rain=str(item['pop'])
+		if (rain !=''):
+			set_property('Daily.%i.Precipitation'	% (count+1), rain + '%')
+		else:
+			set_property('Daily.%i.Precipitation'	% (count+1), '')
+			
+#		set_property('Daily.%i.WindDegree'	% (count+1), str(item.get('deg','')) + u'\N{DEGREE SIGN}')
+#		set_property('Daily.%i.Humidity'	% (count+1), str(item.get('humidity','')) + '%')
+#		set_property('Daily.%i.TempMorn'	% (count+1), TEMP(item['temp']['morn']) + TEMPUNIT)
+#		set_property('Daily.%i.TempDay'		% (count+1), TEMP(item['temp']['day']) + TEMPUNIT)
+#		set_property('Daily.%i.TempEve'		% (count+1), TEMP(item['temp']['eve']) + TEMPUNIT)
+#		set_property('Daily.%i.TempNight'	% (count+1), TEMP(item['temp']['night']) + TEMPUNIT)
+#		set_property('Daily.%i.HighTemperature' % (count+1), TEMP(item['temp']['max']) + TEMPUNIT)
+#		set_property('Daily.%i.LowTemperature'	% (count+1), TEMP(item['temp']['min']) + TEMPUNIT)
+#		set_property('Daily.%i.FeelsLike'	% (count+1), FEELS_LIKE(item['temp']['day'], item['speed'] * 3.6, item['humidity']) + TEMPUNIT)
+#		set_property('Daily.%i.DewPoint'	% (count+1), DEW_POINT(item['temp']['day'], item['humidity']) + TEMPUNIT)
+
+
+
 def currentforecast(num):
 	station=ADDON.getSetting('Location'+str(num)+'Station')
 	url="https://api.weather.gov/stations/%s/observations/latest" %station	
 	current_data=get_data(url)
-	#xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
+	xbmc.log('url: %s' % url,level=xbmc.LOGNOTICE)
+	xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
 	try:
 		current = json.loads(current_data)
 	except:
@@ -918,15 +1055,15 @@ def alerts(num):
 	try:
 		alerts = json.loads(alert_data)
 	except:
-		xbmc.log('parsing alert data failed' ,level=xbmc.LOGNOTICE)
+		xbmc.log('Fetching Weather Alert data failed' ,level=xbmc.LOGWARNING)
 		alerts = ''
-	if alerts and alerts != '' and 'features' in alerts:
+	if alerts and alerts != '' and 'features' in alerts and alerts['features']:
 		data=alerts['features']
 		#xbmc.log('data: %s' % data,level=xbmc.LOGNOTICE)
 		set_property('Alerts.IsFetched'		, 'true')
 
 	else:
-		set_property('Alerts.IsFetched'		, 'false')
+		clear_property('Alerts.IsFetched')
 		xbmc.log('Failed to find alert data' ,level=xbmc.LOGNOTICE)
 		return None
 	for count, item in enumerate(data):
@@ -1020,7 +1157,7 @@ def hourlyforecast(num):
 		#		set_property('Hourly.%i.WindGust'		% (count+1), '')
 		#set_property('Hourly.%i.Cloudiness'		% (count+1), str(item['clouds'].get('all','')) + '%')
 
-		set_property('Hourly.%i.Temperature'		% (count+1),	str(item['temperature'])+item['temperatureUnit'])
+		set_property('Hourly.%i.Temperature'		% (count+1),	str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
 		
 		#set_property('Hourly.%i.HighTemperature'	% (count+1), TEMP(item['main']['temp_max']) + TEMPUNIT)
 		#set_property('Hourly.%i.LowTemperature'	% (count+1), TEMP(item['main']['temp_min']) + TEMPUNIT)
@@ -1216,6 +1353,7 @@ else:
 		log('trying location 1 instead')
 	if not locationLatLong == '':
 		dailyforecast(num)
+		dailyforecastfallback(num)
 		hourlyforecast(num)
 		currentforecast(num)
 		alerts(num)
