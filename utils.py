@@ -25,7 +25,7 @@ def log(txt):
 		xbmc.log(msg=message.encode("utf-8"), level=xbmc.LOGDEBUG)
 
 def set_property(name, value):
-	WEATHER_WINDOW.setProperty(name, str(value))
+	WEATHER_WINDOW.setProperty(name, value)
 
 def clear_property(name):
 	WEATHER_WINDOW.clearProperty(name)

@@ -1,3 +1,8 @@
+v1.0.1
+- updates for python3
+- unset alert var when there are no alerts so that skins can hide them
+- fix missing degree symbol temps 
+
 v0.8.4
 - add in NOAA weather alerts
 
