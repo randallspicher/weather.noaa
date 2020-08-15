@@ -306,7 +306,7 @@ def dailyforecast(num):
 	if daily_weather and daily_weather != '' and 'properties' in daily_weather:
 		data=daily_weather['properties']
 	else:
-		return None
+		return dailyforecastfallback(num)
 
 	for count, item in enumerate(data['periods']):
 		#code = str(item['weather'][0].get('id',''))
@@ -349,8 +349,8 @@ def dailyforecast(num):
 		if item['isDaytime'] == True:
 			set_property('Daily.%i.LongDay'		% (count+1), item['name'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
-			set_property('Daily.%i.TempDay'		% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
-			set_property('Daily.%i.HighTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
+			set_property('Daily.%i.TempDay'		% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
+			set_property('Daily.%i.HighTemperature'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
 			set_property('Daily.%i.TempNight'	% (count+1), '')
 			set_property('Daily.%i.LowTemperature'	% (count+1), '')
 		if item['isDaytime'] == False:
@@ -358,8 +358,8 @@ def dailyforecast(num):
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (n)")
 			set_property('Daily.%i.TempDay'		% (count+1), '')
 			set_property('Daily.%i.HighTemperature'	% (count+1), '')
-			set_property('Daily.%i.TempNight'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
-			set_property('Daily.%i.LowTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
+			set_property('Daily.%i.TempNight'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
+			set_property('Daily.%i.LowTemperature'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
 		#set_property('Daily.%i.LongDay'		% (count+1), get_weekday(startstamp, 'l'))
 		#set_property('Daily.%i.ShortDay'		% (count+1), get_weekday(startstamp,'s'))
 		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
@@ -475,8 +475,8 @@ def dailyforecastfallback(num):
 		if item['tempLabel'] == 'High':
 			set_property('Daily.%i.LongDay'		% (count+1), item['startPeriodName'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
-			set_property('Daily.%i.TempDay'		% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
-			set_property('Daily.%i.HighTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
+			set_property('Daily.%i.TempDay'		% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
+			set_property('Daily.%i.HighTemperature'	% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
 			set_property('Daily.%i.TempNight'	% (count+1), '')
 			set_property('Daily.%i.LowTemperature'	% (count+1), '')
 		if item['tempLabel'] == 'Low':
@@ -484,8 +484,8 @@ def dailyforecastfallback(num):
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (n)")
 			set_property('Daily.%i.TempDay'		% (count+1), '')
 			set_property('Daily.%i.HighTemperature'	% (count+1), '')
-			set_property('Daily.%i.TempNight'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
-			set_property('Daily.%i.LowTemperature'	% (count+1), str(item['temperature'])+u'\N{DEGREE SIGN}F')
+			set_property('Daily.%i.TempNight'	% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
+			set_property('Daily.%i.LowTemperature'	% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
 		#set_property('Daily.%i.LongDay'		% (count+1), get_weekday(startstamp, 'l'))
 		#set_property('Daily.%i.ShortDay'		% (count+1), get_weekday(startstamp,'s'))
 		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
@@ -1359,11 +1359,11 @@ else:
 		locationLatLong = ADDON.getSetting('Location%s' % num)
 		log('trying location 1 instead')
 	if not locationLatLong == '':
-		dailyforecast(num)
-		dailyforecastfallback(num)
-		hourlyforecast(num)
-		currentforecast(num)
 		alerts(num)
+		currentforecast(num)
+		dailyforecast(num)
+		###dailyforecastfallback(num)
+		hourlyforecast(num)
 	else:
 		log('no location provided')
 		clear()
