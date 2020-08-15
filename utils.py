@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import math
 import xbmc, xbmcgui, xbmcaddon
+
 
 ADDON           = xbmcaddon.Addon()
 ADDONID         = ADDON.getAddonInfo('id')
@@ -9,7 +11,7 @@ LANGUAGE        = ADDON.getLocalizedString
 
 WEATHER_WINDOW  = xbmcgui.Window(12600)
 DEBUG		= ADDON.getSetting('Debug')
-TEMPUNIT	= unicode(xbmc.getRegion('tempunit'),encoding='utf-8')
+TEMPUNIT	= xbmc.getRegion('tempunit')
 SPEEDUNIT	= xbmc.getRegion('speedunit')
 
 def log(txt):
@@ -304,7 +306,7 @@ def FtoC(Fahrenheit):
 		
 
 def TEMP(deg):
-	if TEMPUNIT == u'°F':
+	if TEMPUNIT == u'\N{DEGREE SIGN}'+'F':
 		temp = deg * 1.8 + 32
 	elif TEMPUNIT == u'K':
 		temp = deg + 273.15
