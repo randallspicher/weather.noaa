@@ -1,3 +1,6 @@
+v1.0.2
+- handle missing data in fallback forecast bettter
+
 v1.0.1
 - updates for python3
 - unset alert var when there are no alerts so that skins can hide them

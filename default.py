@@ -23,7 +23,7 @@ import json
 from dateutil.parser import parse
 #from builtins import None
 from utils import FtoC, MONTH_NAME_LONG, MONTH_NAME_SHORT, set_property, clear_property, log, WEEK_DAY_SHORT, WEEK_DAY_LONG
-from utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT
+from utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x
 
 ADDON           = xbmcaddon.Addon()
 ADDONNAME       = ADDON.getAddonInfo('name')
@@ -111,15 +111,33 @@ def code_from_icon(icon):
 			return code, ''
 		
 
-def get_data(url):
-
+def get_url_JSON(url):
 	try:
-		xbmc.log('url: %s' % url,level=xbmc.LOGNOTICE)
+		xbmc.log('fetching url: %s' % url,level=xbmc.LOGDEBUG)
 		responsedata = urlopen(url, timeout=15).read().decode('utf-8')
-		xbmc.log('responsedata: %s' % responsedata,level=xbmc.LOGNOTICE)
+		try:
+			data = json.loads(responsedata)
+			log('data: %s' % data)
+			# Happy path, we found and parsed data
+			return data
+		except:
+			xbmc.log('failed to parse json: %s' % url,level=xbmc.LOGERROR)
+			xbmc.log('data: %s' % data,level=xbmc.LOGERROR)
 	except:
-		responsedata = ''
-	return responsedata
+		xbmc.log('failed to fetch : %s' % url,level=xbmc.LOGERROR)
+	return None
+
+def get_url_response(url):
+	try:
+		xbmc.log('fetching url: %s' % url,level=xbmc.LOGNOTICE)
+		responsedata = urlopen(url, timeout=15).read().decode('utf-8')
+		log('data: %s' % responsedata)
+		# Happy path, we found and parsed data
+		return responsedata
+	except:
+		xbmc.log('failed to fetch : %s' % url,level=xbmc.LOGERROR)
+	return None
+
 
 def get_timestamp(datestr):
 	#"2019-04-29T16:00:00-04:00"
@@ -233,16 +251,8 @@ def location(locstr,prefix):
 		ADDON.setSetting(prefix+'forecastHourly_url', forecastHourly_url)
 		ADDON.setSetting(prefix+'forecast_url',	forecast_url)
 		#ADDON.setSetting(prefix+'radarStation',	radarStation)
-		query = get_data(stations_url)
-		log('location data: %s' % query)
-		if not query:
-			log('failed to retrieve location data')
-			return None
-		try:
-			odata = json.loads(query)
-		except:
-			log('failed to parse location data')
-			return None
+		odata = get_url_JSON(stations_url)
+#		log('location data: %s' % query)
 		if odata != '' and 'features' in odata:
 			stations={}
 			stationlist=[]
@@ -291,21 +301,19 @@ def dailyforecast(num):
 #		station_id = ADDON.getSetting('StationID')
 #		station_string = 'station?id=%s&lang=%s&APPID=%s&units=metric' % (station_id, lang, APPID)
 
-	forecast_url=ADDON.getSetting('Location'+str(num)+'forecast_url')		
-	log('forecast url: %s' % forecast_url)
+	url=ADDON.getSetting('Location'+str(num)+'forecast_url')		
+	log('forecast url: %s' % url)
 			
 	##current_props(current_weather,loc)
 
-	daily_data = get_data(forecast_url)
-	log('daily data: %s' % daily_data)
-	try:
-		daily_weather = json.loads(daily_data)
-	except:
-		log('parsing daily data failed')
-		daily_weather = ''
+	daily_weather = get_url_JSON(url)
+
 	if daily_weather and daily_weather != '' and 'properties' in daily_weather:
 		data=daily_weather['properties']
 	else:
+		xbmc.log('failed to find weather data from : %s' % url,level=xbmc.LOGERROR)
+		xbmc.log('%s' % daily_weather,level=xbmc.LOGERROR)
+		###return None
 		return dailyforecastfallback(num)
 
 	for count, item in enumerate(data['periods']):
@@ -392,20 +400,14 @@ def dailyforecastfallback(num):
 	latitude =latlong.rsplit(',',1)[0]
 	longitude=latlong.rsplit(',',1)[1]
 
-	forecast_url="https://forecast.weather.gov/MapClick.php?lon="+longitude+"&lat="+latitude+"&FcstType=json"
-	log('forecast url: %s' % forecast_url)
+	url="https://forecast.weather.gov/MapClick.php?lon="+longitude+"&lat="+latitude+"&FcstType=json"
+	log('forecast url: %s' % url)
 
-	daily_data = get_data(forecast_url)
-	log('daily data: %s' % daily_data)
-	try:
-		daily_weather = json.loads(daily_data)
-	except:
-		log('parsing daily data failed')
-		daily_weather = ''
-		return None
-	
+	daily_weather = get_url_JSON(url)
+
 	####	[{"Title": t, "Score": s} for t, s in zip(titles, scores)]if daily_weather and daily_weather != '' and 'data' in daily_weather:
 	if daily_weather and daily_weather != '' and 'data' in daily_weather:
+
 
 		dailydata=[
 			{"startPeriodName": a,
@@ -419,7 +421,7 @@ def dailyforecastfallback(num):
 			 "hazardUrl": i,
 			 "text": j
 			} 
-			for a,b,c,d,e,f,g,h,i,j in zip(
+			for a,b,c,d,e,f,g,h,i,j in zip_x(None,
 				daily_weather['time']['startPeriodName'], 
 				daily_weather['time']['startValidTime'],
 				daily_weather['time']['tempLabel'],
@@ -429,12 +431,14 @@ def dailyforecastfallback(num):
 				daily_weather['data']['iconLink'],
 				daily_weather['data']['hazard'],
 				daily_weather['data']['hazardUrl'],
-				daily_weather['data']['text']
+				daily_weather['data']['text']				
 			)]
+		
+
 	else:
+		xbmc.log('failed to retrieve weather data from : %s' % url,level=xbmc.LOGERROR)
+		xbmc.log('%s' % daily_weather,level=xbmc.LOGERROR)
 		return None
-
-
 
 	for count, item in enumerate(dailydata):
 		#code = str(item['weather'][0].get('id',''))
@@ -475,8 +479,8 @@ def dailyforecastfallback(num):
 		if item['tempLabel'] == 'High':
 			set_property('Daily.%i.LongDay'		% (count+1), item['startPeriodName'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
-			set_property('Daily.%i.TempDay'		% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
-			set_property('Daily.%i.HighTemperature'	% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
+			set_property('Daily.%i.TempDay'		% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
+			set_property('Daily.%i.HighTemperature'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
 			set_property('Daily.%i.TempNight'	% (count+1), '')
 			set_property('Daily.%i.LowTemperature'	% (count+1), '')
 		if item['tempLabel'] == 'Low':
@@ -484,8 +488,8 @@ def dailyforecastfallback(num):
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (n)")
 			set_property('Daily.%i.TempDay'		% (count+1), '')
 			set_property('Daily.%i.HighTemperature'	% (count+1), '')
-			set_property('Daily.%i.TempNight'	% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
-			set_property('Daily.%i.LowTemperature'	% (count+1), "%i%s" % (item['temperature'], u'\N{DEGREE SIGN}F'))
+			set_property('Daily.%i.TempNight'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
+			set_property('Daily.%i.LowTemperature'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
 		#set_property('Daily.%i.LongDay'		% (count+1), get_weekday(startstamp, 'l'))
 		#set_property('Daily.%i.ShortDay'		% (count+1), get_weekday(startstamp,'s'))
 		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
@@ -516,20 +520,14 @@ def dailyforecastfallback(num):
 def currentforecast(num):
 	station=ADDON.getSetting('Location'+str(num)+'Station')
 	url="https://api.weather.gov/stations/%s/observations/latest" %station	
-	current_data=get_data(url)
-	xbmc.log('url: %s' % url,level=xbmc.LOGNOTICE)
-	xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
-	try:
-		current = json.loads(current_data)
-	except:
-		xbmc.log('parsing current data failed' ,level=xbmc.LOGNOTICE)
-		current = ''
+	current=get_url_JSON(url)
 	if current and current != '' and 'properties' in current:
 		data=current['properties']
 		#xbmc.log('data: %s' % data,level=xbmc.LOGNOTICE)
 	else:
-		xbmc.log('Failed to find current data' ,level=xbmc.LOGNOTICE)
-		return None
+		xbmc.log('failed to find weather data from : %s' % url,level=xbmc.LOGERROR)
+		xbmc.log('%s' % current,level=xbmc.LOGERROR)
+		return
 	
 	#xbmc.log('data %s' % data,level=xbmc.LOGNOTICE)
 	icon = data['icon']
@@ -749,13 +747,7 @@ def currentforecast(num):
 #			
 #	##current_props(current_weather,loc)
 #
-#	grid_data = get_data(forecast_url)
-#	#log('daily data: %s' % daily_data)
-#	try:
-#		grid_weather = json.loads(grid_data)
-#	except:
-#		log('parsing daily data failed')
-#		_weather = ''
+#	grid_weather = get_data(forecast_url)
 #	if grid_weather and grid_weather != '' and 'properties' in grid_weather:
 #		data=grid_weather['properties']
 #	else:
@@ -1051,33 +1043,32 @@ def currentforecast(num):
 #https://api.weather.gov/alerts/active/zone/CTZ006
 #https://api.weather.gov/alerts/active/zone/CTC009
 def alerts(num):
-	
+
 	a_zone=ADDON.getSetting('Location'+str(num)+'Zone')
 	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
-	alert_data=get_data(url)
+	alerts=get_url_JSON(url)
 	#xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
-	for count in range (1, 10):
-		set_property('Alerts.%i.event'	% (count),'')	
-	
-	try:
-		alerts = json.loads(alert_data)
-	except:
-		xbmc.log('Fetching Weather Alert data failed' ,level=xbmc.LOGWARNING)
-		alerts = ''
-	if alerts and alerts != '' and 'features' in alerts and alerts['features']:
+	# if we have a validresponse then clear our current alerts
+	if alerts and alerts != '' and 'features' in alerts:
+		for count in range (1, 10):
+			clear_property('Alerts.%i.event' % (count))	
+	else:
+		xbmc.log('failed to get proper alert response %s' % url,level=xbmc.LOGERROR)
+		xbmc.log('%s' % alerts,level=xbmc.LOGINFO)
+		return
+		
+	if 'features' in alerts and alerts['features']:
 		data=alerts['features']
 		#xbmc.log('data: %s' % data,level=xbmc.LOGNOTICE)
-		set_property('Alerts.IsFetched'		, 'true')
-
+		set_property('Alerts.IsFetched'	, 'true')
 	else:
 		clear_property('Alerts.IsFetched')
-		xbmc.log('Failed to find alert data' ,level=xbmc.LOGNOTICE)
-		return None
+		xbmc.log('No current weather alerts from  %s' % url,level=xbmc.LOGNOTICE)
+		return
+	
 	for count, item in enumerate(data):
 		
 		thisdata=item['properties']
-		
-		
 		set_property('Alerts.%i.status'		% (count+1), str(thisdata['status']))	
 		set_property('Alerts.%i.messageType'	% (count+1), str(thisdata['messageType']))	
 		set_property('Alerts.%i.category'	% (count+1), str(thisdata['category']))	
@@ -1098,18 +1089,13 @@ def alerts(num):
 
 def hourlyforecast(num):
 		
-	forecastHourly_url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')		
+	url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')		
 		
-	hourly_data = get_data(forecastHourly_url)
-	#xbmc.log('hourly data: %s' % hourly_data,level=xbmc.LOGNOTICE)
-	try:
-		hourly_weather = json.loads(hourly_data)
-	except:
-		log('parsing hourly data failed')
-		hourly_weather = ''
+	hourly_weather = get_url_JSON(url)
 	if hourly_weather and hourly_weather != '' and 'properties' in hourly_weather:
 		data=hourly_weather['properties']
 	else:
+		xbmc.log('failed to find proper hourly weather from %s' % url,level=xbmc.LOGERROR)
 		return
 
 # extended properties
@@ -1361,8 +1347,8 @@ else:
 	if not locationLatLong == '':
 		alerts(num)
 		currentforecast(num)
+		##dailyforecastfallback(num)
 		dailyforecast(num)
-		###dailyforecastfallback(num)
 		hourlyforecast(num)
 	else:
 		log('no location provided')

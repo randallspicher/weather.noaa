@@ -8,9 +8,9 @@ import math
 import xbmc, xbmcgui, xbmcaddon
 
 
-ADDON           = xbmcaddon.Addon()
-ADDONID         = ADDON.getAddonInfo('id')
-LANGUAGE        = ADDON.getLocalizedString
+ADDON		= xbmcaddon.Addon()
+ADDONID		= ADDON.getAddonInfo('id')
+LANGUAGE	= ADDON.getLocalizedString
 
 WEATHER_WINDOW  = xbmcgui.Window(12600)
 DEBUG		= ADDON.getSetting('Debug')
@@ -52,8 +52,8 @@ LANG = { 'afrikaans'		: '',
 	'dutch'			: 'nl',
 	'english'		: 'en',
 	'english (us)'		: 'en',
-	'english (australia)'  : 'en',
-	'english (new zealand)' : 'en',
+	'english (australia)'	: 'en',
+	'english (new zealand)'	: 'en',
 	'esperanto'		: '',
 	'estonian'		: '',
 	'faroese'		: '',
@@ -78,14 +78,14 @@ LANG = { 'afrikaans'		: '',
 	'malayalam'		: '',
 	'maltese'		: '',
 	'maori'			: '',
-	'mongolian (mongolia)' : '',
+	'mongolian (mongolia)' 	: '',
 	'norwegian'		: '',
 	'ossetic'		: '',
-	'persian'              : '',
-	'persian (iran)'       : '',
-	'polish'               : 'pl',
-	'portuguese'           : 'pt',
-	'portuguese (brazil)'  : 'pt',
+	'persian'		: '',
+	'persian (iran)'	: '',
+	'polish'		: 'pl',
+	'portuguese'		: 'pt',
+	'portuguese (brazil)'	: 'pt',
 	'romanian'		: 'ro',
 	'russian'		: 'ru',
 	'serbian'		: '',
@@ -93,8 +93,8 @@ LANG = { 'afrikaans'		: '',
 	'sinhala'		: '',
 	'slovak'		: '',
 	'slovenian'		: '',
-	'spanish'	     : 'es',
-	'spanish (argentina)' : 'es',
+	'spanish'		: 'es',
+	'spanish (argentina)'	: 'es',
 	'spanish (mexico)'	: 'es',
 	'swedish'		: 'sv',
 	'tajik'			: '',
@@ -106,44 +106,44 @@ LANG = { 'afrikaans'		: '',
 	'uzbek'			: '',
 	'vietnamese'		: '',
 	'welsh'			: '' 
-        }
+		}
 
 WEATHER_CODES = {
-		'skc': '34', #'Fair/clear'
-		'few': '30', #'A few clouds'
-		'sct': '30', #'Partly cloudy'
-		'bkn': '28', #'Mostly cloudy'
-		'ovc': '26', #'Overcast'
-		'wind_skc': '24', #'Fair/clear and windy'
-		'wind_few': '26', #'A few clouds and windy'
-		'wind_sct': '26', #'Partly cloudy and windy'
-		'wind_bkn': '28', #'Mostly cloudy and windy'
-		'wind_ovc': '26', #'Overcast and windy'
-		'snow': '16', #'Snow'
-		'rain_snow': '5', #'Rain/snow'
-		'rain_sleet': '6', #'Rain/sleet'
-		'snow_sleet': '7', #'Rain/sleet'
-		'fzra': '10', #'Freezing rain'
-		'rain_fzra': '10', #'Rain/freezing rain'
-		'snow_fzra': '10', #'Freezing rain/snow'
-		'sleet': '18', #'Sleet'
-		'rain': '40', #'Rain'
-		'rain_showers': '11', #'Rain showers (high cloud cover)'
-		'rain_showers_hi': '12', #'Rain showers (low cloud cover)'
-		'tsra': '38', #'Thunderstorm (high cloud cover)'
-		'tsra_sct': '39', #'Thunderstorm (medium cloud cover)'
-		'tsra_hi': '38', #'Thunderstorm (low cloud cover)'
-		'tornado': '0', #'Tornado'
-		'hurricane': '2', #'Hurricane conditions'
-		'tropical_storm': '1', #'Tropical storm conditions'
-		'dust': '19', #'Dust'
-		'smoke': '22', #'Smoke'
-		'haze': '21', #'Haze'
-		'hot': '36', #'Hot'
-		'cold': '25', #'Cold'
-		'blizzard': '15', #'Blizzard'
-		'fog': '20', #'Fog/mist'
-		''	: 'na' }
+		'skc':		'34', #'Fair/clear'
+		'few':		'30', #'A few clouds'
+		'sct':		'30', #'Partly cloudy'
+		'bkn':		'28', #'Mostly cloudy'
+		'ovc':		'26', #'Overcast'
+		'wind_skc':	'24', #'Fair/clear and windy'
+		'wind_few':	'26', #'A few clouds and windy'
+		'wind_sct':	'26', #'Partly cloudy and windy'
+		'wind_bkn':	'28', #'Mostly cloudy and windy'
+		'wind_ovc':	'26', #'Overcast and windy'
+		'snow':		'16', #'Snow'
+		'rain_snow':	'5', #'Rain/snow'
+		'rain_sleet':	'6', #'Rain/sleet'
+		'snow_sleet':	'7', #'Rain/sleet'
+		'fzra':		'10', #'Freezing rain'
+		'rain_fzra':	'10', #'Rain/freezing rain'
+		'snow_fzra':	'10', #'Freezing rain/snow'
+		'sleet':	'18', #'Sleet'
+		'rain':		'40', #'Rain'
+		'rain_showers':	'11', #'Rain showers (high cloud cover)'
+		'rain_showers_hi':	'12', #'Rain showers (low cloud cover)'
+		'tsra':		'38', #'Thunderstorm (high cloud cover)'
+		'tsra_sct':	'39', #'Thunderstorm (medium cloud cover)'
+		'tsra_hi':	'38', #'Thunderstorm (low cloud cover)'
+		'tornado':	'0', #'Tornado'
+		'hurricane':	'2', #'Hurricane conditions'
+		'tropical_storm':	'1', #'Tropical storm conditions'
+		'dust':		'19', #'Dust'
+		'smoke':	'22', #'Smoke'
+		'haze':		'21', #'Haze'
+		'hot':		'36', #'Hot'
+		'cold':		'25', #'Cold'
+		'blizzard':	'15', #'Blizzard'
+		'fog':		'20', #'Fog/mist'
+		''		: 'na' }
 MONTH_NAME_LONG = { '01' : 21,
 		'02' : 22,
 		'03' : 23,
@@ -156,7 +156,7 @@ MONTH_NAME_LONG = { '01' : 21,
 		'10' : 30,
 		'11' : 31,
 		'12' : 32 
-                }
+				}
 
 MONTH_NAME_SHORT = { '01' : 51,
 		'02' : 52,
@@ -170,7 +170,7 @@ MONTH_NAME_SHORT = { '01' : 51,
 		'10' : 60,
 		'11' : 61,
 		'12' : 62 
-                }
+	}
 
 WEEK_DAY_LONG = { '0' : 17,
 		'1' : 11,
@@ -179,7 +179,7 @@ WEEK_DAY_LONG = { '0' : 17,
 		'4' : 14,
 		'5' : 15,
 		'6' : 16 
-                }
+	}
 
 WEEK_DAY_SHORT = { '0' : 47,
 		'1' : 41,
@@ -188,7 +188,7 @@ WEEK_DAY_SHORT = { '0' : 47,
 		'4' : 44,
 		'5' : 45,
 		'6' : 46 
-                }
+	}
 
 FORECAST = { 'thunderstorm with light rain': LANGUAGE(32201),
 		'thunderstorm with rain': LANGUAGE(32202),
@@ -266,7 +266,7 @@ FORECAST = { 'thunderstorm with light rain': LANGUAGE(32201),
 		'clear': LANGUAGE(32274),
 		'clouds': LANGUAGE(32275),
 		'rain': LANGUAGE(32276) 
-                }
+	}
 
 def SPEED(mps):
 	try:
@@ -429,3 +429,38 @@ def DEW_POINT(Tc=0, RH=93, ext=True, minRH=( 0, 0.075 )[ 0 ]):
 		return TEMP( DewPoint )
 	else:
 		return str(int(round(DewPoint)))
+
+
+## a couple functions from itertools
+def repeat_x(object_x, times=None):
+	# repeat(10, 3) --> 10 10 10
+	if times is None:
+		while True:
+			yield object_x
+	else:
+		for i in range(times):
+			yield object_x
+
+def zip_x(fill, *args):
+	# zip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
+	iterators = [iter(it) for it in args]
+	num_active = len(iterators)
+	if not num_active:
+		return
+	while True:
+		values = []
+		for i, it in enumerate(iterators):
+			try:
+				value = next(it)
+			except StopIteration:
+				num_active -= 1
+				if not num_active:
+					return
+				iterators[i] = repeat_x(fill)
+				value = fill
+			values.append(value)
+		yield tuple(values)
+
+
+
+
