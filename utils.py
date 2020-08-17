@@ -6,6 +6,7 @@ standard_library.install_aliases()
 
 import math
 import xbmc, xbmcgui, xbmcaddon
+import sys
 
 
 ADDON		= xbmcaddon.Addon()
@@ -460,6 +461,18 @@ def zip_x(fill, *args):
 				value = fill
 			values.append(value)
 		yield tuple(values)
+
+def encode_utf8(_string):
+	if sys.version_info < (3, 0):
+		return _string.encode('utf-8')
+	else:
+		return _string
+
+def decode_utf8(_string):
+	if sys.version_info < (3, 0):
+		return _string.decode('utf-8')
+	else:
+		return _string
 
 
 
