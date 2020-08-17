@@ -24,15 +24,16 @@ from dateutil.parser import parse
 #from builtins import None
 from utils import FtoC, MONTH_NAME_LONG, MONTH_NAME_SHORT, set_property, clear_property, log, WEEK_DAY_SHORT, WEEK_DAY_LONG
 from utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x
+from utils import decode_utf8, encode_utf8
 
 ADDON           = xbmcaddon.Addon()
 ADDONNAME       = ADDON.getAddonInfo('name')
 ADDONID         = ADDON.getAddonInfo('id')
-CWD             = ADDON.getAddonInfo('path').decode("utf-8")
+CWD             = decode_utf8(ADDON.getAddonInfo('path'))
 ADDONVERSION    = ADDON.getAddonInfo('version')
 LANGUAGE        = ADDON.getLocalizedString
-RESOURCE        = xbmc.translatePath( os.path.join( CWD, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
-PROFILE         = xbmc.translatePath(ADDON.getAddonInfo('profile')).decode('utf-8')
+RESOURCE        = decode_utf8(xbmc.translatePath(os.path.join( CWD, 'resources', 'lib' ).encode("utf-8") ))
+PROFILE         = decode_utf8(xbmc.translatePath(ADDON.getAddonInfo('profile')))
 
 sys.path.append(RESOURCE)
 
@@ -44,7 +45,7 @@ sys.path.append(RESOURCE)
 #STATION	= ADDON.getSetting('Station')
 #MAPS		= ADDON.getSetting('WMaps')
 #ZOOM		= str(int(ADDON.getSetting('Zoom')) + 2)
-WEATHER_ICON	= xbmc.translatePath('%s.png').decode("utf-8")
+WEATHER_ICON	= decode_utf8(xbmc.translatePath('%s.png'))
 DATEFORMAT	= xbmc.getRegion('dateshort')
 TIMEFORMAT	= xbmc.getRegion('meridiem')
 KODILANGUAGE	= xbmc.getLanguage().lower()
@@ -91,7 +92,7 @@ def get_initial(loc):
 	try:
 # 		req = urllib.request(url)
 		with urlopen(url) as response:
-			responsedata = response.read().decode('utf-8')
+			responsedata = decode_utf8(response.read())
 # 		req.close()
 #		responsedata=urlopen(url)
 	except:
@@ -114,7 +115,7 @@ def code_from_icon(icon):
 def get_url_JSON(url):
 	try:
 		xbmc.log('fetching url: %s' % url,level=xbmc.LOGDEBUG)
-		responsedata = urlopen(url, timeout=15).read().decode('utf-8')
+		responsedata = decode_utf8(urlopen(url, timeout=15).read())
 		try:
 			data = json.loads(responsedata)
 			log('data: %s' % data)
@@ -130,7 +131,7 @@ def get_url_JSON(url):
 def get_url_response(url):
 	try:
 		xbmc.log('fetching url: %s' % url,level=xbmc.LOGNOTICE)
-		responsedata = urlopen(url, timeout=15).read().decode('utf-8')
+		responsedata = decode_utf8(urlopen(url, timeout=15).read())
 		log('data: %s' % responsedata)
 		# Happy path, we found and parsed data
 		return responsedata
@@ -201,7 +202,7 @@ def geoip():
 	url='http://freegeoip.net/json/'
 	try:
 		with urlopen(url) as response:
-			responsedata = response.read().decode('utf-8')
+			responsedata = decode_utf8(response.read())
 
 	except:
 		responsedata = ''
