@@ -5,8 +5,8 @@ This Kodi plugin fetches weather reports from the National Weather Service https
 
 The best source for the lastest release is to pull from my repo, (using either the Matrix or the Leia version)
 
-https://github.com/randallspicher/randalls-repo/tree/Leia/repository.randalls.repo
-https://github.com/randallspicher/randalls-repo/tree/Matrix/repository.randalls.repo
+* https://github.com/randallspicher/randalls-repo/tree/Leia/repository.randalls.repo
+* https://github.com/randallspicher/randalls-repo/tree/Matrix/repository.randalls.repo
 
 
 Note weather.gov only provides weather forecasts for USA.  The forecasts can be extreemly localized (use the map-click feature from the weather.gov website to get the lattitude/longitude for the exact location you want the forecast for.)
