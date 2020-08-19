@@ -8,7 +8,6 @@ The best source for the lastest release is to pull from my repo, (using either t
 * https://github.com/randallspicher/randalls-repo/tree/Leia/repository.randalls.repo
 * https://github.com/randallspicher/randalls-repo/tree/Matrix/repository.randalls.repo
 
-
 Note weather.gov only provides weather forecasts for USA.  The forecasts can be extreemly localized (use the map-click feature from the weather.gov website to get the lattitude/longitude for the exact location you want the forecast for.)
 
 weather.gov provides seperate forecasts for Days and Nights, rather than just one per day. It also provides much more verbose forecasts.  It requires skin support to make use of the additional features.
