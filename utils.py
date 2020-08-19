@@ -23,7 +23,7 @@ def log(txt):
 		if isinstance (txt,str):
 			txt = decode_utf8(txt)
 		message = u'%s: %s' % (ADDONID, txt)
-		xbmc.log(msg=encode_utf8(message), level=xbmc.LOGNOTICE)
+		xbmc.log(msg=encode_utf8(message), level=xbmc.LOGDEBUG)
 
 def set_property(name, value):
 	WEATHER_WINDOW.setProperty(name, value)
