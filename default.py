@@ -217,7 +217,7 @@ def geoip():
 			city, country = data['city'], data['country_name']
 			return '%s, %s' % (city, country)
 
-def location(locstr,prefix):
+def fetchLocation(locstr,prefix):
 	log('searching for location: %s' % locstr)
 	query = get_initial(locstr)
 	log('location data: %s' % query)
@@ -234,8 +234,8 @@ def location(locstr,prefix):
 		city	=	data['properties']['relativeLocation']['properties']['city']
 		state =		data['properties']['relativeLocation']['properties']['state']
 		locationName=	city+" "+state
-		lat =		str(data['geometry']['coordinates'][1])
-		lon =		str(data['geometry']['coordinates'][0])
+#		lat =		str(data['geometry']['coordinates'][1])
+#		lon =		str(data['geometry']['coordinates'][0])
 #		locationLatLong=lat+','+lon
 
 
@@ -275,7 +275,7 @@ def location(locstr,prefix):
 			stations={}
 			stationlist=[]
 			
-			for count, item in enumerate(odata['features']):
+			for count,item in enumerate(odata['features']):
 				stationId=item['properties']['stationIdentifier']
 				stationName=item['properties']['name']
 				stationlist.append(stationName)
@@ -293,7 +293,7 @@ def location(locstr,prefix):
 			ADDON.setSetting(prefix+'StationName',stationlist[i])
 
 
-def dailyforecast(num):
+def fetchDaily(num):
 #
 #	if MAPS == 'true' and xbmc.getCondVisibility('System.HasAddon(script.openweathermap.maps)'):
 #		lat = float(eval(locationdeg)[0])
@@ -332,7 +332,7 @@ def dailyforecast(num):
 		xbmc.log('failed to find weather data from : %s' % url,level=xbmc.LOGERROR)
 		xbmc.log('%s' % daily_weather,level=xbmc.LOGERROR)
 		###return None
-		return dailyforecastfallback(num)
+		return fetchAltDaily(num)
 
 	for count, item in enumerate(data['periods']):
 		#code = str(item['weather'][0].get('id',''))
@@ -412,7 +412,7 @@ def dailyforecast(num):
 #		set_property('Daily.%i.DewPoint'	% (count+1), DEW_POINT(item['temp']['day'], item['humidity']) + TEMPUNIT)
 
 
-def dailyforecastfallback(num):
+def fetchAltDaily(num):
 
 	latlong=ADDON.getSetting('Location'+str(num)+"LatLong")
 	latitude =latlong.rsplit(',',1)[0]
@@ -425,7 +425,6 @@ def dailyforecastfallback(num):
 
 	####	[{"Title": t, "Score": s} for t, s in zip(titles, scores)]if daily_weather and daily_weather != '' and 'data' in daily_weather:
 	if daily_weather and daily_weather != '' and 'data' in daily_weather:
-
 
 		dailydata=[
 			{"startPeriodName": a,
@@ -464,7 +463,7 @@ def dailyforecastfallback(num):
 		icon = item['iconLink']
 
 		#https://api.weather.gov/icons/land/night/ovc?size=small
-		icon=icon.rsplit('?', 1)[0]
+		#icon=icon.rsplit('?', 1)[0]
 		code, rain=code_from_icon(icon)
 		#xbmc.log('icon %s' % icon,level=xbmc.LOGNOTICE)
 		#xbmc.log('code %s' % code,level=xbmc.LOGNOTICE)
@@ -535,7 +534,71 @@ def dailyforecastfallback(num):
 
 
 
-def currentforecast(num):
+	if daily_weather and daily_weather != '' and 'currentobservation' in daily_weather:
+		data=daily_weather['currentobservation']
+		#xbmc.log('data %s' % data,level=xbmc.LOGNOTICE)
+		icon = "http://forecast.weather.gov/newimages/large/%s" % data.get('Weatherimage')
+		code, rain=code_from_icon(icon)
+		weathercode = WEATHER_CODES.get(code)
+		set_property('Current.Location', data.get('name'))
+		set_property('Current.RemoteIcon',icon) 
+		set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
+		set_property('Current.FanartCode', weathercode)
+		set_property('Current.Condition', FORECAST.get(data.get('Weather'), data.get('Weather')))
+		set_property('Current.Humidity'	, data.get('Relh'))
+		set_property('Current.DewPoint', FtoC(data.get('Dewp')))
+				
+		try:
+			temp=data.get('Temp')
+			set_property('Current.Temperature',FtoC(temp)) # api values are in C
+		except:
+			set_property('Current.Temperature','') 
+
+		try:
+			#set_property('Current.Wind', str(int(round(data.get('Winds') * 3.6))))
+			set_property('Current.Wind', str(round(float(data.get('Winds'))*1.609298167)))
+		except:
+			set_property('Current.Wind','')
+
+		try:
+			set_property('Current.WindDirection', xbmc.getLocalizedString(WIND_DIR(int(data.get('Windd')))))
+			#set_property('Current.WindDirection', data.get('Windd'))
+		except:
+			set_property('Current.WindDirection', '')
+
+		try:
+			set_property('Current.WindGust'	, SPEED(float(data.get('Gust'))/2.237) + SPEEDUNIT)
+		except:
+			set_property('Current.WindGust'	, '')
+
+		#set_property('Current.Precipitation',	str(round(data.get('precipitationLast3Hours').get('value') *	0.04 ,2)) + ' in')
+		if (rain != ''):
+			set_property('Current.ChancePrecipitaion', str(rain)+'%');
+		else :
+			set_property('Current.ChancePrecipitaion'		, '');
+
+		#try:
+			set_property('Current.FeelsLike', FEELS_LIKE( FtoC(data.get('Temp')), float(data.get('Winds'))/2.237, int(data.get('Relh')), False))
+		#except:
+		#	set_property('Current.FeelsLike', '')
+
+
+#	#set_property('Current.UVIndex'			, '') # no idea how the api returns it, use data from current_props()
+# # extended properties
+#	if 'clouds' in data['last']:
+#		set_property('Current.Cloudiness'	, data['last']['clouds'][0].get('condition',''))
+
+		
+#	if 'main' in data['last'] and 'pressure' in data['last']['main']:
+#		if 'F' in TEMPUNIT:
+#			set_property('Current.Pressure'	, str(round(data['last']['main']['pressure'] / 33.86 ,2)) + ' in')
+#		else:
+#			set_property('Current.Pressure'	, str(data['last']['main']['pressure']) + ' mb')
+		
+
+
+
+def fetchCurrent(num):
 	station=ADDON.getSetting('Location'+str(num)+'Station')
 	url="https://api.weather.gov/stations/%s/observations/latest" %station	
 	current=get_url_JSON(url)
@@ -1060,7 +1123,7 @@ def currentforecast(num):
 
 #https://api.weather.gov/alerts/active/zone/CTZ006
 #https://api.weather.gov/alerts/active/zone/CTC009
-def alerts(num):
+def fetchWeatherAlerts(num):
 
 	a_zone=ADDON.getSetting('Location'+str(num)+'Zone')
 	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
@@ -1100,12 +1163,7 @@ def alerts(num):
 		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
 		set_property('Alerts.%i.response'	% (count+1), str(thisdata['response']))	
 
-	
-
-
-
-
-def hourlyforecast(num):
+def fetchHourly(num):
 		
 	url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')		
 		
@@ -1351,7 +1409,7 @@ if sys.argv[1].startswith('Location'):
 			text = keyboard.getText()
 	if text != '':
 		log("calling location with %s and %s" % (text, sys.argv[1]))
-		location(text,sys.argv[1])
+		fetchLocation(text,sys.argv[1])
 
 else:
 
@@ -1367,26 +1425,31 @@ else:
 	station=ADDON.getSetting('Location'+str(num)+'Station')
 	if station == '' :
 		log("calling location with %s" % (locationLatLong))
-		location(locationLatLong,'Location%s' % str(num))
+		fetchLocation(locationLatLong,'Location%s' % str(num))
 
 	refresh_locations()
 
 	#locationname = ADDON.getSetting('LocationName%s' % sys.argv[1])
 	locationLatLong = ADDON.getSetting('Location%s' % num)
-
+	sourcePref=ADDON.getSetting("DataSourcePreference")
 	#if (locationLatLong == '') and (sys.argv[1] != '1'):
 	#	num=1
 	#	locationLatLong = ADDON.getSetting('Location%sLatLong' % num)
 	#	log('trying location 1 instead')
 	if not locationLatLong == '':
-		alerts(num)
-		currentforecast(num)
-		##dailyforecastfallback(num)
-		dailyforecast(num)
-		hourlyforecast(num)
+		fetchWeatherAlerts(num)
+		if "forecast.weather.gov" == sourcePref:
+			fetchAltDaily(num)
+		else:
+			fetchCurrent(num)
+			#currentforecast(num)
+			fetchDaily(num)
+		fetchHourly(num)
 	else:
 		log('no location provided')
 		clear()
 	#refresh_locations()
 
 log('finished')
+
+

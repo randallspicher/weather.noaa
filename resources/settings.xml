@@ -5,7 +5,7 @@
 	<setting label="Location 1" type="lsep"/>
 		<setting id="Location1LatLong" label="Lat,Long" subsetting="true" type="text" default=""/>
 		<setting label="re-fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location1)" />
-		<setting id="Location1"  label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location1"  label="19075" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
 		<setting id="Location1StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location1Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
  		<setting id="Location1cwa"                type="text" visible="false" default=""/>
@@ -17,7 +17,7 @@
 	<setting label="Location 2" type="lsep"/>
 		<setting id="Location2LatLong"       label="Lat,Long" subsetting="true" type="text" default=""/>
 		<setting label="re-fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location2)" />
-		<setting id="Location2"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location2"   label="19075" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
 		<setting id="Location2StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location2Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
  		<setting id="Location2cwa"                type="text" visible="false" default=""/>
@@ -29,7 +29,7 @@
 	<setting label="Location 3" type="lsep"/>
 		<setting id="Location3LatLong"       label="Lat,Long" subsetting="true" type="text" default=""/>
 		<setting label="re-fetch" subsetting="true" type="action" enable="!eq(-1,)" action="RunScript($ID,Location3)" />
-		<setting id="Location3"   label="Name" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
+		<setting id="Location3"   label="19075" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
 		<setting id="Location3StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location3Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
  		<setting id="Location3cwa"                type="text" visible="false" default=""/>
@@ -38,4 +38,12 @@
 		<setting id="Location3forecastHourly_url" type="text" visible="false" default=""/>
 		<setting id="Location3forecast_url"       type="text" visible="false" default=""/>
 	</category>
+
+	<category label="16000">
+		<setting id="DataSourcePreference" label="Preferred Data Source" type="labelenum" values="api.weather.gov|forecast.weather.gov"/>
+		<setting id="Debug" label="14260" type="bool" default="false"/>
+	</category>
+
+	<setting label="Location 1" type="lsep"/>
+
 </settings>
