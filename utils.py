@@ -393,10 +393,14 @@ def KPHTOBFT(spd):
 		bft = ''
 	return bft
 
-def FEELS_LIKE(T, V=0, R=0, ext=True):
-	if T <= 10 and V >= 8:
+def FEELS_LIKE(Ts, Vs=0, Rs=0, ext=True):
+	T=float(Ts)
+	V=float(Vs)
+	R=float(Rs)
+	
+	if T <= 10.0 and V >= 8.0:
 		FeelsLike = WIND_CHILL(T, V)
-	elif T >= 26:
+	elif T >= 26.0:
 		FeelsLike = HEAT_INDEX(T, R)
 	else:
 		FeelsLike = T
@@ -406,19 +410,24 @@ def FEELS_LIKE(T, V=0, R=0, ext=True):
 		return str(int(round(FeelsLike)))
 
 #### thanks to FrostBox @ http://forum.kodi.tv/showthread.php?tid=114637&pid=937168#pid937168
-def WIND_CHILL(T, V):
+def WIND_CHILL(Ts, Vs):
+	T=float(Ts)
+	V=float(Vs)
+	
 	FeelsLike = ( 13.12 + ( 0.6215 * T ) - ( 11.37 * V**0.16 ) + ( 0.3965 * T * V**0.16 ) )
 	return FeelsLike
 
 ### https://en.wikipedia.org/wiki/Heat_index
-def HEAT_INDEX(T, R):
-	T = T * 1.8 + 32 # calaculation is done in F
+def HEAT_INDEX(Ts, Rs):
+	T=float(Ts)
+	R=float(Rs)
+	T = T * 1.8 + 32.0 # calaculation is done in F
 	FeelsLike = -42.379 + (2.04901523 * T) + (10.14333127 * R) + (-0.22475541 * T * R) + (-0.00683783 * T**2) + (-0.05481717 * R**2) + (0.00122874 * T**2 * R) + (0.00085282 * T * R**2) + (-0.00000199 * T**2 * R**2)
-	FeelsLike = (FeelsLike - 32) / 1.8 # convert to C
+	FeelsLike = (FeelsLike - 32.0) / 1.8 # convert to C
 	return FeelsLike
 
 #### thanks to FrostBox @ http://forum.kodi.tv/showthread.php?tid=114637&pid=937168#pid937168
-def DEW_POINT(Tc=0, RH=93, ext=True, minRH=( 0, 0.075 )[ 0 ]):
+def DEW_POINT(Tc=0, RH=93.0, ext=True, minRH=( 0, 0.075 )[ 0 ]):
 	Es = 6.11 * 10.0**( 7.5 * Tc / ( 237.7 + Tc ) )
 	RH = RH or minRH
 	E = ( RH * Es ) / 100

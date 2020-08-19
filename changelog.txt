@@ -1,3 +1,7 @@
+v1.0.6
+- several fixes
+- allow switching between forecast.weather.gov and api.weather.gov as primary source for current and daily data
+
 v1.0.2
 - handle missing data in fallback forecast bettter
 
