@@ -21,9 +21,9 @@ SPEEDUNIT	= xbmc.getRegion('speedunit')
 def log(txt):
 	if DEBUG == 'true':
 		if isinstance (txt,str):
-			txt = txt.decode("utf-8")
+			txt = decode_utf8(txt)
 		message = u'%s: %s' % (ADDONID, txt)
-		xbmc.log(msg=message.encode("utf-8"), level=xbmc.LOGDEBUG)
+		xbmc.log(msg=encode_utf8(message), level=xbmc.LOGNOTICE)
 
 def set_property(name, value):
 	WEATHER_WINDOW.setProperty(name, value)

@@ -232,7 +232,9 @@ def location(locstr,prefix):
 		locationName=	city+" "+state
 		lat =		str(data['geometry']['coordinates'][1])
 		lon =		str(data['geometry']['coordinates'][0])
-		locationLatLong=lat+','+lon
+#		locationLatLong=lat+','+lon
+
+
 
 		cwa=			data['properties']['cwa']
 		#forecastZone=		data['properties']['forecastZone']
@@ -242,13 +244,24 @@ def location(locstr,prefix):
 		forecastHourly_url =	data['properties']['forecastHourly']
 		forecast_url =		data['properties']['forecast']
 		stations_url =		data['properties']['observationStations']
+
+
+		log("city		= %s" % city)
+		log("state		= %s" % state)
+		log("cwa 		= %s" % cwa)
+		log("forecastZone 	= %s" % forecastZone)	
+		log("zone		= %s" % zone)
+		log("forecastGridData_url=%s" % forecastGridData_url)
+		log("forecastHourly_url = %s" % forecastHourly_url)
+		log("forecast_url 	= %s" % forecast_url)
+		log("stations_url 	= %s" % stations_url)
 		
 		
-		ADDON.setSetting(prefix+'Name',			locationName)
-		ADDON.setSetting(prefix,			locationLatLong)
-		ADDON.setSetting(prefix+'cwa',				cwa)
-		ADDON.setSetting(prefix+'Zone',			zone)
-		ADDON.setSetting(prefix+'forecastGrid_url',	forecastGridData_url)
+		ADDON.setSetting(prefix+'Name', locationName)
+		#ADDON.setSetting(prefix, locationLatLong)
+		ADDON.setSetting(prefix+'cwa',	cwa)
+		ADDON.setSetting(prefix+'Zone',	zone)
+		ADDON.setSetting(prefix+'forecastGrid_url', forecastGridData_url)
 		ADDON.setSetting(prefix+'forecastHourly_url', forecastHourly_url)
 		ADDON.setSetting(prefix+'forecast_url',	forecast_url)
 		#ADDON.setSetting(prefix+'radarStation',	radarStation)
@@ -1335,11 +1348,25 @@ if sys.argv[1].startswith('Location'):
 	if text != '':
 		log("calling location with %s and %s" % (text, sys.argv[1]))
 		location(text,sys.argv[1])
-		
+
 else:
 
-	#locationname = ADDON.getSetting('LocationName%s' % sys.argv[1])
 	num=sys.argv[1]
+	locationLatLong = ADDON.getSetting('Location%s' % num)
+	#if locationLatLong == '' :
+	#	keyboard = xbmc.Keyboard('', 'Enter Latitude,Longitude', False)
+	#	keyboard.doModal()
+	#	if (keyboard.isConfirmed() and keyboard.getText() != ''):
+	#		locationLatLong = keyboard.getText()
+
+	
+	station=ADDON.getSetting('Location'+str(num)+'Station')
+	if station == '' :
+		log("calling location with %s" % (locationLatLong))
+		location(locationLatLong,'Location%s' % str(num))
+
+
+	#locationname = ADDON.getSetting('LocationName%s' % sys.argv[1])
 	locationLatLong = ADDON.getSetting('Location%s' % num)
 	if (locationLatLong == '') and (sys.argv[1] != '1'):
 		num=1
