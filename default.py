@@ -74,14 +74,18 @@ def clear():
 def refresh_locations():
 	locations = 0
 	for count in range(1, 6):
+		loc = ADDON.getSetting('Location%sLatLong' % count)
 		loc_name = ADDON.getSetting('Location%s' % count)
-		if loc_name != '':
+		if loc != '':
 			locations += 1
-		else:
-			ADDON.setSetting('Location%sID' % count, '')
-			ADDON.setSetting('Location%sdeg' % count, '')
+			if loc_name == '':
+				loc_name = 'Location %s' % count
+			set_property('Location%s' % count, loc_name)
 
-		set_property('Location%s' % count, loc_name)
+		else:
+			set_property('Location%s' % count, '')
+
+		#set_property('Location%s' % count, loc_name)
 
 	set_property('Locations', str(locations))
 	log('available locations: %s' % str(locations))
@@ -257,7 +261,7 @@ def location(locstr,prefix):
 		log("stations_url 	= %s" % stations_url)
 		
 		
-		ADDON.setSetting(prefix+'Name', locationName)
+		ADDON.setSetting(prefix, locationName)
 		#ADDON.setSetting(prefix, locationLatLong)
 		ADDON.setSetting(prefix+'cwa',	cwa)
 		ADDON.setSetting(prefix+'Zone',	zone)
@@ -410,7 +414,7 @@ def dailyforecast(num):
 
 def dailyforecastfallback(num):
 
-	latlong=ADDON.getSetting('Location'+str(num))
+	latlong=ADDON.getSetting('Location'+str(num)+"LatLong")
 	latitude =latlong.rsplit(',',1)[0]
 	longitude=latlong.rsplit(',',1)[1]
 
@@ -1339,7 +1343,7 @@ set_property('WeatherProviderLogo', xbmc.translatePath(os.path.join(CWD, 'resour
 
 if sys.argv[1].startswith('Location'):
 	log("argument: %s" % (sys.argv[1]))
-	text = ADDON.getSetting(sys.argv[1])
+	text = ADDON.getSetting(sys.argv[1]+"LatLong")
 	if text == '' :
 		keyboard = xbmc.Keyboard('', 'Enter Latitude,Longitude', False)
 		keyboard.doModal()
@@ -1352,7 +1356,7 @@ if sys.argv[1].startswith('Location'):
 else:
 
 	num=sys.argv[1]
-	locationLatLong = ADDON.getSetting('Location%s' % num)
+	locationLatLong = ADDON.getSetting('Location%sLatLong' % num)
 	#if locationLatLong == '' :
 	#	keyboard = xbmc.Keyboard('', 'Enter Latitude,Longitude', False)
 	#	keyboard.doModal()
@@ -1365,13 +1369,15 @@ else:
 		log("calling location with %s" % (locationLatLong))
 		location(locationLatLong,'Location%s' % str(num))
 
+	refresh_locations()
 
 	#locationname = ADDON.getSetting('LocationName%s' % sys.argv[1])
 	locationLatLong = ADDON.getSetting('Location%s' % num)
-	if (locationLatLong == '') and (sys.argv[1] != '1'):
-		num=1
-		locationLatLong = ADDON.getSetting('Location%s' % num)
-		log('trying location 1 instead')
+
+	#if (locationLatLong == '') and (sys.argv[1] != '1'):
+	#	num=1
+	#	locationLatLong = ADDON.getSetting('Location%sLatLong' % num)
+	#	log('trying location 1 instead')
 	if not locationLatLong == '':
 		alerts(num)
 		currentforecast(num)
