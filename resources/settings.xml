@@ -8,8 +8,12 @@
 		<setting id="Location1"  label="19075" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
 		<setting id="Location1StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location1Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
- 		<setting id="Location1cwa"                type="text" visible="false" default=""/>
-		<setting id="Location1Zone"               type="text" visible="false" default=""/>
+ 		<setting id="Location1radarrStation" type="text" visible="false" default=""/>
+ 		<setting id="Location1cwa"           type="text" visible="false" default=""/>
+ 		<setting id="Location1gridX"         type="text" visible="false" default=""/>
+ 		<setting id="Location1gridY"         type="text" visible="false" default=""/>
+		<setting id="Location1Zone"          type="text" visible="false" default=""/>
+		<setting id="Location1County"        type="text" visible="false" default=""/>
 		<setting id="Location1forecastGrid_url"   type="text" visible="false" default=""/>
 		<setting id="Location1forecastHourly_url" type="text" visible="false" default=""/>
 		<setting id="Location1forecast_url"       type="text" visible="false" default=""/>
@@ -20,8 +24,12 @@
 		<setting id="Location2"   label="19075" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
 		<setting id="Location2StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location2Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
+ 		<setting id="Location2radarrStation" type="text" visible="false" default=""/>
  		<setting id="Location2cwa"                type="text" visible="false" default=""/>
+ 		<setting id="Location2gridX"                type="text" visible="false" default=""/>
+ 		<setting id="Location2gridY"                type="text" visible="false" default=""/>
 		<setting id="Location2Zone"               type="text" visible="false" default=""/>
+		<setting id="Location2County"               type="text" visible="false" default=""/>
 		<setting id="Location2forecastGrid_url"   type="text" visible="false" default=""/>
 		<setting id="Location2forecastHourly_url" type="text" visible="false" default=""/>
 		<setting id="Location2forecast_url"       type="text" visible="false" default=""/>
@@ -32,8 +40,12 @@
 		<setting id="Location3"   label="19075" subsetting="true" type="text" enable="!eq(-2,)" default=""/>
 		<setting id="Location3StationName" label="Station Name" subsetting="true" type="text" enable="!eq(0,)" default=""/>
 		<setting id="Location3Station" label="Station" subsetting="true" type="text" enable="!eq(0,)" default=""/>
+ 		<setting id="Location3radarrStation" type="text" visible="false" default=""/>
  		<setting id="Location3cwa"                type="text" visible="false" default=""/>
+ 		<setting id="Location3gridX"                type="text" visible="false" default=""/>
+ 		<setting id="Location3gridY"                type="text" visible="false" default=""/>
 		<setting id="Location3Zone"               type="text" visible="false" default=""/>
+		<setting id="Location3County"               type="text" visible="false" default=""/>
 		<setting id="Location3forecastGrid_url"   type="text" visible="false" default=""/>
 		<setting id="Location3forecastHourly_url" type="text" visible="false" default=""/>
 		<setting id="Location3forecast_url"       type="text" visible="false" default=""/>

@@ -231,45 +231,49 @@ def fetchLocation(locstr,prefix):
 		return None
 	if data != '' and 'properties' in data:
 		#radarStation = data['properties']['radarStation']
+
 		city	=	data['properties']['relativeLocation']['properties']['city']
 		state =		data['properties']['relativeLocation']['properties']['state']
-		locationName=	city+" "+state
+		locationName=	city+", "+state
+		ADDON.setSetting(prefix, locationName)
 #		lat =		str(data['geometry']['coordinates'][1])
 #		lon =		str(data['geometry']['coordinates'][0])
 #		locationLatLong=lat+','+lon
-
-
-
-		cwa=			data['properties']['cwa']
-		#forecastZone=		data['properties']['forecastZone']
-		forecastZone=		data['properties']['county']
-		zone=forecastZone.rsplit('/',1)[1]
-		forecastGridData_url =	data['properties']['forecastGridData']
-		forecastHourly_url =	data['properties']['forecastHourly']
-		forecast_url =		data['properties']['forecast']
-		stations_url =		data['properties']['observationStations']
-
-
-		log("city		= %s" % city)
-		log("state		= %s" % state)
-		log("cwa 		= %s" % cwa)
-		log("forecastZone 	= %s" % forecastZone)	
-		log("zone		= %s" % zone)
-		log("forecastGridData_url=%s" % forecastGridData_url)
-		log("forecastHourly_url = %s" % forecastHourly_url)
-		log("forecast_url 	= %s" % forecast_url)
-		log("stations_url 	= %s" % stations_url)
-		
-		
-		ADDON.setSetting(prefix, locationName)
 		#ADDON.setSetting(prefix, locationLatLong)
+
+		gridX=data['properties']['gridX']
+		ADDON.setSetting(prefix+'gridX',str(gridX))
+		
+		gridY=data['properties']['gridY']
+		ADDON.setSetting(prefix+'gridY',str(gridY))
+		
+		cwa=data['properties']['cwa']
 		ADDON.setSetting(prefix+'cwa',	cwa)
+
+		forecastZone=data['properties']['forecastZone']
+		zone=forecastZone.rsplit('/',1)[1]
 		ADDON.setSetting(prefix+'Zone',	zone)
+
+		forecastCounty=data['properties']['county']
+		county=forecastCounty.rsplit('/',1)[1]
+		ADDON.setSetting(prefix+'County', county)
+		
+		forecastGridData_url =	data['properties']['forecastGridData']
 		ADDON.setSetting(prefix+'forecastGrid_url', forecastGridData_url)
+
+		forecastHourly_url =	data['properties']['forecastHourly']
 		ADDON.setSetting(prefix+'forecastHourly_url', forecastHourly_url)
+
+		forecast_url =		data['properties']['forecast']
 		ADDON.setSetting(prefix+'forecast_url',	forecast_url)
-		#ADDON.setSetting(prefix+'radarStation',	radarStation)
+
+		radarStation =		data['properties']['radarStation']
+		ADDON.setSetting(prefix+'radarStation',	radarStation)
+		
+
+		stations_url =		data['properties']['observationStations']
 		odata = get_url_JSON(stations_url)
+
 #		log('location data: %s' % query)
 		if odata != '' and 'features' in odata:
 			stations={}
