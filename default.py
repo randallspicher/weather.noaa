@@ -634,7 +634,8 @@ def fetchCurrent(num):
 	except:
 		set_property('Current.Temperature','') 
 	try:
-		set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value') * 3.6))))
+		set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value')))))
+		#set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value') * 3.6))))
 	except:
 		set_property('Current.Wind','')
 
@@ -650,14 +651,15 @@ def fetchCurrent(num):
 		set_property('Current.ChancePrecipitaion'		, '');
 
 	try:
-		set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), data.get('windSpeed').get('value') * 3.6, data.get('relativeHumidity').get('value'), False))
+		set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(data.get('windSpeed').get('value'))/3.6, data.get('relativeHumidity').get('value'), False))
 	except:
 		set_property('Current.FeelsLike', '')
 
 #	if 'calc' in data['last'] and 'dewpoint' in data['last']['calc']:
 #		if data['last']['main']['temp'] - data['last']['calc']['dewpoint'] > 100:
 	try:
-		set_property('Current.DewPoint', str(int(round(data.get('relativeHumidity').get('value'))))) # api values are in C
+		temp=int(round(data.get('dewpoint').get('value',0)))
+		set_property('Current.DewPoint', str(temp)) # api values are in C
 	except:
 		set_property('Current.DewPoint', '') 
 
@@ -675,7 +677,7 @@ def fetchCurrent(num):
 #	if 'wind' in data['last'] and 'gust' in data['last']['wind']:
 
 	try:
-		set_property('Current.WindGust'	, SPEED(data.get('windGust').get('value',0)) + SPEEDUNIT)
+		set_property('Current.WindGust'	, SPEED(float(data.get('windGust').get('value',0))/3.6) + SPEEDUNIT)
 	except:
 		set_property('Current.WindGust'	, '')
 		
