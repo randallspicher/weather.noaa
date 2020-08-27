@@ -1131,7 +1131,8 @@ def fetchCurrent(num):
 #https://api.weather.gov/alerts/active/zone/CTC009
 def fetchWeatherAlerts(num):
 
-	a_zone=ADDON.getSetting('Location'+str(num)+'Zone')
+	#a_zone=ADDON.getSetting('Location'+str(num)+'Zone')
+	a_zone=ADDON.getSetting('Location'+str(num)+'County')
 	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
 	alerts=get_url_JSON(url)
 	#xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
