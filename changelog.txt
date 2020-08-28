@@ -1,3 +1,6 @@
+v1.0.7
+- add in a couple weather radar maps
+
 v1.0.6
 - several fixes
 - allow switching between forecast.weather.gov and api.weather.gov as primary source for current and daily data

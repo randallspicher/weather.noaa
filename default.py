@@ -18,7 +18,7 @@ import json
 #from urllib import request
 
 
-#from datetime import datetime
+from datetime import datetime
 #from dateutil import tz
 from dateutil.parser import parse
 #from builtins import None
@@ -231,45 +231,49 @@ def fetchLocation(locstr,prefix):
 		return None
 	if data != '' and 'properties' in data:
 		#radarStation = data['properties']['radarStation']
+
 		city	=	data['properties']['relativeLocation']['properties']['city']
 		state =		data['properties']['relativeLocation']['properties']['state']
-		locationName=	city+" "+state
+		locationName=	city+", "+state
+		ADDON.setSetting(prefix, locationName)
 #		lat =		str(data['geometry']['coordinates'][1])
 #		lon =		str(data['geometry']['coordinates'][0])
 #		locationLatLong=lat+','+lon
-
-
-
-		cwa=			data['properties']['cwa']
-		#forecastZone=		data['properties']['forecastZone']
-		forecastZone=		data['properties']['county']
-		zone=forecastZone.rsplit('/',1)[1]
-		forecastGridData_url =	data['properties']['forecastGridData']
-		forecastHourly_url =	data['properties']['forecastHourly']
-		forecast_url =		data['properties']['forecast']
-		stations_url =		data['properties']['observationStations']
-
-
-		log("city		= %s" % city)
-		log("state		= %s" % state)
-		log("cwa 		= %s" % cwa)
-		log("forecastZone 	= %s" % forecastZone)	
-		log("zone		= %s" % zone)
-		log("forecastGridData_url=%s" % forecastGridData_url)
-		log("forecastHourly_url = %s" % forecastHourly_url)
-		log("forecast_url 	= %s" % forecast_url)
-		log("stations_url 	= %s" % stations_url)
-		
-		
-		ADDON.setSetting(prefix, locationName)
 		#ADDON.setSetting(prefix, locationLatLong)
+
+		gridX=data['properties']['gridX']
+		ADDON.setSetting(prefix+'gridX',str(gridX))
+		
+		gridY=data['properties']['gridY']
+		ADDON.setSetting(prefix+'gridY',str(gridY))
+		
+		cwa=data['properties']['cwa']
 		ADDON.setSetting(prefix+'cwa',	cwa)
+
+		forecastZone=data['properties']['forecastZone']
+		zone=forecastZone.rsplit('/',1)[1]
 		ADDON.setSetting(prefix+'Zone',	zone)
+
+		forecastCounty=data['properties']['county']
+		county=forecastCounty.rsplit('/',1)[1]
+		ADDON.setSetting(prefix+'County', county)
+		
+		forecastGridData_url =	data['properties']['forecastGridData']
 		ADDON.setSetting(prefix+'forecastGrid_url', forecastGridData_url)
+
+		forecastHourly_url =	data['properties']['forecastHourly']
 		ADDON.setSetting(prefix+'forecastHourly_url', forecastHourly_url)
+
+		forecast_url =		data['properties']['forecast']
 		ADDON.setSetting(prefix+'forecast_url',	forecast_url)
-		#ADDON.setSetting(prefix+'radarStation',	radarStation)
+
+		radarStation =		data['properties']['radarStation']
+		ADDON.setSetting(prefix+'radarStation',	radarStation)
+		
+
+		stations_url =		data['properties']['observationStations']
 		odata = get_url_JSON(stations_url)
+
 #		log('location data: %s' % query)
 		if odata != '' and 'features' in odata:
 			stations={}
@@ -634,7 +638,8 @@ def fetchCurrent(num):
 	except:
 		set_property('Current.Temperature','') 
 	try:
-		set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value') * 3.6))))
+		set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value')))))
+		#set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value') * 3.6))))
 	except:
 		set_property('Current.Wind','')
 
@@ -650,14 +655,15 @@ def fetchCurrent(num):
 		set_property('Current.ChancePrecipitaion'		, '');
 
 	try:
-		set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), data.get('windSpeed').get('value') * 3.6, data.get('relativeHumidity').get('value'), False))
+		set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(data.get('windSpeed').get('value'))/3.6, data.get('relativeHumidity').get('value'), False))
 	except:
 		set_property('Current.FeelsLike', '')
 
 #	if 'calc' in data['last'] and 'dewpoint' in data['last']['calc']:
 #		if data['last']['main']['temp'] - data['last']['calc']['dewpoint'] > 100:
 	try:
-		set_property('Current.DewPoint', str(int(round(data.get('relativeHumidity').get('value'))))) # api values are in C
+		temp=int(round(data.get('dewpoint').get('value',0)))
+		set_property('Current.DewPoint', str(temp)) # api values are in C
 	except:
 		set_property('Current.DewPoint', '') 
 
@@ -675,7 +681,7 @@ def fetchCurrent(num):
 #	if 'wind' in data['last'] and 'gust' in data['last']['wind']:
 
 	try:
-		set_property('Current.WindGust'	, SPEED(data.get('windGust').get('value',0)) + SPEEDUNIT)
+		set_property('Current.WindGust'	, SPEED(float(data.get('windGust').get('value',0))/3.6) + SPEEDUNIT)
 	except:
 		set_property('Current.WindGust'	, '')
 		
@@ -1125,7 +1131,8 @@ def fetchCurrent(num):
 #https://api.weather.gov/alerts/active/zone/CTC009
 def fetchWeatherAlerts(num):
 
-	a_zone=ADDON.getSetting('Location'+str(num)+'Zone')
+	#a_zone=ADDON.getSetting('Location'+str(num)+'Zone')
+	a_zone=ADDON.getSetting('Location'+str(num)+'County')
 	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
 	alerts=get_url_JSON(url)
 	#xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
@@ -1160,7 +1167,6 @@ def fetchWeatherAlerts(num):
 		set_property('Alerts.%i.headline'	% (count+1), str(thisdata['headline']))	
 		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
 		set_property('Alerts.%i.instruction'	% (count+1), str(thisdata['instruction']))	
-		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
 		set_property('Alerts.%i.response'	% (count+1), str(thisdata['response']))	
 
 def fetchHourly(num):
@@ -1445,6 +1451,22 @@ else:
 			#currentforecast(num)
 			fetchDaily(num)
 		fetchHourly(num)
+		Station=ADDON.getSetting('Location%scwa' % num)
+		
+		set_property('Map.IsFetched', 'true')
+#		url="https://radar.weather.gov/ridge/lite/NCR/%s_0.png?d=%s" % (Station,str(time.time()))
+#		xbmc.log('radar url:  %s' % url,level=xbmc.LOGNOTICE)
+
+		#KODI will not cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
+		set_property('Map.%i.Area' % 1, "https://radar.weather.gov/ridge/lite/NCR/%s_0.png?t=%s" % (Station,str(time.time())))
+#		set_property('Map.%i.Layer' % 1, '')
+		set_property('Map.%i.Heading' % 1, 'Radar')
+#		set_property('Map.%i.Legend' % 1, '')
+
+		set_property('Map.%i.Area' % 2, "https://radar.weather.gov/ridge/lite/N0Z/%s_0.png?t=%s" % (Station,str(time.time())))
+		set_property('Map.%i.Heading' % 2, 'Long Range Radar')
+
+	
 	else:
 		log('no location provided')
 		clear()
