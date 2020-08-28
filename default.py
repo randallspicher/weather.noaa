@@ -18,7 +18,7 @@ import json
 #from urllib import request
 
 
-#from datetime import datetime
+from datetime import datetime
 #from dateutil import tz
 from dateutil.parser import parse
 #from builtins import None
@@ -1167,7 +1167,6 @@ def fetchWeatherAlerts(num):
 		set_property('Alerts.%i.headline'	% (count+1), str(thisdata['headline']))	
 		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
 		set_property('Alerts.%i.instruction'	% (count+1), str(thisdata['instruction']))	
-		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
 		set_property('Alerts.%i.response'	% (count+1), str(thisdata['response']))	
 
 def fetchHourly(num):
@@ -1452,6 +1451,22 @@ else:
 			#currentforecast(num)
 			fetchDaily(num)
 		fetchHourly(num)
+		Station=ADDON.getSetting('Location%scwa' % num)
+		
+		set_property('Map.IsFetched', 'true')
+#		url="https://radar.weather.gov/ridge/lite/NCR/%s_0.png?d=%s" % (Station,str(time.time()))
+#		xbmc.log('radar url:  %s' % url,level=xbmc.LOGNOTICE)
+
+		#KODI will not cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
+		set_property('Map.%i.Area' % 1, "https://radar.weather.gov/ridge/lite/NCR/%s_0.png?t=%s" % (Station,str(time.time())))
+#		set_property('Map.%i.Layer' % 1, '')
+		set_property('Map.%i.Heading' % 1, 'Radar')
+#		set_property('Map.%i.Legend' % 1, '')
+
+		set_property('Map.%i.Area' % 2, "https://radar.weather.gov/ridge/lite/N0Z/%s_0.png?t=%s" % (Station,str(time.time())))
+		set_property('Map.%i.Heading' % 2, 'Long Range Radar')
+
+	
 	else:
 		log('no location provided')
 		clear()
