@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: OpenWeatherMap Extended
-# Addon id: weather.openweathermap.extended
-# Addon Provider: ronie
+# Addon Name: Weather.NOAA
+# Addon id: weather.noaa
+# Addon Provider: randall
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -122,23 +122,6 @@ msgstr "אפשר יומן רישום"
 msgctxt "#32130"
 msgid "Download weather maps"
 msgstr "הורד מפות מזג אויר"
-
-msgctxt "#32131"
-msgid "Get an api key at: http://openweathermap.org/appid"
-msgstr "השג מפתח API ב: http://openweathermap.org/appid"
-
-msgctxt "#32132"
-msgid "and enter it in the addon settings,"
-msgstr "והכנס אותו בהגדרות ההרחבה,"
-
-msgctxt "#32133"
-msgid "or disable this addon."
-msgstr "או השבת את ההרחבה."
-
-# empty strings with id 32134
-msgctxt "#32135"
-msgid "To use maps, get an api key at: http://openweathermap.org/appid"
-msgstr "כדי להשתמש במפה, השג מפתח API ב: http://openweathermap.org/appid"
 
 # empty strings from id 32136 to 32200
 msgctxt "#32201"

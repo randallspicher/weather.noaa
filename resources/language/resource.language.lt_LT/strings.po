@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: OpenWeatherMap Extended
-# Addon id: weather.openweathermap.extended
-# Addon Provider: ronie
+# Addon Name: Weather.NOAA
+# Addon id: weather.noaa
+# Addon Provider: randall
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -112,21 +112,6 @@ msgctxt "#32130"
 msgid "Download weather maps"
 msgstr "Atsisiųsti orų žemėlapius"
 
-msgctxt "#32131"
-msgid "Get an api key at: http://openweathermap.org/appid"
-msgstr "Gaukite API raktą čia: http://openweathermap.org/appid"
-
-msgctxt "#32132"
-msgid "and enter it in the addon settings,"
-msgstr "ir įveskite jį priedo nustatymuose"
-
-msgctxt "#32133"
-msgid "or disable this addon."
-msgstr "arba išjunkite šį priedą."
-
-msgctxt "#32134"
-msgid "Recommended: get an api key at: http://openweathermap.org/appid"
-msgstr "Rekomenduojama gauti API raktą iš http://openweathermap.org/appid"
 
 #empty strings from id 32135 to 32200
 
