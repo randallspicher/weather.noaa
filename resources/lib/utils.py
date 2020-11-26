@@ -71,7 +71,7 @@ def get_url_JSON(url):
 
 def get_url_response(url):
 	try:
-		xbmc.log('fetching url: %s' % url,level=xbmc.LOGNOTICE)
+		xbmc.log('fetching url: %s' % url,level=xbmc.LOGDEBUG)
 		timeout = 10
 		socket.setdefaulttimeout(timeout)
 		# this call to urllib.request.urlopen now uses the default timeout
@@ -288,7 +288,7 @@ def SPEED(mps):
 
 
 def FtoC(Fahrenheit):
-	#xbmc.log('Fahrenheit %s' % Fahrenheit,level=xbmc.LOGNOTICE)
+	#xbmc.log('Fahrenheit %s' % Fahrenheit,level=xbmc.LOGDEBUG)
 
 	Celsius = (float(Fahrenheit) - 32.0) * 5.0/9.0 
 	return str(int(round(Celsius))) 

@@ -160,13 +160,13 @@ def fetchLocation(locstr,prefix):
 				stationlist.append(stationName)
 				stations[stationName]=stationId
 
-			#xbmc.log('stationlist: %s' % stationlist,level=xbmc.LOGNOTICE)
-			#xbmc.log('stations: %s' % stations,level=xbmc.LOGNOTICE)
+			#xbmc.log('stationlist: %s' % stationlist,level=xbmc.LOGINFO)
+			#xbmc.log('stations: %s' % stations,level=xbmc.LOGINFO)
 
 			dialog = xbmcgui.Dialog()
 			i=dialog.select(LANGUAGE(32331),stationlist)
-			#xbmc.log('selected station name: %s' % stationlist[i],level=xbmc.LOGNOTICE)
-			#xbmc.log('selected station: %s' % stations[stationlist[i]],level=xbmc.LOGNOTICE)
+			#xbmc.log('selected station name: %s' % stationlist[i],level=xbmc.LOGINFO)
+			#xbmc.log('selected station: %s' % stations[stationlist[i]],level=xbmc.LOGINFO)
 
 			ADDON.setSetting(prefix+'Station',stations[stationlist[i]])
 			ADDON.setSetting(prefix+'StationName',stationlist[i])
@@ -200,15 +200,15 @@ def fetchDaily(num):
 		#https://api.weather.gov/icons/land/night/ovc?size=small
 		icon=icon.rsplit('?', 1)[0]
 		code, rain=code_from_icon(icon)
-		#xbmc.log('icon %s' % icon,level=xbmc.LOGNOTICE)
-		#xbmc.log('code %s' % code,level=xbmc.LOGNOTICE)
+		#xbmc.log('icon %s' % icon,level=xbmc.LOGINFO)
+		#xbmc.log('code %s' % code,level=xbmc.LOGINFO)
 
 		weathercode = WEATHER_CODES.get(code)
 		starttime=item['startTime']
 		startstamp=get_timestamp(starttime)
 		set_property('Day%i.isDaytime'		% (count),str(item['isDaytime']))
 		set_property('Day%i.Title'		% (count), item['name'])
-		#xbmc.log('temperature %s' % item['temperature'],level=xbmc.LOGNOTICE)
+		#xbmc.log('temperature %s' % item['temperature'],level=xbmc.LOGINFO)
 
 		if item['isDaytime'] == True:
 			set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
@@ -332,8 +332,8 @@ def fetchAltDaily(num):
 		#https://api.weather.gov/icons/land/night/ovc?size=small
 		#icon=icon.rsplit('?', 1)[0]
 		code, rain=code_from_icon(icon)
-		#xbmc.log('icon %s' % icon,level=xbmc.LOGNOTICE)
-		#xbmc.log('code %s' % code,level=xbmc.LOGNOTICE)
+		#xbmc.log('icon %s' % icon,level=xbmc.LOGINFO)
+		#xbmc.log('code %s' % code,level=xbmc.LOGINFO)
 		weathercode = WEATHER_CODES.get(code)
 
 		starttime=item['startValidTime']
@@ -404,7 +404,7 @@ def fetchAltDaily(num):
 
 	if daily_weather and daily_weather != '' and 'currentobservation' in daily_weather:
 		data=daily_weather['currentobservation']
-		#xbmc.log('data %s' % data,level=xbmc.LOGNOTICE)
+		#xbmc.log('data %s' % data,level=xbmc.LOGINFO)
 		icon = "http://forecast.weather.gov/newimages/large/%s" % data.get('Weatherimage')
 		code, rain=code_from_icon(icon)
 		weathercode = WEATHER_CODES.get(code)
@@ -462,13 +462,13 @@ def fetchCurrent(num):
 	current=get_url_JSON(url)
 	if current and current != '' and 'properties' in current:
 		data=current['properties']
-		#xbmc.log('data: %s' % data,level=xbmc.LOGNOTICE)
+		#xbmc.log('data: %s' % data,level=xbmc.LOGINFO)
 	else:
 		xbmc.log('failed to find weather data from : %s' % url,level=xbmc.LOGERROR)
 		xbmc.log('%s' % current,level=xbmc.LOGERROR)
 		return
 	
-	#xbmc.log('data %s' % data,level=xbmc.LOGNOTICE)
+	#xbmc.log('data %s' % data,level=xbmc.LOGINFO)
 	icon = data['icon']
 	#https://api.weather.gov/icons/land/night/ovc?size=small
 	icon=icon.rsplit('?', 1)[0]
@@ -486,8 +486,8 @@ def fetchCurrent(num):
 				
 	try:
 		temp=int(round(data.get('temperature').get('value')))
-		#xbmc.log('raw temp %s' % data.get('temperature').get('value'),level=xbmc.LOGNOTICE)
-		#xbmc.log('temp %s' % temp,level=xbmc.LOGNOTICE)
+		#xbmc.log('raw temp %s' % data.get('temperature').get('value'),level=xbmc.LOGINFO)
+		#xbmc.log('temp %s' % temp,level=xbmc.LOGINFO)
 		set_property('Current.Temperature',str(temp)) # api values are in C
 	except:
 		set_property('Current.Temperature','') 
@@ -554,7 +554,7 @@ def fetchWeatherAlerts(num):
 	a_zone=ADDON.getSetting('Location'+str(num)+'County')
 	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
 	alerts=get_url_JSON(url)
-	#xbmc.log('current data: %s' % current_data,level=xbmc.LOGNOTICE)
+	#xbmc.log('current data: %s' % current_data,level=xbmc.LOGINFO)
 	# if we have a valid response then clear our current alerts
 	if alerts and alerts != '' and 'features' in alerts:
 		for count in range (1, 10):
@@ -566,11 +566,11 @@ def fetchWeatherAlerts(num):
 		
 	if 'features' in alerts and alerts['features']:
 		data=alerts['features']
-		#xbmc.log('data: %s' % data,level=xbmc.LOGNOTICE)
+		#xbmc.log('data: %s' % data,level=xbmc.LOGINFO)
 		set_property('Alerts.IsFetched'	, 'true')
 	else:
 		clear_property('Alerts.IsFetched')
-		xbmc.log('No current weather alerts from  %s' % url,level=xbmc.LOGNOTICE)
+		xbmc.log('No current weather alerts from  %s' % url,level=xbmc.LOGINFO)
 		return
 	
 	for count, item in enumerate(data):
@@ -720,7 +720,7 @@ else:
 		
 		set_property('Map.IsFetched', 'true')
 #		url="https://radar.weather.gov/ridge/lite/NCR/%s_0.png?d=%s" % (Station,str(time.time()))
-#		xbmc.log('radar url:  %s' % url,level=xbmc.LOGNOTICE)
+#		xbmc.log('radar url:  %s' % url,level=xbmc.LOGINFO)
 
 		#Radar
 		#KODI will cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
