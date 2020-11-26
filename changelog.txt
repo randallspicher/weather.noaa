@@ -1,3 +1,7 @@
+v1.0.8
+- clean up code
+- add header to http request to avoid proxy complaints
+
 v1.0.7
 - add in a couple weather radar maps
 

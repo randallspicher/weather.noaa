@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: OpenWeatherMap Extended
-# Addon id: weather.openweathermap.extended
-# Addon Provider: ronie
+# Addon Name: Weather.NOAA
+# Addon id: weather.noaa
+# Addon Provider: randall
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -15,10 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgctxt "#32000"
-msgid "OpenWeatherMap"
-msgstr "OpenWeatherMap"
 
 msgctxt "#32101"
 msgid "Location setup"
@@ -111,3 +107,4 @@ msgstr "Enable logging"
 msgctxt "#32130"
 msgid "Download weather maps"
 msgstr "Download weather maps"
+

@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from future import standard_library
+import math
+import sys, time
+
+import xbmc, xbmcgui, xbmcaddon
+
+from dateutil.parser import parse
+import socket, urllib.request
+import json
+
 standard_library.install_aliases()
 
 
-import math
-import xbmc, xbmcgui, xbmcaddon
-import sys
 
 
 ADDON		= xbmcaddon.Addon()
@@ -17,6 +24,9 @@ WEATHER_WINDOW  = xbmcgui.Window(12600)
 DEBUG		= ADDON.getSetting('Debug')
 TEMPUNIT	= xbmc.getRegion('tempunit')
 SPEEDUNIT	= xbmc.getRegion('speedunit')
+DATEFORMAT	= xbmc.getRegion('dateshort')
+TIMEFORMAT	= xbmc.getRegion('meridiem')
+
 
 def log(txt):
 	if DEBUG == 'true':
@@ -31,83 +41,58 @@ def set_property(name, value):
 def clear_property(name):
 	WEATHER_WINDOW.clearProperty(name)
 
-#http://openweathermap.org/current#multi
-		# kodi lang name		# openweathermap code
-LANG = { 'afrikaans'		: '',
-	'albanian'		: '',
-	'amharic'		: '',
-	'arabic'		: '',
-	'armenian'		: '',
-	'azerbaijani'		: '',
-	'basque'		: '',
-	'belarusian'		: '',
-	'bosnian'		: '',
-	'bulgarian'		: 'bg',
-	'burmese'		: '',
-	'catalan'		: 'ca',
-	'chinese (simple)'	: 'zh',
-	'chinese (traditional)' : 'zh_tw',
-	'croatian'		: 'hr',
-	'czech'			: '',
-	'danish'		: '',
-	'dutch'			: 'nl',
-	'english'		: 'en',
-	'english (us)'		: 'en',
-	'english (australia)'	: 'en',
-	'english (new zealand)'	: 'en',
-	'esperanto'		: '',
-	'estonian'		: '',
-	'faroese'		: '',
-	'finnish'		: 'fi',
-	'french'		: 'fr',
-	'galician'		: '',
-	'german'		: 'de',
-	'greek'			: '',
-	'georgian'		: '',
-	'hebrew'		: '',
-	'hindi (devanagiri)'	: '',
-	'hungarian'		: 'hu',
-	'icelandic'		: '',
-	'indonesian'		: '',
-	'italian'		: 'it',
-	'japanese'		: '',
-	'korean'		: '',
-	'latvian'		: '',
-	'lithuanian'		: '',
-	'macedonian'		: '',
-	'malay'			: '',
-	'malayalam'		: '',
-	'maltese'		: '',
-	'maori'			: '',
-	'mongolian (mongolia)' 	: '',
-	'norwegian'		: '',
-	'ossetic'		: '',
-	'persian'		: '',
-	'persian (iran)'	: '',
-	'polish'		: 'pl',
-	'portuguese'		: 'pt',
-	'portuguese (brazil)'	: 'pt',
-	'romanian'		: 'ro',
-	'russian'		: 'ru',
-	'serbian'		: '',
-	'serbian (cyrillic)'	: '',
-	'sinhala'		: '',
-	'slovak'		: '',
-	'slovenian'		: '',
-	'spanish'		: 'es',
-	'spanish (argentina)'	: 'es',
-	'spanish (mexico)'	: 'es',
-	'swedish'		: 'sv',
-	'tajik'			: '',
-	'tamil (india)'		: '',
-	'telugu'		: '',
-	'thai'			: '',
-	'turkish'		: 'tr',
-	'ukrainian'		: 'uk',
-	'uzbek'			: '',
-	'vietnamese'		: '',
-	'welsh'			: '' 
-		}
+
+
+
+def get_url_JSON(url):
+	try:
+		xbmc.log('fetching url: %s' % url,level=xbmc.LOGDEBUG)
+		try:
+			timeout = 10
+			socket.setdefaulttimeout(timeout)
+			# this call to urllib.request.urlopen now uses the default timeout
+			# we have set in the socket module
+			req = urllib.request.Request(url)
+			req.add_header('User-Agent', ' Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+			response = urllib.request.urlopen(req)
+
+			#responsedata = decode_utf8(urlopen(url, timeout=25).read())
+			responsedata = decode_utf8(response.read())
+			data = json.loads(responsedata)
+			log('data: %s' % data)
+			# Happy path, we found and parsed data
+			return data
+		except:
+			xbmc.log('failed to parse json: %s' % url,level=xbmc.LOGERROR)
+			xbmc.log('data: %s' % data,level=xbmc.LOGERROR)
+	except:
+		xbmc.log('failed to fetch : %s' % url,level=xbmc.LOGERROR)
+	return None
+
+def get_url_response(url):
+	try:
+		xbmc.log('fetching url: %s' % url,level=xbmc.LOGNOTICE)
+		timeout = 10
+		socket.setdefaulttimeout(timeout)
+		# this call to urllib.request.urlopen now uses the default timeout
+		# we have set in the socket module
+		req = urllib.request.Request(url)
+		req.add_header('User-Agent', ' Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+		response = urllib.request.urlopen(req)
+
+		responsedata = decode_utf8(response.read())
+		log('data: %s' % responsedata)
+		# Happy path, we found and parsed data
+		return responsedata
+	except:
+		xbmc.log('failed to fetch : %s' % url,level=xbmc.LOGERROR)
+	return None
+
+
+
+
+
+
 
 WEATHER_CODES = {
 		'skc':		'34', #'Fair/clear'
@@ -482,6 +467,65 @@ def decode_utf8(_string):
 		return _string.decode('utf-8')
 	else:
 		return _string
+
+
+def get_timestamp(datestr):
+	#"2019-04-29T16:00:00-04:00"
+	#iso_fmt = '%Y-%m-%dT%H:%M:%S%z'
+	#newtext = datestr[:21] + datestr[23:]
+	#datestamp=datetime.datetime.strptime(datestr,iso_fmt)
+	datestamp=parse(datestr)
+	return time.mktime(datestamp.timetuple())
+
+
+def convert_date(stamp):
+	if str(stamp).startswith('-'):
+		return ''
+	date_time = time.localtime(stamp)
+	if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
+		localdate = time.strftime('%d-%m-%Y', date_time)
+	elif DATEFORMAT[1] == 'm' or DATEFORMAT[0] == 'M':
+		localdate = time.strftime('%m-%d-%Y', date_time)
+	else:
+		localdate = time.strftime('%Y-%m-%d', date_time)
+
+	if TIMEFORMAT != '/':
+		localtime = time.strftime('%I:%M%p', date_time)
+	else:
+		localtime = time.strftime('%H:%M', date_time)
+	return localtime + '	' + localdate
+
+def get_time(stamp):
+	date_time = time.localtime(stamp)
+	if TIMEFORMAT != '/':
+		localtime = time.strftime('%I:%M%p', date_time)
+	else:
+		localtime = time.strftime('%H:%M', date_time)
+	return localtime
+
+def get_weekday(stamp, form):
+	date_time = time.localtime(stamp)
+	weekday = time.strftime('%w', date_time)
+	if form == 's':
+		return xbmc.getLocalizedString(WEEK_DAY_SHORT[weekday])
+	elif form == 'l':
+		return xbmc.getLocalizedString(WEEK_DAY_LONG[weekday])
+	else:
+		return int(weekday)
+
+def get_month(stamp, form):
+	date_time = time.localtime(stamp)
+	month = time.strftime('%m', date_time)
+	day = time.strftime('%d', date_time)
+	if form == 'ds':
+		label = day + ' ' + xbmc.getLocalizedString(MONTH_NAME_SHORT[month])
+	elif form == 'dl':
+		label = day + ' ' + xbmc.getLocalizedString(MONTH_NAME_LONG[month])
+	elif form == 'ms':
+		label = xbmc.getLocalizedString(MONTH_NAME_SHORT[month]) + ' ' + day
+	elif form == 'ml':
+		label = xbmc.getLocalizedString(MONTH_NAME_LONG[month]) + ' ' + day
+	return label
 
 
 
