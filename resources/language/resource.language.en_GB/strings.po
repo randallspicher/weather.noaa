@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: OpenWeatherMap Extended
-# Addon id: weather.openweathermap.extended
-# Addon Provider: ronie
+# Addon Name: Weather.NOAA
+# Addon id: weather.noaa
+# Addon Provider: randall
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -15,10 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgctxt "#32000"
-msgid "OpenWeatherMap"
-msgstr ""
 
 #empty strings from id 32001 to 32100
 
@@ -123,26 +119,6 @@ msgstr ""
 msgctxt "#32130"
 msgid "Download weather maps"
 msgstr ""
-
-msgctxt "#32131"
-msgid "Get an api key at: http://openweathermap.org/appid"
-msgstr ""
-
-msgctxt "#32132"
-msgid "and enter it in the addon settings,"
-msgstr ""
-
-msgctxt "#32133"
-msgid "or disable this addon."
-msgstr ""
-
-#empty strings with id 32134
-
-msgctxt "#32135"
-msgid "To use maps, get an api key at: http://openweathermap.org/appid"
-msgstr ""
-
-#empty strings from id 32136 to 32200
 
 msgctxt "#32201"
 msgid "Thunderstorm with light rain"
@@ -447,3 +423,44 @@ msgstr ""
 msgctxt "#32276"
 msgid "Rain"
 msgstr ""
+
+msgctxt "#32331"
+msgid "Select Local Weather Station"
+msgstr ""
+
+msgctxt "#32332"
+msgid "Latitude,Longitude (to 4 decimal places)"
+msgstr ""
+
+msgctxt "#32333"
+msgid "Long Range Radar"
+msgstr ""
+
+msgctxt "#32334"
+msgid "Radar"
+msgstr ""
+
+msgctxt "#32335"
+msgid "Geographical Location (Latitude,Longitude)"
+msgstr ""
+
+msgctxt "#32336"
+msgid "Selected Station"
+msgstr ""
+
+msgctxt "#32337"
+msgid "Fetch Forcast Zone and Station"
+msgstr ""
+
+msgctxt "#32338"
+msgid "Local Weather Station (Code)"
+msgstr ""
+
+msgctxt "#32339"
+msgid "Location Display Name"
+msgstr ""
+
+msgctxt "#32340"
+msgid "Preffered Data Source"
+msgstr ""
+

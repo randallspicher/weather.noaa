@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: OpenWeatherMap Extended
-# Addon id: weather.openweathermap.extended
-# Addon Provider: ronie
+# Addon Name: Weather.NOAA
+# Addon id: weather.noaa
+# Addon Provider: randall
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
