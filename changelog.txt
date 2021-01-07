@@ -1,3 +1,6 @@
+v1.0.9
+- Weather service changed the Radar images.  Only crappy ones available now without tons of front-end browser layering
+
 v1.0.8
 - clean up code
 - add header to http request to avoid proxy complaints

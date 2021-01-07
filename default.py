@@ -716,21 +716,33 @@ else:
 			#currentforecast(num)
 			fetchDaily(num)
 		fetchHourly(num)
-		Station=ADDON.getSetting('Location%scwa' % num)
+		##Station=ADDON.getSetting('Location%scwa' % num)
+		Station=ADDON.getSetting('Location%sradarStation' % num)
 		
 		set_property('Map.IsFetched', 'true')
 #		url="https://radar.weather.gov/ridge/lite/NCR/%s_0.png?d=%s" % (Station,str(time.time()))
+##https://radar.weather.gov/ridge/lite/KOKX_loop.gif
+##https://radar.weather.gov/ridge/lite/KOKX_0.gif
+
 #		xbmc.log('radar url:  %s' % url,level=xbmc.LOGNOTICE)
 
 		#Radar
 		#KODI will cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
-		set_property('Map.%i.Area' % 1, "https://radar.weather.gov/ridge/lite/NCR/%s_0.png?t=%s" % (Station,str(time.time())))
-#		set_property('Map.%i.Layer' % 1, '')
+###		set_property('Map.%i.Area' % 1, "https://radar.weather.gov/ridge/lite/NCR/%s_0.png?t=%s" % (Station,str(time.time())))
+		url="https://radar.weather.gov/ridge/lite/%s_0.gif?t=%s" % (Station,str(time.time()))
+		set_property('Map.%i.Area' % 1, url)
+		#xbmc.log('radar url: %s' % url,level=xbmc.LOGNOTICE)
+
+
+		#set_property('Map.%i.Layer' % 1, url)
 		set_property('Map.%i.Heading' % 1, LANGUAGE(32334))
 #		set_property('Map.%i.Legend' % 1, '')
 
 		#Long Range Radar
-		set_property('Map.%i.Area' % 2, "https://radar.weather.gov/ridge/lite/N0Z/%s_0.png?t=%s" % (Station,str(time.time())))
+##		set_property('Map.%i.Area' % 2, "https://radar.weather.gov/ridge/lite/N0Z/%s_0.png?t=%s" % (Station,str(time.time())))
+		url="https://radar.weather.gov/ridge/lite/%s_loop.gif?t=%s.gif" % (Station,str(time.time()))
+		#xbmc.log('radarloop url: %s' % url,level=xbmc.LOGNOTICE)
+		set_property('Map.%i.Area' % 2, url)
 		set_property('Map.%i.Heading' % 2, LANGUAGE(32333))
 	else:
 		log('no location provided')
