@@ -432,8 +432,12 @@ msgctxt "#32332"
 msgid "Latitude,Longitude (to 4 decimal places)"
 msgstr ""
 
+#msgctxt "#32333"
+#msgid "Long Range Radar"
+#msgstr ""
+
 msgctxt "#32333"
-msgid "Long Range Radar"
+msgid "Radar Loop"
 msgstr ""
 
 msgctxt "#32334"
@@ -463,4 +467,5 @@ msgstr ""
 msgctxt "#32340"
 msgid "Preffered Data Source"
 msgstr ""
+
 
