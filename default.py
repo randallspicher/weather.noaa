@@ -724,14 +724,14 @@ else:
 ##https://radar.weather.gov/ridge/lite/KOKX_loop.gif
 ##https://radar.weather.gov/ridge/lite/KOKX_0.gif
 
-#		xbmc.log('radar url:  %s' % url,level=xbmc.LOGNOTICE)
+#		xbmc.log('radar url:  %s' % url,level=xbmc.LOGINFO)
 		nowtime=str(time.time())
 		#Radar
 		#KODI will cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
 ###		set_property('Map.%i.Area' % 1, "https://radar.weather.gov/ridge/lite/NCR/%s_0.png?t=%s" % (Station,str(time.time())))
 		url="https://radar.weather.gov/ridge/lite/%s_0.gif?%s" % (Station,nowtime)
 		set_property('Map.%i.Area' % 1, url)
-		#xbmc.log('radar url: %s' % url,level=xbmc.LOGNOTICE)
+		#xbmc.log('radar url: %s' % url,level=xbmc.LOGINFO)
 
 
 		#set_property('Map.%i.Layer' % 1, url)
@@ -741,7 +741,7 @@ else:
 		#Long Range Radar
 ##		set_property('Map.%i.Area' % 2, "https://radar.weather.gov/ridge/lite/N0Z/%s_0.png?t=%s" % (Station,str(time.time())))
 #		url="https://radar.weather.gov/ridge/lite/%s_loop.gif?t=%s.gif" % (Station,str(time.time()))
-#		#xbmc.log('radarloop url: %s' % url,level=xbmc.LOGNOTICE)
+#		#xbmc.log('radarloop url: %s' % url,level=xbmc.LOGINFO)
 #		set_property('Map.%i.Area' % 2, url)
 #		set_property('Map.%i.Heading' % 2, LANGUAGE(32333))
 		
@@ -750,8 +750,8 @@ else:
 			mcount=count+1
 			mapsector = ADDON.getSetting('Map%iSector' % (mcount))
 			maptype = ADDON.getSetting('Map%iType' % (mcount))
-			#xbmc.log('Map%iSector: %s' % (mcount,mapsector),level=xbmc.LOGNOTICE)
-			#xbmc.log('Map%iType: %s' % (mcount,maptype),level=xbmc.LOGNOTICE)
+			#xbmc.log('Map%iSector: %s' % (mcount,mapsector),level=xbmc.LOGINFO)
+			#xbmc.log('Map%iType: %s' % (mcount,maptype),level=xbmc.LOGINFO)
 
 			if (mapsector != '' and maptype != ''):
 				if mapsector == 'CONUS':
@@ -759,7 +759,7 @@ else:
 				else:
 					url="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/%s/%s/1200x1200.jpg?%s" % (mapsector,maptype,nowtime)
 				
-				#xbmc.log('map %i url: %s' % (mcount,url),level=xbmc.LOGNOTICE)
+				#xbmc.log('map %i url: %s' % (mcount,url),level=xbmc.LOGINFO)
 				set_property('Map.%i.Area' % (mcount), url)
 				set_property('Map.%i.Heading' % (mcount), "%s:%s" % (mapsector,maptype) )
 				clear_property('Map.%i.Layer' % (mcount))
