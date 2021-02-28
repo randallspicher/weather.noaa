@@ -21,5 +21,10 @@
 		<email></email>
 		<source>https://github.com/randallspicher/weather.noaa</source>
 	</extension>
+	<assets>
+	    <icon>resources/icon.png</icon>
+	    <fanart>resources/fanart.jpg</fanart>
+	    <banner>resources/banner.png</banner>
+	</assets>
 </addon>
 
