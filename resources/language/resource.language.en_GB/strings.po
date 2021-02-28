@@ -468,4 +468,35 @@ msgctxt "#32340"
 msgid "Preffered Data Source"
 msgstr ""
 
+msgctxt "#32341"
+msgid "Map2 Sector"
+msgstr ""
+
+msgctxt "#32342"
+msgid "Map2 Type"
+msgstr ""
+
+msgctxt "#32343"
+msgid "Map3 Sector"
+msgstr ""
+
+msgctxt "#32344"
+msgid "Map3 Type"
+msgstr ""
+
+msgctxt "#32345"
+msgid "Map4 Sector"
+msgstr ""
+
+msgctxt "#32346"
+msgid "Map4 Type"
+msgstr ""
+
+msgctxt "#32347"
+msgid "Map5 Sector"
+msgstr ""
+
+msgctxt "#32348"
+msgid "Map5 Type"
+msgstr ""
 

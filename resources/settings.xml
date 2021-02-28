@@ -90,15 +90,15 @@
 
 	<category label="16000">
 		<setting id="DataSourcePreference"	label="32340" type="labelenum" values="api.weather.gov|forecast.weather.gov"/>
-		<setting id="Debug" label="14260" type="bool" default="false"/>
-		<setting id="Map2Sector"	label="Map2 Sector" 	type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
-		<setting id="Map2Type"		label="Map2 Type" 		type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
-		<setting id="Map3Sector"	label="Map3 Sector" 	type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
-		<setting id="Map3Type"		label="Map3 Type" 		type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
-		<setting id="Map4Sector"	label="Map4 Sector"		type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
-		<setting id="Map4Type"		label="Map4 Type" 		type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
-		<setting id="Map5Sector"	label="Map5 Sector" 	type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
-		<setting id="Map5Type"		label="Map5 Type" 		type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
+		<setting id="Debug" 		label="14260" 	type="bool" default="false"/>
+		<setting id="Map2Sector"	label="32341" 	type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
+		<setting id="Map2Type"		label="32342" 	type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
+		<setting id="Map3Sector"	label="32343" 	type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
+		<setting id="Map3Type"		label="32344" 	type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
+		<setting id="Map4Sector"	label="32345"	type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
+		<setting id="Map4Type"		label="32346" 	type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
+		<setting id="Map5Sector"	label="32347" 	type="labelenum" values=" |CONUS|CGL|NE|NR|PNW|PR|PSW|SE|SMV|SP|SR|UMV"/>
+		<setting id="Map5Type"		label="32348" 	type="labelenum" values=" |GEOCOLOR|Sandwich|AirMass|DayCloudPhase|NightMicrophysics|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01"/>
 	</category>
 
 </settings>

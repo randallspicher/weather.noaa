@@ -1,3 +1,6 @@
+v2.0.1
+- move some settings labels into strings.po
+
 v2.0.0
 - Version bump for matrix
 
