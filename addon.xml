@@ -8,11 +8,7 @@
 	<extension point="xbmc.python.weather" library="default.py"/>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en_GB">Weather forecast from weather.gov (NOAA)</summary>
-		<summary lang="en_NZ">Weather forecast from weather.gov (NOAA)</summary>
-		<summary lang="en_US">Weather forecast from weather.gov (NOAA)</summary>
 		<description lang="en_GB">Weather forecast provided by NOAA (http://weather.gov/)</description>
-		<description lang="en_NZ">Weather forecast provided by NOAA (http://weather.gov/)</description>
-		<description lang="en_US">Weather forecast provided by NOAA (http://weather.gov/)</description>
 		<language>en_US</language>
 		<platform>all</platform>
 		<license>GNU GENERAL PUBLIC LICENSE Version 2</license>
@@ -20,11 +16,11 @@
 		<website>https://github.com/randallspicher/weather.noaa</website>
 		<email></email>
 		<source>https://github.com/randallspicher/weather.noaa</source>
+		<assets>
+		    <icon>resources/icon.png</icon>
+		    <fanart>resources/fanart.jpg</fanart>
+		    <banner>resources/banner.png</banner>
+		</assets>
 	</extension>
-	<assets>
-	    <icon>resources/icon.png</icon>
-	    <fanart>resources/fanart.jpg</fanart>
-	    <banner>resources/banner.png</banner>
-	</assets>
 </addon>
 
