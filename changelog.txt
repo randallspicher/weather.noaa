@@ -1,3 +1,6 @@
+v2.0.0
+- Version bump for matrix
+
 v1.0.11
 - Fix logger error in Matrix
 
