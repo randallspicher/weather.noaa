@@ -17,9 +17,9 @@
 		<email></email>
 		<source>https://github.com/randallspicher/weather.noaa</source>
 		<assets>
-		    <icon>resources/icon.png</icon>
-		    <fanart>resources/fanart.jpg</fanart>
-		    <banner>resources/banner.png</banner>
+		    <icon>resources/media/icon.png</icon>
+		    <fanart>resources/media/fanart.jpg</fanart>
+		    <banner>resources/media/banner.png</banner>
 		</assets>
 	</extension>
 </addon>
