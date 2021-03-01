@@ -678,7 +678,7 @@ set_property('36Hour.IsFetched'		, '')
 set_property('Hourly.IsFetched'		, 'true')
 set_property('NOAA.IsFetched'		, 'true')
 set_property('WeatherProvider'		, 'NOAA')
-set_property('WeatherProviderLogo', xbmc.translatePath(os.path.join(CWD, 'resources', 'media', 'banner.png')))
+set_property('WeatherProviderLogo', xbmc.translatePath(os.path.join(CWD, 'resources', 'media', 'skin-banner.png')))
 
 if sys.argv[1].startswith('Location'):
 	log("argument: %s" % (sys.argv[1]))

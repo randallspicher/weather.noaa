@@ -19,7 +19,6 @@
 		<assets>
 		    <icon>resources/media/icon.png</icon>
 		    <fanart>resources/media/fanart.jpg</fanart>
-		    <banner>resources/media/banner.png</banner>
 		</assets>
 	</extension>
 </addon>
