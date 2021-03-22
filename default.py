@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from future import standard_library
-from samba.dcerpc.samr import ACB_USE_AES_KEYS
 standard_library.install_aliases()
 
 import os, sys, time
