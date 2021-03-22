@@ -1,3 +1,6 @@
+v2.0.3
+- fix an import
+
 v2.0.2
 - rework settings to new xml structure
 - move satellite map options into function call instead of hard coded in settings (may grab from api in the future)
