@@ -50,9 +50,9 @@ def refresh_locations():
 	for count in range(1, 6):
 		loc = ADDON.getSetting('Location%sLatLong' % count)
 		loc_name = ADDON.getSetting('Location%s' % count)
-		if loc != '':
+		if loc:
 			locations += 1
-			if loc_name == '':
+			if not loc_name:
 				loc_name = 'Location %s' % count
 			set_property('Location%s' % count, loc_name)
 
@@ -95,7 +95,7 @@ def fetchLocation(locstr,prefix):
 	if not data:
 		log('failed to retrieve location data')
 		return None
-	if data != '' and 'properties' in data:
+	if data and 'properties' in data:
 
 		city	=	data['properties']['relativeLocation']['properties']['city']
 		state =		data['properties']['relativeLocation']['properties']['state']
@@ -135,7 +135,7 @@ def fetchLocation(locstr,prefix):
 		stations_url =	data['properties']['observationStations']
 		odata = get_url_JSON(stations_url)
 
-		if odata != '' and 'features' in odata:
+		if odata and 'features' in odata:
 			stations={}
 			stationlist=[]
 			
@@ -167,7 +167,7 @@ def fetchDaily(num):
 
 	daily_weather = get_url_JSON(url)
 
-	if daily_weather and daily_weather != '' and 'properties' in daily_weather:
+	if daily_weather and 'properties' in daily_weather:
 		data=daily_weather['properties']
 	else:
 		#api.weather.gov is acting up, so fall back to alternate api
@@ -229,7 +229,7 @@ def fetchDaily(num):
 			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'ml'))
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
 		
-		if (rain !=''):
+		if rain:
 			set_property('Daily.%i.Precipitation'	% (count+1), rain + '%')
 		else:
 			set_property('Daily.%i.Precipitation'	% (count+1), '')
@@ -252,7 +252,7 @@ def fetchAltDaily(num):
 
 	daily_weather = get_url_JSON(url)
 
-	if daily_weather and daily_weather != '' and 'data' in daily_weather:
+	if daily_weather and 'data' in daily_weather:
 
 		dailydata=[
 			{"startPeriodName": a,
@@ -330,7 +330,7 @@ def fetchAltDaily(num):
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
 
 		rain=str(item['pop'])
-		if (rain !=''):
+		if rain:
 			set_property('Daily.%i.Precipitation'	% (count+1), rain + '%')
 		else:
 			set_property('Daily.%i.Precipitation'	% (count+1), '')
@@ -338,7 +338,7 @@ def fetchAltDaily(num):
 
 
 
-	if daily_weather and daily_weather != '' and 'currentobservation' in daily_weather:
+	if daily_weather and 'currentobservation' in daily_weather:
 		data=daily_weather['currentobservation']
 		icon = "http://forecast.weather.gov/newimages/large/%s" % data.get('Weatherimage')
 		code, rain=code_from_icon(icon)
@@ -372,7 +372,7 @@ def fetchAltDaily(num):
 		except:
 			set_property('Current.WindGust'	, '')
 
-		if (rain != ''):
+		if rain:
 			set_property('Current.ChancePrecipitaion', str(rain)+'%');
 		else :
 			set_property('Current.ChancePrecipitaion'		, '');
@@ -394,7 +394,7 @@ def fetchCurrent(num):
 	station=ADDON.getSetting('Location'+str(num)+'Station')
 	url="https://api.weather.gov/stations/%s/observations/latest" %station	
 	current=get_url_JSON(url)
-	if current and current != '' and 'properties' in current:
+	if current and 'properties' in current:
 		data=current['properties']
 	else:
 		xbmc.log('failed to find weather data from : %s' % url,level=xbmc.LOGERROR)
@@ -430,7 +430,7 @@ def fetchCurrent(num):
 	except:
 		set_property('Current.WindDirection', '')
 
-	if (rain != ''):
+	if rain:
 		set_property('Current.ChancePrecipitaion', str(rain)+'%');
 	else :
 		set_property('Current.ChancePrecipitaion'		, '');
@@ -472,7 +472,7 @@ def fetchWeatherAlerts(num):
 	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
 	alerts=get_url_JSON(url)
 	# if we have a valid response then clear our current alerts
-	if alerts and alerts != '' and 'features' in alerts:
+	if alerts and 'features' in alerts:
 		for count in range (1, 10):
 			clear_property('Alerts.%i.event' % (count))	
 	else:
@@ -514,7 +514,7 @@ def fetchHourly(num):
 	url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')		
 		
 	hourly_weather = get_url_JSON(url)
-	if hourly_weather and hourly_weather != '' and 'properties' in hourly_weather:
+	if hourly_weather and 'properties' in hourly_weather:
 		data=hourly_weather['properties']
 	else:
 		xbmc.log('failed to find proper hourly weather from %s' % url,level=xbmc.LOGERROR)
@@ -560,7 +560,7 @@ def fetchHourly(num):
 		set_property('Hourly.%i.Temperature'		% (count+1),	str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
 		
 
-		if rain !='':
+		if rain:
 			set_property('Hourly.%i.Precipitation'	% (count+1), rain + '%')
 			set_property('Hourly.%i.ChancePrecipitation'	% (count+1), rain + '%')
 		else:
@@ -682,7 +682,7 @@ else:
 	locationLatLong = ADDON.getSetting('Location%s' % num)
 	sourcePref=ADDON.getSetting("DataSourcePreference")
 
-	if not locationLatLong == '':
+	if locationLatLong:
 		fetchWeatherAlerts(num)
 		if "forecast.weather.gov" == sourcePref:
 			fetchAltDaily(num)
@@ -708,7 +708,7 @@ else:
 			maptype = ADDON.getSetting('Map%iType' % (mcount))
 			maplabel = ADDON.getSetting('Map%iLabel' % (mcount))
 
-			if (mapsector != '' and maptype != ''):
+			if (mapsector and maptype):
 				path=MAPSECTORS.get(mapsector)['path']
 				if mapsector != 'glm-e' and mapsector != 'glm-w':
 					path=path.replace("%s",maptype)
