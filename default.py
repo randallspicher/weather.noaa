@@ -71,16 +71,20 @@ def get_initial(loc):
 	return responsedata
 	
 def code_from_icon(icon):
+	if '?' in icon:
 		icon=icon.rsplit('?', 1)[0]
+	if '/' in icon:	
 		code=icon.rsplit('/',1)[1]
-		thing=code.split(",")
-		if len(thing) > 1:
-			rain=thing[1]
-			code=thing[0]
-			return code, rain
-		else:
-			code=thing[0]
-			return code, ''
+	else:
+		code=icon
+	thing=code.split(",")
+	if len(thing) > 1:
+		rain=thing[1]
+		code=thing[0]
+		return code, rain
+	else:
+		code=thing[0]
+		return code, ''
 		
 
 ########################################################################################
@@ -219,7 +223,8 @@ def fetchDaily(num):
 	for count, item in enumerate(data['periods']):
 		icon = item['icon']
 		#https://api.weather.gov/icons/land/night/ovc?size=small
-		icon=icon.rsplit('?', 1)[0]
+		if '?' in icon:
+			icon=icon.rsplit('?', 1)[0]
 		code, rain=code_from_icon(icon)
 
 		weathercode = WEATHER_CODES.get(code)
@@ -471,7 +476,8 @@ def fetchCurrent(num):
 	
 	icon = data['icon']
 	#https://api.weather.gov/icons/land/night/ovc?size=small
-	icon=icon.rsplit('?', 1)[0]
+	if '?' in icon:
+		icon=icon.rsplit('?', 1)[0]
 	code, rain=code_from_icon(icon)
 	weathercode = WEATHER_CODES.get(code)
 	set_property('Current.RemoteIcon',icon) 
@@ -593,7 +599,8 @@ def fetchHourly(num):
 		
 		icon=item['icon']
 		#https://api.weather.gov/icons/land/night/ovc?size=small
-		icon=icon.rsplit('?', 1)[0]
+		if '?' in icon:
+			icon=icon.rsplit('?', 1)[0]
 		code, rain=code_from_icon(icon)
 		set_property('Hourly.%i.RemoteIcon'	% (count+1), icon)	
 		
