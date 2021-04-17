@@ -477,13 +477,16 @@ def fetchCurrent(num):
 	
 	icon = data['icon']
 	#https://api.weather.gov/icons/land/night/ovc?size=small
-	if icon and '?' in icon:
-		icon=icon.rsplit('?', 1)[0]
-	code, rain=code_from_icon(icon)
-	weathercode = WEATHER_CODES.get(code)
-	set_property('Current.RemoteIcon',icon) 
-	set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
-	set_property('Current.FanartCode', weathercode)
+	code=''
+	rain=''
+	if icon:
+		if '?' in icon:
+			icon=icon.rsplit('?', 1)[0]
+		code, rain=code_from_icon(icon)
+		weathercode = WEATHER_CODES.get(code)
+		set_property('Current.RemoteIcon',icon) 
+		set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
+		set_property('Current.FanartCode', weathercode)
 	set_property('Current.Condition', FORECAST.get(data.get('textDescription'), data.get('textDescription')))
 	try:
 		set_property('Current.Humidity'	, str(round(data.get('relativeHumidity').get('value'))))
