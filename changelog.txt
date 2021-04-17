@@ -1,6 +1,7 @@
-v2.0.4-b3
+v2.0.4-b4
 - clean up some if/then logic
 - revamp some settings
+- properly return Celsius for users who set their regional temp to that
 
 v2.0.3
 - fix an import

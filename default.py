@@ -7,7 +7,7 @@ standard_library.install_aliases()
 import os, sys, time
 import xbmc, xbmcgui, xbmcvfs
 
-from resources.lib.utils import FtoC, log, ADDON, LANGUAGE,MAPSECTORS,MAPTYPES
+from resources.lib.utils import FtoC, CtoF, log, ADDON, LANGUAGE,MAPSECTORS,MAPTYPES
 from resources.lib.utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
 from resources.lib.utils import get_url_JSON 
 from resources.lib.utils import get_month, get_timestamp, get_weekday, get_time
@@ -18,7 +18,7 @@ WEATHER_ICON	= xbmcvfs.translatePath('%s.png')
 DATEFORMAT	= xbmc.getRegion('dateshort')
 TIMEFORMAT	= xbmc.getRegion('meridiem')
 MAXDAYS		= 10
-
+TEMPUNIT	= xbmc.getRegion('tempunit')
 
 def set_property(name, value):
 	WEATHER_WINDOW.setProperty(name, value)
@@ -253,17 +253,30 @@ def fetchDaily(num):
 		if item['isDaytime'] == True:
 			set_property('Daily.%i.LongDay'		% (count+1), item['name'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
-			set_property('Daily.%i.TempDay'		% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
-			set_property('Daily.%i.HighTemperature'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
+				#set_property('Daily.%i.TempDay'		% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
+				#set_property('Daily.%i.HighTemperature'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
+			if 'F' in TEMPUNIT:
+				set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+				set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			elif 'C' in TEMPUNIT:
+				set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+				set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
 			set_property('Daily.%i.TempNight'	% (count+1), '')
 			set_property('Daily.%i.LowTemperature'	% (count+1), '')
+
 		if item['isDaytime'] == False:
 			set_property('Daily.%i.LongDay'		% (count+1), item['name'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (n)")
+
 			set_property('Daily.%i.TempDay'		% (count+1), '')
 			set_property('Daily.%i.HighTemperature'	% (count+1), '')
-			set_property('Daily.%i.TempNight'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
-			set_property('Daily.%i.LowTemperature'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
+			if 'F' in TEMPUNIT:
+				set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+				set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			elif 'C' in TEMPUNIT:
+				set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+				set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+
 		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
 			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'dl'))
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ds'))
@@ -353,17 +366,31 @@ def fetchAltDaily(num):
 		if item['tempLabel'] == 'High':
 			set_property('Daily.%i.LongDay'		% (count+1), item['startPeriodName'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
-			set_property('Daily.%i.TempDay'		% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
-			set_property('Daily.%i.HighTemperature'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
+
+			if 'F' in TEMPUNIT:
+				set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+				set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			elif 'C' in TEMPUNIT:
+				set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+				set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+#			set_property('Daily.%i.TempDay'		% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
+#			set_property('Daily.%i.HighTemperature'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
 			set_property('Daily.%i.TempNight'	% (count+1), '')
 			set_property('Daily.%i.LowTemperature'	% (count+1), '')
+
 		if item['tempLabel'] == 'Low':
 			set_property('Daily.%i.LongDay'		% (count+1), item['startPeriodName'])
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (n)")
 			set_property('Daily.%i.TempDay'		% (count+1), '')
 			set_property('Daily.%i.HighTemperature'	% (count+1), '')
-			set_property('Daily.%i.TempNight'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
-			set_property('Daily.%i.LowTemperature'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
+			if 'F' in TEMPUNIT:
+				set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+				set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			elif 'C' in TEMPUNIT:
+				set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+				set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+			#set_property('Daily.%i.TempNight'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
+			#set_property('Daily.%i.LowTemperature'	% (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
 		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
 			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'dl'))
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ds'))
@@ -599,8 +626,12 @@ def fetchHourly(num):
 		set_property('Hourly.%i.WindDirection'	% (count+1), item['windDirection'])
 		set_property('Hourly.%i.WindSpeed'	% (count+1), item['windSpeed'])
 
-		set_property('Hourly.%i.Temperature'		% (count+1),	str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
-		
+		#set_property('Hourly.%i.Temperature'		% (count+1),	str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
+		if 'F' in TEMPUNIT:
+			set_property('Hourly.%i.Temperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+		elif 'C' in TEMPUNIT:
+			set_property('Hourly.%i.Temperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+	
 
 		if rain:
 			set_property('Hourly.%i.Precipitation'	% (count+1), rain + '%')
@@ -771,7 +802,7 @@ else:
 # clean up references to classes that we used
 del MONITOR, xbmc, xbmcgui, xbmcvfs, WEATHER_WINDOW
 # clean up everything we referenced from the utils to prevent any dangling classes hanging around
-del FtoC, log, ADDON, LANGUAGE, MAPSECTORS, MAPTYPES
+del FtoC, CtoF, log, ADDON, LANGUAGE, MAPSECTORS, MAPTYPES
 del WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
 del get_url_JSON 
 del get_month, get_timestamp, get_weekday, get_time
