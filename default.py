@@ -48,9 +48,9 @@ def clear():
 def refresh_locations():
 	locations = 0
 	for count in range(1, 6):
-		loc = ADDON.getSetting('Location%sLatLong' % count)
+		LatLong = ADDON.getSetting('Location%sLatLong' % count)
 		loc_name = ADDON.getSetting('Location%s' % count)
-		if loc:
+		if LatLong:
 			locations += 1
 			if not loc_name:
 				loc_name = 'Location %s' % count
@@ -130,9 +130,8 @@ def enterLocation(num):
 
 def fetchLocation(num,LatLong):
 	prefix="Location"+num
-	locstr=LatLong
-	log('searching for location: %s' % locstr)
-	data = get_initial(locstr)
+	log('searching for location: %s' % LatLong)
+	data = get_initial(LatLong)
 	log('location data: %s' % data)
 	if not data:
 		log('failed to retrieve location data')
@@ -744,19 +743,19 @@ elif sys.argv[1].startswith('Map'):
 else:
 
 	num=sys.argv[1]
-	locationLatLong = ADDON.getSetting('Location%sLatLong' % num)
+	LatLong = ADDON.getSetting('Location%sLatLong' % num)
 	
 	station=ADDON.getSetting('Location'+str(num)+'Station')
 	if station == '' :
-		log("calling location with %s" % (locationLatLong))
-		fetchLocation(str(num))
+		log("calling location with %s" % (LatLong))
+		fetchLocation(str(num),LatLong)
 
 	refresh_locations()
 
-	locationLatLong = ADDON.getSetting('Location%s' % num)
+	LatLong = ADDON.getSetting('Location%s' % num)
 	sourcePref=ADDON.getSetting("DataSourcePreference")
 
-	if locationLatLong:
+	if LatLong:
 		fetchWeatherAlerts(num)
 		if "forecast.weather.gov" == sourcePref:
 			fetchAltDaily(num)
