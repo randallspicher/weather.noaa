@@ -83,12 +83,54 @@ def code_from_icon(icon):
 			return code, ''
 		
 
+########################################################################################
+##  Dialog for getting Latitude and Longitude
+########################################################################################
+
+def enterLocation(num):	
+##	log("argument: %s" % (sys.argv[1]))
+	text = ADDON.getSetting("Location"+num+"LatLong")
+	Latitude=""
+	Longitude=""
+	if text and "," in text:
+		thing=text.split(",")
+		Latitude=thing[0]
+		Longitude=thing[1]
+
+	dialog = xbmcgui.Dialog()
+	
+	Latitude=dialog.input(LANGUAGE(32341),defaultt=Latitude,type=xbmcgui.INPUT_ALPHANUM)
+	
+#	xbmc.Keyboard(line, heading, hidden)
+#	keyboard = xbmc.Keyboard(Latitude, 32341, False)
+#	keyboard.doModal()
+#	if (keyboard.isConfirmed()):
+#		Latitude= keyboard.getText()
+	if not Latitude:
+		ADDON.setSetting("Location"+num+"LatLong","")
+		return False
+
+	Longitude=dialog.input(heading=LANGUAGE(32342),defaultt=Longitude,type=xbmcgui.INPUT_ALPHANUM)
+
+#	keyboard = xbmc.Keyboard(Longitude, 32342, False)
+#	keyboard.doModal()
+#	if (keyboard.isConfirmed()):
+#		Longitude= keyboard.getText()
+	if not Longitude:
+		ADDON.setSetting("Location"+num+"LatLong","")
+		return False
+	LatLong=Latitude+","+Longitude
+	ADDON.setSetting("Location"+num+"LatLong",LatLong)
+	fetchLocation(num,LatLong)
+	return
 
 ########################################################################################
 ##  fetches location data (weather grid point, station, etc, for lattitude,logngitude
 ########################################################################################
 
-def fetchLocation(locstr,prefix):
+def fetchLocation(num,LatLong):
+	prefix="Location"+num
+	locstr=LatLong
 	log('searching for location: %s' % locstr)
 	data = get_initial(locstr)
 	log('location data: %s' % data)
@@ -618,12 +660,13 @@ def mapSettings(mapid):
 		t_sel=t_keys[ti]
 		ADDON.setSetting(mapid+"Type",t_keys[ti])
 		ADDON.setSetting(mapid+"Label",MAPSECTORS[s_sel]['name']+":"+MAPTYPES[t_sel])
+		ADDON.setSetting(mapid+"Select",MAPSECTORS[s_sel]['name']+":"+MAPTYPES[t_sel])
 	else:
 		ADDON.setSetting(mapid+"Label","")
+		ADDON.setSetting(mapid+"Select","")
 	
 	# clean up referenced dialog object	
 	del dialog
-	
 	
 
 
@@ -650,18 +693,18 @@ set_property('NOAA.IsFetched'		, 'true')
 set_property('WeatherProvider'		, 'NOAA')
 set_property('WeatherProviderLogo', xbmcvfs.translatePath(os.path.join(ADDON.getAddonInfo('path'), 'resources', 'media', 'skin-banner.png')))
 
-if sys.argv[1].startswith('Location'):
-	log("argument: %s" % (sys.argv[1]))
-	text = ADDON.getSetting(sys.argv[1]+"LatLong")
-	if text == '' :
-		# request latitude,longitude
-		keyboard = xbmc.Keyboard('', LANGUAGE(32332), False)
-		keyboard.doModal()
-		if (keyboard.isConfirmed() and keyboard.getText() != ''):
-			text = keyboard.getText()
-	if text != '':
-		log("calling location with %s and %s" % (text, sys.argv[1]))
-		fetchLocation(text,sys.argv[1])
+
+if sys.argv[1].startswith('EnterLocation'):
+	num=sys.argv[2]
+	enterLocation(num)
+
+if sys.argv[1].startswith('FetchLocation'):
+	num=sys.argv[2]
+	LatLong = ADDON.getSetting("Location"+num+"LatLong")
+	if not LatLong:
+		enterLocation(num)
+	elif LatLong:
+		fetchLocation(num,LatLong)
 
 elif sys.argv[1].startswith('Map'):
 
@@ -675,7 +718,7 @@ else:
 	station=ADDON.getSetting('Location'+str(num)+'Station')
 	if station == '' :
 		log("calling location with %s" % (locationLatLong))
-		fetchLocation(locationLatLong,'Location%s' % str(num))
+		fetchLocation(str(num))
 
 	refresh_locations()
 
