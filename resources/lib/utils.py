@@ -277,14 +277,18 @@ def SPEED(mps):
 
 
 def FtoC(Fahrenheit):
-
-	Celsius = (float(Fahrenheit) - 32.0) * 5.0/9.0 
-	return str(int(round(Celsius))) 
+	try:
+		Celsius = (float(Fahrenheit) - 32.0) * 5.0/9.0 
+		return str(int(round(Celsius))) 
+	except:
+		return
 		
 def CtoF(Celsius):
-	Fahrenheit = (float(Celsius) * 9.0/5.0) + 32.0
-	return str(int(round(Fahrenheit))) 
-
+	try:
+		Fahrenheit = (float(Celsius) * 9.0/5.0) + 32.0
+		return str(int(round(Fahrenheit))) 
+	except:
+		return
 def TEMP(deg):
 	if TEMPUNIT == u'\N{DEGREE SIGN}'+'F':
 		temp = deg * 1.8 + 32
