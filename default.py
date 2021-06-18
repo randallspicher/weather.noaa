@@ -209,6 +209,11 @@ def fetchLocation(num,LatLong):
 def fetchDaily(num):
 
 	url=ADDON.getSetting('Location'+str(num)+'forecast_url')		
+	if 'F' in TEMPUNIT:
+		url="%s?units=us" % url		
+	elif 'C' in TEMPUNIT:
+		url="%s?units=si" % url		
+
 	log('forecast url: %s' % url)
 
 	daily_weather = get_url_JSON(url)
@@ -235,11 +240,20 @@ def fetchDaily(num):
 		set_property('Day%i.Title'		% (count), item['name'])
 
 		if item['isDaytime'] == True:
-			set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
-			set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
+			##Since we passed units into api, we may need to convert to C, or may not
+			if 'F' in TEMPUNIT:
+				set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
+				set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
+			elif 'C' in TEMPUNIT:
+				set_property('Day%i.HighTemp'	% (count), str(item['temperature']))
+				set_property('Day%i.LowTemp'	% (count), str(item['temperature']))
 		if item['isDaytime'] == False:
-			set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
-			set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
+			if 'F' in TEMPUNIT:
+				set_property('Day%i.HighTemp'	% (count), str(FtoC(item['temperature'])))
+				set_property('Day%i.LowTemp'	% (count), str(FtoC(item['temperature'])))
+			elif 'C' in TEMPUNIT:
+				set_property('Day%i.HighTemp'	% (count), str(item['temperature']))
+				set_property('Day%i.LowTemp'	% (count), str(item['temperature']))
 		set_property('Day%i.Outlook'		% (count), item['shortForecast'])
 		set_property('Day%i.OutlookIcon'	% (count), weathercode)
 		set_property('Day%i.RemoteIcon'		% (count), icon)
@@ -260,12 +274,16 @@ def fetchDaily(num):
 			set_property('Daily.%i.ShortDay'	% (count+1), get_weekday(startstamp,'s')+" (d)")
 				#set_property('Daily.%i.TempDay'		% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
 				#set_property('Daily.%i.HighTemperature'	% (count+1), u'%i\N{DEGREE SIGN}%s' % (item['temperature'], item['temperatureUnit']))
-			if 'F' in TEMPUNIT:
-				set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-				set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-			elif 'C' in TEMPUNIT:
-				set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-				set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+
+			## we passed units to api, so we got back C or F, so don't need to convert
+			set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			#if 'F' in TEMPUNIT:
+			#	set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			#	set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			#elif 'C' in TEMPUNIT:
+			#	set_property('Daily.%i.TempDay'		% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+			#	set_property('Daily.%i.HighTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
 			set_property('Daily.%i.TempNight'	% (count+1), '')
 			set_property('Daily.%i.LowTemperature'	% (count+1), '')
 
@@ -275,12 +293,13 @@ def fetchDaily(num):
 
 			set_property('Daily.%i.TempDay'		% (count+1), '')
 			set_property('Daily.%i.HighTemperature'	% (count+1), '')
-			if 'F' in TEMPUNIT:
-				set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-				set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-			elif 'C' in TEMPUNIT:
-				set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-				set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+			## we passed units to api, so we got back C or F, so don't need to convert
+			#if 'F' in TEMPUNIT:
+			set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+			#elif 'C' in TEMPUNIT:
+			#	set_property('Daily.%i.TempNight'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+			#	set_property('Daily.%i.LowTemperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
 
 		if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
 			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'dl'))
@@ -544,10 +563,17 @@ def fetchWeatherAlerts(num):
 	### we could fetch alerts for either 'County', or 'Zone'
 	#https://api.weather.gov/alerts/active/zone/CTZ006
 	#https://api.weather.gov/alerts/active/zone/CTC009
-	#for now, lets use County
+	##https://api.weather.gov/alerts/active?status=actual&point=%7Blat%7D,%7Blong%7D
 
-	a_zone=ADDON.getSetting('Location'+str(num)+'County')
-	url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
+	#for now, lets use the point alert lookup, as suggested by the weather api team
+	
+	##a_zone=ADDON.getSetting('Location'+str(num)+'County')
+	##url="https://api.weather.gov/alerts/active/zone/%s" %a_zone	
+	
+	# we are storing lat,long as comma separated already, so that is convienent for us and we can just drop it into the url
+	latlong=ADDON.getSetting('Location'+str(num)+'LatLong')
+	url="https://api.weather.gov/alerts/active?status=actual&point=%s" % (latlong)
+
 	alerts=get_url_JSON(url)
 	# if we have a valid response then clear our current alerts
 	if alerts and 'features' in alerts:
@@ -588,8 +614,14 @@ def fetchWeatherAlerts(num):
 ########################################################################################
 
 def fetchHourly(num):
-		
+
 	url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')		
+	if 'F' in TEMPUNIT:
+		url="%s?units=us" % url		
+	elif 'C' in TEMPUNIT:
+		url="%s?units=si" % url		
+
+		
 		
 	hourly_weather = get_url_JSON(url)
 	if hourly_weather and 'properties' in hourly_weather:
@@ -638,10 +670,13 @@ def fetchHourly(num):
 		set_property('Hourly.%i.WindSpeed'	% (count+1), item['windSpeed'])
 
 		#set_property('Hourly.%i.Temperature'		% (count+1),	str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
-		if 'F' in TEMPUNIT:
-			set_property('Hourly.%i.Temperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-		elif 'C' in TEMPUNIT:
-			set_property('Hourly.%i.Temperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
+
+		## we passed units to api, so we got back C or F, so don't need to convert
+		set_property('Hourly.%i.Temperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+		##if 'F' in TEMPUNIT:
+		##	set_property('Hourly.%i.Temperature'	% (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+		##elif 'C' in TEMPUNIT:
+		##	set_property('Hourly.%i.Temperature'	% (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
 	
 
 		if rain:
