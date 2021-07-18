@@ -811,13 +811,20 @@ else:
 			fetchDaily(num)
 		fetchHourly(num)
 		Station=ADDON.getSetting('Location%sradarStation' % num)
-		
+
 		set_property('Map.IsFetched', 'true')
 		nowtime=str(time.time())
 		#Radar
+		radarLoop=ADDON.getSetting('RadarLoop')
 		#KODI will cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
 		url="https://radar.weather.gov/ridge/lite/%s_0.gif?%s" % (Station,nowtime)
+		if ("true" == radarLoop):
+			xbmc.log('Option To Loop Radar Selected',level=xbmc.LOGERROR)
+			url="https://radar.weather.gov/ridge/lite/%s_loop.gif?%s" % (Station,nowtime)
 		set_property('Map.%i.Area' % 1, url)
+		#clear_property('Map.%i.Area' % 1)
+		#set_property('Map.%i.Layer' % 1, url)
+		clear_property('Map.%i.Layer' % 1)
 		set_property('Map.%i.Heading' % 1, LANGUAGE(32334))
 
 		
