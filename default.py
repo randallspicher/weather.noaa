@@ -4,12 +4,12 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 
-import os, sys, time
-import xbmc, xbmcgui, xbmcvfs
+import os, glob, sys, time
+import xbmc, xbmcgui, xbmcvfs, xbmcaddon
 
 from resources.lib.utils import FtoC, CtoF, log, ADDON, LANGUAGE,MAPSECTORS,MAPTYPES
 from resources.lib.utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
-from resources.lib.utils import get_url_JSON 
+from resources.lib.utils import get_url_JSON, get_url_image 
 from resources.lib.utils import get_month, get_timestamp, get_weekday, get_time
 
 
@@ -200,6 +200,7 @@ def fetchLocation(num,LatLong):
 			ADDON.setSetting(prefix+'Station',stations[stationlist[i]])
 			ADDON.setSetting(prefix+'StationName',stationlist[i])
 
+		
 
 
 ########################################################################################
@@ -813,17 +814,30 @@ else:
 		Station=ADDON.getSetting('Location%sradarStation' % num)
 
 		set_property('Map.IsFetched', 'true')
+		#KODI will cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
 		nowtime=str(time.time())
 		#Radar
 		radarLoop=ADDON.getSetting('RadarLoop')
-		#KODI will cache and not re-fetch the weather image, so inject a dummy time-stamp into the url to trick kodi because we want the new image
-		url="https://radar.weather.gov/ridge/lite/%s_0.gif?%s" % (Station,nowtime)
 		if ("true" == radarLoop):
-			xbmc.log('Option To Loop Radar Selected',level=xbmc.LOGERROR)
-			url="https://radar.weather.gov/ridge/lite/%s_loop.gif?%s" % (Station,nowtime)
-		set_property('Map.%i.Area' % 1, url)
-		#clear_property('Map.%i.Area' % 1)
-		#set_property('Map.%i.Layer' % 1, url)
+			#kodi will not loop gifs from a url, we have to actually 
+			#download to a local file to get it to loop
+			
+			imagepath=xbmcvfs.translatePath(xbmcaddon.Addon().getAddonInfo('profile'))
+			#clean up previously fetched images
+			for f in glob.glob(imagepath+"radar*.gif"):
+				os.remove(f)
+			xbmc.log('Option To Loop Radar Selected',level=xbmc.LOGDEBUG)
+			url="https://radar.weather.gov/ridge/lite/%s_loop.gif" % (Station)
+			radarfilename="radar_%s.gif" % (nowtime)
+			dest=imagepath+radarfilename
+			loop_image=get_url_image(url, dest)
+			set_property('Map.%i.Area' % 1, loop_image)
+		else:
+			url="https://radar.weather.gov/ridge/lite/%s_0.gif?%s" % (Station,nowtime)
+			set_property('Map.%i.Area' % 1, url)
+			#clear_property('Map.%i.Area' % 1)
+			#set_property('Map.%i.Layer' % 1, url)
+		
 		clear_property('Map.%i.Layer' % 1)
 		set_property('Map.%i.Heading' % 1, LANGUAGE(32334))
 
@@ -853,11 +867,11 @@ else:
 		clear()
 
 # clean up references to classes that we used
-del MONITOR, xbmc, xbmcgui, xbmcvfs, WEATHER_WINDOW
+del MONITOR, xbmc, xbmcgui, xbmcvfs, xbmcaddon, WEATHER_WINDOW
 # clean up everything we referenced from the utils to prevent any dangling classes hanging around
 del FtoC, CtoF, log, ADDON, LANGUAGE, MAPSECTORS, MAPTYPES
 del WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
-del get_url_JSON 
+del get_url_JSON, get_url_image
 del get_month, get_timestamp, get_weekday, get_time
 
 

@@ -58,6 +58,8 @@ def get_url_JSON(url):
 		xbmc.log('failed to fetch : %s' % url,level=xbmc.LOGERROR)
 	return None
 
+
+
 def get_url_response(url):
 	try:
 		xbmc.log('fetching url: %s' % url,level=xbmc.LOGDEBUG)
@@ -77,6 +79,13 @@ def get_url_response(url):
 		xbmc.log('failed to fetch : %s' % url,level=xbmc.LOGERROR)
 	return None
 
+def get_url_image(url,destination):
+	try:
+		urllib.request.urlretrieve(url, destination)
+		return destination
+	except:
+		xbmc.log('failed to fetch : %s' % url,level=xbmc.LOGERROR)
+	return None
 
 
 
