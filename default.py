@@ -213,7 +213,11 @@ def fetchLocation(num,LatLong):
 
 def fetchDaily(num):
 
-	url=ADDON.getSetting('Location'+str(num)+'forecast_url')		
+	log("SOURCEPREF: %s" % SOURCEPREF)
+	url=ADDON.getSetting('Location'+str(num)+'forecast_url')
+	if "preview-api.weather.gov" == SOURCEPREF:
+		url=url.replace("https://api.weather.gov","https://preview-api.weather.gov")
+			
 	if 'F' in TEMPUNIT:
 		url="%s?units=us" % url		
 	elif 'C' in TEMPUNIT:
@@ -626,7 +630,13 @@ def fetchWeatherAlerts(num):
 
 def fetchHourly(num):
 
-	url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')		
+	log("SOURCEPREF: %s" % SOURCEPREF)
+
+	url=ADDON.getSetting('Location'+str(num)+'forecastHourly_url')	
+	if "preview-api.weather.gov" == SOURCEPREF:
+		url=url.replace("https://api.weather.gov","https://preview-api.weather.gov")
+		log("url-x: %s" % url)
+	
 	if 'F' in TEMPUNIT:
 		url="%s?units=us" % url		
 	elif 'C' in TEMPUNIT:
