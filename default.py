@@ -269,8 +269,9 @@ def fetchDaily(num):
 
 		# NOTE: Day props are 0 based, but Daily/Hourly are 1 based
 		set_property('Daily.%i.isDaytime'	% (count+1),str(item['isDaytime']))
-		set_property('Daily.%i.Outlook'		% (count+1), item['detailedForecast'])
+		set_property('Daily.%i.Outlook'		% (count+1), item['shortForecast'])
 		set_property('Daily.%i.ShortOutlook'	% (count+1), item['shortForecast'])
+		set_property('Daily.%i.DetailedOutlook'	% (count+1), item['detailedForecast'])
 		
 		set_property('Daily.%i.RemoteIcon'	% (count+1), icon)
 		set_property('Daily.%i.OutlookIcon'	% (count+1), WEATHER_ICON % weathercode)
@@ -389,7 +390,8 @@ def fetchAltDaily(num):
 		set_property('Day%i.RemoteIcon'		% (count), icon)
 
 		# NOTE: Day props are 0 based, but Daily/Hourly are 1 based
-		set_property('Daily.%i.Outlook'		% (count+1), item['text'])
+		set_property('Daily.%i.DetailedOutlook'		% (count+1), item['text'])
+		set_property('Daily.%i.Outlook'		% (count+1), item['weather'])
 		set_property('Daily.%i.ShortOutlook'	% (count+1), item['weather'])
 		
 		set_property('Daily.%i.RemoteIcon'	% (count+1), icon)
@@ -679,10 +681,8 @@ def fetchHourly(num):
 		else:
 			set_property('Hourly.%i.LongDate'	% (count+1), get_month(startstamp, 'ml'))
 			set_property('Hourly.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
-		outlook=FORECAST.get(item['detailedForecast'],item['detailedForecast'])
-		if len(outlook) < 3 :
-			outlook=FORECAST.get(item['shortForecast'],item['shortForecast'])
-		set_property('Hourly.%i.Outlook'		% (count+1),	outlook)
+
+		set_property('Hourly.%i.Outlook'	% (count+1), FORECAST.get(item['shortForecast'], item['shortForecast']))
 		set_property('Hourly.%i.ShortOutlook'	% (count+1), FORECAST.get(item['shortForecast'], item['shortForecast']))
 		set_property('Hourly.%i.OutlookIcon'	% (count+1), WEATHER_ICON % weathercode)
 		set_property('Hourly.%i.FanartCode'	% (count+1), weathercode)
