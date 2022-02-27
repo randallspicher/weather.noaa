@@ -265,7 +265,7 @@ def fetchDaily(num):
 				set_property('Day%i.LowTemp'	% (count), str(item['temperature']))
 		set_property('Day%i.Outlook'		% (count), item['shortForecast'])
 		set_property('Day%i.OutlookIcon'	% (count), weathercode)
-		set_property('Day%i.RemoteIcon'		% (count), icon)
+		set_property('Day%i.OutlookIcon'		% (count), icon)
 
 		# NOTE: Day props are 0 based, but Daily/Hourly are 1 based
 		set_property('Daily.%i.isDaytime'	% (count+1),str(item['isDaytime']))
@@ -565,6 +565,19 @@ def fetchCurrent(num):
 		set_property('Current.WindGust'	, SPEED(float(data.get('windGust').get('value',0))/3.6) + SPEEDUNIT)
 	except:
 		set_property('Current.WindGust'	, '')
+
+	try:
+		set_property('Current.SeaLevel'	, data.get('seaLevelPressure').get('value',0))
+	except:
+		set_property('Current.SeaLevel'	, '')
+
+	try:
+		set_property('Current.GroundLevel' ,data.get('barometricPressure').get('value',0))
+	except:
+		set_property('Current.GroundLevel'	, '')
+
+
+ 
 
 
 ########################################################################################
