@@ -31,8 +31,8 @@ Note, there are separate forcasts for daytime an nighttime
 
  - Day%i.isDaytime
  - Day%i.Title
- # Note, because weather.gov provieds a sperate Day and Night forecast, only
- # These will both return the same temperature, use "isDaytime" to determine which to show
+Note, because weather.gov provieds a sperate Day and Night forecast, only
+These will both return the same temperature, use "isDaytime" to determine which to show
  - Day%i.HighTemp       
  - Day%i.LowTemp         
  - Day%i.Outlook
