@@ -16,11 +16,11 @@ https://github.com/randallspicher/skin.lyrebird.rmod is a skin that makes use of
 
 Skinners:
 
-* Note that weather.gov does not supply forecasts as one-per-day.  It instead provides separate forecasts for Daytime and Overnight.  Hard-coding the text "Today" and "Tomorrow" will not be accurate, (since first 2 actual forecasts may be for "This Afternoon" and "Tonight" depending on the current time-of-day.  The "Title" property is best to use.  Since the forecast for Day and Night are separate records, the daytime forecast does not provide a "LowTemperature", and the night-time forecast does not provide a "HighTemperature"  The respective non-relevant properties will be left blank in the Daily.n.xxx properties (you will get either Daily.n.HighTemperature, or Daily.n.LowTemperature, depending on if it's a day or night forecast.)  Since Day0.HighTemp and Day0.LowTemp are raw numbers that Kodi insists on calculating, the same temperature is populated and returned in both, to keep kodi happy.  It is recommended that the skin only make use of the Daily properties.
+Note that weather.gov does not supply forecasts as one-per-day.  It instead provides separate forecasts for Daytime and Overnight.  Hard-coding the text "Today" and "Tomorrow" will not be accurate, (since first 2 actual forecasts may be for "This Afternoon" and "Tonight" depending on the current time-of-day.  The "Title" property is best to use.  Since the forecast for Day and Night are separate records, the daytime forecast does not provide a "LowTemperature", and the night-time forecast does not provide a "HighTemperature"  The respective non-relevant properties will be left blank in the Daily.n.xxx properties (you will get either Daily.n.HighTemperature, or Daily.n.LowTemperature, depending on if it's a day or night forecast.)  Since Day0.HighTemp and Day0.LowTemp are raw numbers that Kodi insists on calculating, the same temperature is populated and returned in both, to keep kodi happy.  It is recommended that the skin only make use of the Daily properties.
 
-* Weather.gov has much more verbose descriptive forecasts (can be paragraphs of info, instead of just a couple words).  A new screen (or pop-up dialog) is recommended to display the overview.
+Weather.gov has much more verbose descriptive forecasts (can be paragraphs of info, instead of just a couple words).  A new screen (or pop-up dialog) is recommended to display the overview.
 
-* The plugin provied the following properties:
+The plugin provied the following properties:
 
  - WeatherProvider  #name of provider
  - WeatherProviderLogo # url to logo
