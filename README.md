@@ -20,7 +20,7 @@ Note that weather.gov does not supply forecasts as one-per-day.  It instead prov
 
 Weather.gov has much more verbose descriptive forecasts (can be paragraphs of info, instead of just a couple words).  A new screen (or pop-up dialog) is recommended to display the overview.
 
-The plugin provied the following properties:
+The plugin provies the following properties:
 
  - WeatherProvider  #name of provider
  - WeatherProviderLogo # url to logo
