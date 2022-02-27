@@ -30,9 +30,7 @@ Day forecast (0-13) -- 7 Days
 Note, there are separate forcasts for daytime an nighttime
 
  - Day%i.isDaytime
- - Day%i.Title
-Note, because weather.gov provieds a sperate Day and Night forecast, only
-These will both return the same temperature, use "isDaytime" to determine which to show
+ - Day%i.Title  # Note, because weather.gov provieds a sperate Day and Night forecast, these will both return the same temperature, use "isDaytime" to determine which to show
  - Day%i.HighTemp       
  - Day%i.LowTemp         
  - Day%i.Outlook
