@@ -78,6 +78,11 @@ def code_from_icon(icon):
 	if icon:
 		if '?' in icon:
 			icon=icon.rsplit('?', 1)[0]
+			
+		if "/day/" in icon:
+			sun="day"
+		if "/night/" in icon:
+			sun="night"
 		if '/' in icon:	
 			code=icon.rsplit('/',1)[1]
 		else:
@@ -85,10 +90,10 @@ def code_from_icon(icon):
 		thing=code.split(",")
 		if len(thing) > 1:
 			rain=thing[1]
-			code=thing[0]
+			code="%s/%s" % (sun,thing[0])
 			return code, rain
 		else:
-			code=thing[0]
+			code="%s/%s" % (sun,thing[0])
 			return code, ''
 		
 
@@ -264,8 +269,9 @@ def fetchDaily(num):
 				set_property('Day%i.HighTemp'	% (count), str(item['temperature']))
 				set_property('Day%i.LowTemp'	% (count), str(item['temperature']))
 		set_property('Day%i.Outlook'		% (count), item['shortForecast'])
-		set_property('Day%i.OutlookIcon'	% (count), weathercode)
-		set_property('Day%i.OutlookIcon'		% (count), icon)
+		set_property('Day%i.FanartCode'	% (count), weathercode)
+		set_property('Day%i.OutlookIcon'% (count), WEATHER_ICON % weathercode)
+		set_property('Day%i.RemoteIcon'	% (count), icon)
 
 		# NOTE: Day props are 0 based, but Daily/Hourly are 1 based
 		set_property('Daily.%i.isDaytime'	% (count+1),str(item['isDaytime']))
@@ -319,7 +325,7 @@ def fetchDaily(num):
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
 		
 		if rain:
-			set_property('Daily.%i.Precipitation'	% (count+1), rain + '%')
+			set_property('Daily.%i.Precipitation'	% (count+1), str(rain) + '%')
 		else:
 			set_property('Daily.%i.Precipitation'	% (count+1), '')
 
@@ -386,16 +392,18 @@ def fetchAltDaily(num):
 
 		set_property('Day%i.Outlook'		% (count), item['weather'])
 		set_property('Day%i.Details'		% (count), item['text'])
-		set_property('Day%i.OutlookIcon'	% (count), weathercode)
+
+		set_property('Day%i.OutlookIcon'	% (count), WEATHER_ICON % weathercode)
 		set_property('Day%i.RemoteIcon'		% (count), icon)
+		set_property('Day%i.FanartCode'		% (count), weathercode)
 
 		# NOTE: Day props are 0 based, but Daily/Hourly are 1 based
-		set_property('Daily.%i.DetailedOutlook'		% (count+1), item['text'])
+		set_property('Daily.%i.DetailedOutlook'	% (count+1), item['text'])
 		set_property('Daily.%i.Outlook'		% (count+1), item['weather'])
 		set_property('Daily.%i.ShortOutlook'	% (count+1), item['weather'])
 		
-		set_property('Daily.%i.RemoteIcon'	% (count+1), icon)
 		set_property('Daily.%i.OutlookIcon'	% (count+1), WEATHER_ICON % weathercode)
+		set_property('Daily.%i.RemoteIcon'	% (count+1), icon)
 		set_property('Daily.%i.FanartCode'	% (count+1), weathercode)
 
 		if item['tempLabel'] == 'High':
@@ -435,7 +443,7 @@ def fetchAltDaily(num):
 
 		rain=str(item['pop'])
 		if rain:
-			set_property('Daily.%i.Precipitation'	% (count+1), rain + '%')
+			set_property('Daily.%i.Precipitation'	% (count+1), str(rain) + '%')
 		else:
 			set_property('Daily.%i.Precipitation'	% (count+1), '')
 			
@@ -452,12 +460,12 @@ def fetchAltDaily(num):
 		set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
 		set_property('Current.FanartCode', weathercode)
 		set_property('Current.Condition', FORECAST.get(data.get('Weather'), data.get('Weather')))
-		set_property('Current.Humidity'	, data.get('Relh'))
-		set_property('Current.DewPoint', FtoC(data.get('Dewp')))
+		set_property('Current.Humidity'	, str(data.get('Relh')))
+		set_property('Current.DewPoint', str(FtoC(data.get('Dewp'))))
 				
 		try:
 			temp=data.get('Temp')
-			set_property('Current.Temperature',FtoC(temp)) # api values are in C
+			set_property('Current.Temperature',str(FtoC(temp))) # api values are in C
 		except:
 			set_property('Current.Temperature','') 
 
@@ -472,7 +480,7 @@ def fetchAltDaily(num):
 			set_property('Current.WindDirection', '')
 
 		try:
-			set_property('Current.WindGust'	, SPEED(float(data.get('Gust'))/2.237) + SPEEDUNIT)
+			set_property('Current.WindGust'	, str(SPEED(float(data.get('Gust'))/2.237)) + SPEEDUNIT)
 		except:
 			set_property('Current.WindGust'	, '')
 
@@ -567,12 +575,12 @@ def fetchCurrent(num):
 		set_property('Current.WindGust'	, '')
 
 	try:
-		set_property('Current.SeaLevel'	, data.get('seaLevelPressure').get('value',0))
+		set_property('Current.SeaLevel'	, str(data.get('seaLevelPressure').get('value',0)))
 	except:
 		set_property('Current.SeaLevel'	, '')
 
 	try:
-		set_property('Current.GroundLevel' ,data.get('barometricPressure').get('value',0))
+		set_property('Current.GroundLevel' ,str(data.get('barometricPressure').get('value',0)))
 	except:
 		set_property('Current.GroundLevel'	, '')
 
@@ -676,7 +684,7 @@ def fetchHourly(num):
 				icon=icon.rsplit('?', 1)[0]
 			code, rain=code_from_icon(icon)
 		set_property('Hourly.%i.RemoteIcon'	% (count+1), icon)	
-		
+
 		weathercode = WEATHER_CODES.get(code)
 		starttime=item['startTime']
 		startstamp=get_timestamp(starttime)
@@ -714,8 +722,8 @@ def fetchHourly(num):
 	
 
 		if rain:
-			set_property('Hourly.%i.Precipitation'	% (count+1), rain + '%')
-			set_property('Hourly.%i.ChancePrecipitation'	% (count+1), rain + '%')
+			set_property('Hourly.%i.Precipitation'	% (count+1), str(rain) + '%')
+			set_property('Hourly.%i.ChancePrecipitation'	% (count+1), str(rain) + '%')
 		else:
 			set_property('Hourly.%i.Precipitation'	% (count+1), '')
 			set_property('Hourly.%i.ChancePrecipitation'	% (count+1), '')
