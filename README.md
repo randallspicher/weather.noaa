@@ -87,7 +87,7 @@ Current Weather:
  - Current.Wind
  - Current.WindDirection
  - Current.WindGust
- - Current.ChancePrecipitaion
+ - Current.ChancePrecipitation
  - Current.FeelsLike
  - Current.SeaLevel    # pressure at sealevel
  - Current.GroundLevel # pressure at groundlevel

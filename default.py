@@ -489,9 +489,9 @@ def fetchAltDaily(num):
 			set_property('Current.WindGust'	, '')
 
 		if rain:
-			set_property('Current.ChancePrecipitaion', str(rain)+'%');
+			set_property('Current.ChancePrecipitation', str(rain)+'%');
 		else :
-			set_property('Current.ChancePrecipitaion'		, '');
+			set_property('Current.ChancePrecipitation'		, '');
 
 		try:
 			set_property('Current.FeelsLike', FEELS_LIKE( FtoC(data.get('Temp')), float(data.get('Winds'))/2.237, int(data.get('Relh')), False))
@@ -554,9 +554,9 @@ def fetchCurrent(num):
 		set_property('Current.WindDirection', '')
 
 	if rain:
-		set_property('Current.ChancePrecipitaion', str(rain)+'%');
+		set_property('Current.ChancePrecipitation', str(rain)+'%');
 	else :
-		set_property('Current.ChancePrecipitaion'		, '');
+		set_property('Current.ChancePrecipitation'		, '');
 
 	try:
 		set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(data.get('windSpeed').get('value'))/3.6, data.get('relativeHumidity').get('value'), False))
