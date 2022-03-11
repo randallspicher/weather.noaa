@@ -76,17 +76,21 @@ def get_initial(loc):
 	
 def code_from_icon(icon):
 	if icon:
+		xbmc.log('icon: %s' % (icon) ,level=xbmc.LOGINFO)
 		if '?' in icon:
 			icon=icon.rsplit('?', 1)[0]
-			
-		if "/day/" in icon:
-			sun="day"
+
+		sun="day"	
+#		if "/day/" in icon:
+#			sun="day"
 		if "/night/" in icon:
 			sun="night"
+
 		if '/' in icon:	
 			code=icon.rsplit('/',1)[1]
 		else:
 			code=icon
+
 		thing=code.split(",")
 		if len(thing) > 1:
 			rain=thing[1]
