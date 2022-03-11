@@ -63,7 +63,7 @@ Each item will be either a Daytime forecast with a HighTemperature, or it will b
  - Daily.%i.RemoteIcon      # url to weather.gov icon image (many more types of icons than kodi's built-in list)
  - Daily.%i.OutlookIcon     # kodi built-in icon code (eg, "12.png" ) 
  - Daily.%i.FanartCode      # kodi weather code (eg, "12")
- - Daily.%i.WindDirectiom
+ - Daily.%i.WindDirection
  - Daily.%i.WindSpeed
  - Daily.%i.LongDay         # long title for this item
  - Daily.%i.ShortDay        # short title for this item
