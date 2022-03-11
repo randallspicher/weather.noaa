@@ -1,3 +1,45 @@
+v2.0.9
+- separate "day" and "night" weather codes when mapping to kodi built-in icons
+- return current barometer data
+
+v2.0.8
+- send "shortForecast" as Outlook, and "detailedForecast" as DetailedOutlook because other always have short Outlooks
+
+v2.0.7
+- add in regional radar loop composits to map options
+
+v2.0.6
+- handle error in temp conversion function when we did not receive a valid temperature from the api
+- switch alerts api to use grid location instead of picking zone or county
+- pass in "international" units request to api for hourly and daily forcasts if user selected Celcius as their temp unit of choice
+- option to pull radar loop (animated gif) instead of static image
+
+v2.0.5
+- version bump for release
+
+v2.0.4-b8
+- clean up some if/then logic
+- revamp some settings
+- properly return Celsius for users who set their regional temp to that
+
+v2.0.3
+- fix an import
+
+v2.0.2
+- rework settings to new xml structure
+- move satellite map options into function call instead of hard coded in settings (may grab from api in the future)
+- code cleanup for matrix submission
+- abandon/break all Leia compatibility to meet matrix submission requirements.
+
+v2.0.1
+- move some settings labels into strings.po
+
+v2.0.0
+- Version bump for matrix
+
+v1.0.11
+- Fix logger error in Matrix
+
 v1.0.10
 - Fetch various satellite images for maps 2-5, configured via advanced settings
 
