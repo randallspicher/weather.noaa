@@ -76,7 +76,7 @@ def get_initial(loc):
 	
 def code_from_icon(icon):
 	if icon:
-		xbmc.log('icon: %s' % (icon) ,level=xbmc.LOGINFO)
+		#xbmc.log('icon: %s' % (icon) ,level=xbmc.LOGDEBUG)
 		if '?' in icon:
 			icon=icon.rsplit('?', 1)[0]
 
@@ -329,9 +329,9 @@ def fetchDaily(num):
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
 		
 		if rain:
-			set_property('Daily.%i.Precipitation'	% (count+1), str(rain) + '%')
+			set_property('Daily.%i.ChancePrecipitation'	% (count+1), str(rain) + '%')
 		else:
-			set_property('Daily.%i.Precipitation'	% (count+1), '')
+			set_property('Daily.%i.ChancePrecipitation'	% (count+1), '')
 
 
 
@@ -447,9 +447,9 @@ def fetchAltDaily(num):
 
 		rain=str(item['pop'])
 		if rain:
-			set_property('Daily.%i.Precipitation'	% (count+1), str(rain) + '%')
+			set_property('Daily.%i.ChancePrecipitation'	% (count+1), str(rain) + '%')
 		else:
-			set_property('Daily.%i.Precipitation'	% (count+1), '')
+			set_property('Daily.%i.ChancePrecipitation'	% (count+1), '')
 			
 
 
@@ -491,7 +491,7 @@ def fetchAltDaily(num):
 		if rain:
 			set_property('Current.ChancePrecipitation', str(rain)+'%');
 		else :
-			set_property('Current.ChancePrecipitation'		, '');
+			set_property('Current.ChancePrecipitation', '');
 
 		try:
 			set_property('Current.FeelsLike', FEELS_LIKE( FtoC(data.get('Temp')), float(data.get('Winds'))/2.237, int(data.get('Relh')), False))
@@ -726,10 +726,8 @@ def fetchHourly(num):
 	
 
 		if rain:
-			set_property('Hourly.%i.Precipitation'	% (count+1), str(rain) + '%')
 			set_property('Hourly.%i.ChancePrecipitation'	% (count+1), str(rain) + '%')
 		else:
-			set_property('Hourly.%i.Precipitation'	% (count+1), '')
 			set_property('Hourly.%i.ChancePrecipitation'	% (count+1), '')
 	count = 1
 
