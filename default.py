@@ -884,14 +884,17 @@ else:
 			#kodi will not loop gifs from a url, we have to actually 
 			#download to a local file to get it to loop
 			
+			#xbmc.log('Option To Loop Radar Selected',level=xbmc.LOGDEBUG)
 			xbmc.log('Option To Loop Radar Selected',level=xbmc.LOGDEBUG)
-			url="https://radar.weather.gov/ridge/lite/%s_loop.gif" % (Station)
+			#url="https://radar.weather.gov/ridge/lite/%s_loop.gif" % (Station)
+			url="https://radar.weather.gov/ridge/standard/%s_loop.gif" % (Station)
 			radarfilename="radar_%s_%s.gif" % (Station,nowtime)
 			dest=imagepath+radarfilename
 			loop_image=get_url_image(url, dest)
 			set_property('Map.%i.Area' % 1, loop_image)
 		else:
-			url="https://radar.weather.gov/ridge/lite/%s_0.gif?%s" % (Station,nowtime)
+			#url="https://radar.weather.gov/ridge/lite/%s_0.gif?%s" % (Station,nowtime)
+			url="https://radar.weather.gov/ridge/standard/%s_0.gif?%s" % (Station,nowtime)
 			set_property('Map.%i.Area' % 1, url)
 			#clear_property('Map.%i.Area' % 1)
 			#set_property('Map.%i.Layer' % 1, url)
