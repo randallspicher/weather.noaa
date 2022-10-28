@@ -1,5 +1,7 @@
 v2.0.10
 - radar images url path changed
+- some cleanup on alerts
+- some cleanup on chance of rain logic
 
 v2.0.9
 - separate "day" and "night" weather codes when mapping to kodi built-in icons

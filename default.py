@@ -11,6 +11,7 @@ from resources.lib.utils import FtoC, CtoF, log, ADDON, LANGUAGE, MAPSECTORS, LO
 from resources.lib.utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
 from resources.lib.utils import get_url_JSON, get_url_image 
 from resources.lib.utils import get_month, get_timestamp, get_weekday, get_time
+from hamcrest.core.core.isnone import none
 
 
 WEATHER_WINDOW  = xbmcgui.Window(12600)
@@ -83,19 +84,19 @@ def code_from_icon(icon):
 		if "/night/" in icon:
 			sun="night"
 
-		if '/' in icon:	
-			code=icon.rsplit('/',1)[1]
-		else:
-			code=icon
+		rain = None
+		code = None
+		# loop though our "split" icon paths, and get max rain percent
+		# take last icon code in the process
+		for checkcode in icon.rsplit('/'):
+			thing=checkcode.split(",")
+			code="%s/%s" % (sun,thing[0])
+			if len(thing) > 1:
+				train=thing[1]
+				if rain is None or train > rain:
+					rain=train
 
-		thing=code.split(",")
-		if len(thing) > 1:
-			rain=thing[1]
-			code="%s/%s" % (sun,thing[0])
-			return code, rain
-		else:
-			code="%s/%s" % (sun,thing[0])
-			return code, ''
+		return code, rain
 		
 
 ########################################################################################
@@ -241,7 +242,7 @@ def fetchDaily(num):
 		xbmc.log('%s' % daily_weather,level=xbmc.LOGERROR)
 		return fetchAltDaily(num)
 
-	for count, item in enumerate(data['periods']):
+	for count, item in enumerate(data['periods'], start=0):
 		icon = item['icon']
 		#https://api.weather.gov/icons/land/night/ovc?size=small
 		if icon and '?' in icon:
@@ -380,7 +381,7 @@ def fetchAltDaily(num):
 		xbmc.log('%s' % daily_weather,level=xbmc.LOGERROR)
 		return None
 
-	for count, item in enumerate(dailydata):
+	for count, item in enumerate(dailydata, start=0):
 		icon = item['iconLink']
 
 		#https://api.weather.gov/icons/land/night/ovc?size=small
@@ -625,20 +626,20 @@ def fetchWeatherAlerts(num):
 		xbmc.log('No current weather alerts from  %s' % url,level=xbmc.LOGDEBUG)
 		return
 	
-	for count, item in enumerate(data):
+	for count, item in enumerate(data, start=1):
 		
 		thisdata=item['properties']
-		set_property('Alerts.%i.status'		% (count+1), str(thisdata['status']))	
-		set_property('Alerts.%i.messageType'	% (count+1), str(thisdata['messageType']))	
-		set_property('Alerts.%i.category'	% (count+1), str(thisdata['category']))	
-		set_property('Alerts.%i.severity'	% (count+1), str(thisdata['severity']))	
-		set_property('Alerts.%i.certainty'	% (count+1), str(thisdata['certainty']))	
-		set_property('Alerts.%i.urgency'	% (count+1), str(thisdata['urgency']))	
-		set_property('Alerts.%i.event'		% (count+1), str(thisdata['event']))	
-		set_property('Alerts.%i.headline'	% (count+1), str(thisdata['headline']))	
-		set_property('Alerts.%i.description'	% (count+1), str(thisdata['description']))	
-		set_property('Alerts.%i.instruction'	% (count+1), str(thisdata['instruction']))	
-		set_property('Alerts.%i.response'	% (count+1), str(thisdata['response']))	
+		set_property('Alerts.%i.status'		% (count), str(thisdata['status']))	
+		set_property('Alerts.%i.messageType'	% (count), str(thisdata['messageType']))	
+		set_property('Alerts.%i.category'	% (count), str(thisdata['category']))	
+		set_property('Alerts.%i.severity'	% (count), str(thisdata['severity']))	
+		set_property('Alerts.%i.certainty'	% (count), str(thisdata['certainty']))	
+		set_property('Alerts.%i.urgency'	% (count), str(thisdata['urgency']))	
+		set_property('Alerts.%i.event'		% (count), str(thisdata['event']))	
+		set_property('Alerts.%i.headline'	% (count), str(thisdata['headline']))	
+		set_property('Alerts.%i.description'	% (count), str(thisdata['description']))	
+		set_property('Alerts.%i.instruction'	% (count), str(thisdata['instruction']))	
+		set_property('Alerts.%i.response'	% (count), str(thisdata['response']))	
 
 
 
@@ -670,7 +671,7 @@ def fetchHourly(num):
 		return
 
 # extended properties
-	for count, item in enumerate(data['periods']):
+	for count, item in enumerate(data['periods'], start = 0):
 		
 		icon=item['icon']
 		#https://api.weather.gov/icons/land/night/ovc?size=small
