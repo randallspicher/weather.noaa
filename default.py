@@ -384,7 +384,7 @@ def fetchAltDaily(num):
 		icon = item['iconLink']
 
 		#https://api.weather.gov/icons/land/night/ovc?size=small
-		code, rain=code_from_icon(icon)
+		code, ignoreme = code_from_icon(icon)
 		weathercode = WEATHER_CODES.get(code)
 
 		starttime=item['startValidTime']
@@ -442,7 +442,7 @@ def fetchAltDaily(num):
 			set_property('Daily.%i.LongDate'	% (count+1), get_month(startstamp, 'ml'))
 			set_property('Daily.%i.ShortDate'	% (count+1), get_month(startstamp, 'ms'))
 
-		rain=str(item['pop'])
+		rain = item['pop']
 		if rain:
 			set_property('Daily.%i.ChancePrecipitation'	% (count+1), str(rain) + '%')
 		else:
@@ -454,7 +454,7 @@ def fetchAltDaily(num):
 	if daily_weather and 'currentobservation' in daily_weather:
 		data=daily_weather['currentobservation']
 		icon = "http://forecast.weather.gov/newimages/large/%s" % data.get('Weatherimage')
-		code, rain=code_from_icon(icon)
+		code, rain = code_from_icon(icon)
 		weathercode = WEATHER_CODES.get(code)
 		set_property('Current.Location', data.get('name'))
 		set_property('Current.RemoteIcon',icon) 
@@ -516,16 +516,17 @@ def fetchCurrent(num):
 	
 	icon = data['icon']
 	#https://api.weather.gov/icons/land/night/ovc?size=small
-	code=''
-	rain=''
+	code = None
+	rain = None
 	if icon:
 		if '?' in icon:
 			icon=icon.rsplit('?', 1)[0]
-		code, rain=code_from_icon(icon)
+		code, rain = code_from_icon(icon)
 		weathercode = WEATHER_CODES.get(code)
 		set_property('Current.RemoteIcon',icon) 
 		set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
 		set_property('Current.FanartCode', weathercode)
+
 	set_property('Current.Condition', FORECAST.get(data.get('textDescription'), data.get('textDescription')))
 	try:
 		set_property('Current.Humidity'	, str(round(data.get('relativeHumidity').get('value'))))
@@ -550,7 +551,7 @@ def fetchCurrent(num):
 	if rain:
 		set_property('Current.ChancePrecipitation', str(rain)+'%');
 	else :
-		set_property('Current.ChancePrecipitation'		, '');
+		set_property('Current.ChancePrecipitation', '');
 
 	try:
 		set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(data.get('windSpeed').get('value'))/3.6, data.get('relativeHumidity').get('value'), False))
