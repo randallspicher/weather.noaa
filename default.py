@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 
-from future import standard_library
-standard_library.install_aliases()
+#from future import standard_library
+#standard_library.install_aliases()
 
 import os, glob, sys, time
 import xbmc, xbmcgui, xbmcvfs, xbmcaddon
@@ -66,10 +66,7 @@ def refresh_locations():
 	log('available locations: %s' % str(locations))
 
 def get_initial(loc):
-	if "preview-api.weather.gov" == SOURCEPREF:
-		url = 'https://preview-api.weather.gov/points/%s' % loc
-	else:	
-		url = 'https://api.weather.gov/points/%s' % loc
+	url = 'https://api.weather.gov/points/%s' % loc
 	log("url:"+url)
 	responsedata=get_url_JSON(url)	
 	return responsedata
@@ -508,10 +505,7 @@ def fetchAltDaily(num):
 
 def fetchCurrent(num):
 	station=ADDON.getSetting('Location'+str(num)+'Station')
-	if "preview-api.weather.gov" == SOURCEPREF:
-		url="https://preview-api.weather.gov/stations/%s/observations/latest" %station	
-	else:
-		url="https://api.weather.gov/stations/%s/observations/latest" %station	
+	url="https://api.weather.gov/stations/%s/observations/latest" %station	
 	current=get_url_JSON(url)
 	if current and 'properties' in current:
 		data=current['properties']
@@ -611,10 +605,7 @@ def fetchWeatherAlerts(num):
 	
 	# we are storing lat,long as comma separated already, so that is convienent for us and we can just drop it into the url
 	latlong=ADDON.getSetting('Location'+str(num)+'LatLong')
-	if "preview-api.weather.gov" == SOURCEPREF:
-		url="https://preview-api.weather.gov/alerts/active?status=actual&point=%s" % (latlong)
-	else:
-		url="https://api.weather.gov/alerts/active?status=actual&point=%s" % (latlong)
+	url="https://api.weather.gov/alerts/active?status=actual&point=%s" % (latlong)
 
 	alerts=get_url_JSON(url)
 	# if we have a valid response then clear our current alerts
@@ -886,14 +877,12 @@ else:
 			
 			#xbmc.log('Option To Loop Radar Selected',level=xbmc.LOGDEBUG)
 			xbmc.log('Option To Loop Radar Selected',level=xbmc.LOGDEBUG)
-			#url="https://radar.weather.gov/ridge/lite/%s_loop.gif" % (Station)
 			url="https://radar.weather.gov/ridge/standard/%s_loop.gif" % (Station)
 			radarfilename="radar_%s_%s.gif" % (Station,nowtime)
 			dest=imagepath+radarfilename
 			loop_image=get_url_image(url, dest)
 			set_property('Map.%i.Area' % 1, loop_image)
 		else:
-			#url="https://radar.weather.gov/ridge/lite/%s_0.gif?%s" % (Station,nowtime)
 			url="https://radar.weather.gov/ridge/standard/%s_0.gif?%s" % (Station,nowtime)
 			set_property('Map.%i.Area' % 1, url)
 			#clear_property('Map.%i.Area' % 1)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 
-from future import standard_library
+#from future import standard_library
 import math
 import time
 
@@ -11,7 +11,7 @@ from dateutil.parser import parse
 import socket, urllib.request
 import json
 
-standard_library.install_aliases()
+#standard_library.install_aliases()
 
 
 ADDON		= xbmcaddon.Addon()
@@ -89,40 +89,6 @@ def get_url_image(url,destination):
 
 
 WEATHER_CODES = {
-#		'skc':		'34', #'Fair/clear'
-#		'few':		'30', #'A few clouds'
-#		'sct':		'30', #'Partly cloudy'
-#		'bkn':		'28', #'Mostly cloudy'
-#		'ovc':		'26', #'Overcast'
-#		'wind_skc':	'24', #'Fair/clear and windy'
-#		'wind_few':	'26', #'A few clouds and windy'
-#		'wind_sct':	'26', #'Partly cloudy and windy'
-#		'wind_bkn':	'28', #'Mostly cloudy and windy'
-#		'wind_ovc':	'26', #'Overcast and windy'
-#		'snow':		'16', #'Snow'
-#		'rain_snow':	'5', #'Rain/snow'
-#		'rain_sleet':	'6', #'Rain/sleet'
-#		'snow_sleet':	'7', #'Rain/sleet'
-#		'fzra':		'10', #'Freezing rain'
-#		'rain_fzra':	'10', #'Rain/freezing rain'
-#		'snow_fzra':	'10', #'Freezing rain/snow'
-#		'sleet':	'18', #'Sleet'
-#		'rain':		'40', #'Rain'
-#		'rain_showers':	'11', #'Rain showers (high cloud cover)'
-#		'rain_showers_hi':	'12', #'Rain showers (low cloud cover)'
-#		'tsra':		'38', #'Thunderstorm (high cloud cover)'
-#		'tsra_sct':	'39', #'Thunderstorm (medium cloud cover)'
-#		'tsra_hi':	'38', #'Thunderstorm (low cloud cover)'
-#		'tornado':	'0', #'Tornado'
-#		'hurricane':	'2', #'Hurricane conditions'
-#		'tropical_storm':	'1', #'Tropical storm conditions'
-#		'dust':		'19', #'Dust'
-#		'smoke':	'22', #'Smoke'
-#		'haze':		'21', #'Haze'
-#		'hot':		'36', #'Hot'
-#		'cold':		'25', #'Cold'
-#		'blizzard':	'15', #'Blizzard'
-#		'fog':		'20', #'Fog/mist'
 
 		'day/skc':		'32', #'Fair/clear'
 		'day/few':		'30', #'A few clouds'
