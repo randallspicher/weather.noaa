@@ -11,7 +11,6 @@ from resources.lib.utils import FtoC, CtoF, log, ADDON, LANGUAGE, MAPSECTORS, LO
 from resources.lib.utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
 from resources.lib.utils import get_url_JSON, get_url_image 
 from resources.lib.utils import get_month, get_timestamp, get_weekday, get_time
-from hamcrest.core.core.isnone import none
 
 
 WEATHER_WINDOW  = xbmcgui.Window(12600)
