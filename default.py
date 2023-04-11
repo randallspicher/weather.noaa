@@ -98,8 +98,11 @@ def code_from_icon(icon):
 ##  Dialog for getting Latitude and Longitude
 ########################################################################################
 
+
+
 def enterLocation(num):  
 ##  log("argument: %s" % (sys.argv[1]))
+
   text = ADDON.getSetting("Location"+num+"LatLong")
   Latitude=""
   Longitude=""
@@ -123,7 +126,7 @@ def enterLocation(num):
     return False
   LatLong=Latitude+","+Longitude
   ADDON.setSetting("Location"+num+"LatLong",LatLong)
-  get_Stations(num,LatLong)
+  get_Stations(num,LatLong,True)
   return
 
 
@@ -134,7 +137,7 @@ def enterLocation(num):
 
 
 
-def get_Points(num,LatLong):
+def get_Points(num,LatLong,resetName=False):
 
   prefix="Location"+num
   log('searching for location: %s' % LatLong)
@@ -147,10 +150,11 @@ def get_Points(num,LatLong):
     return None
   if data and 'properties' in data:
 
-    city  =  data['properties']['relativeLocation']['properties']['city']
-    state =    data['properties']['relativeLocation']['properties']['state']
-    locationName=  city+", "+state
-    ADDON.setSetting(prefix, locationName)
+    if resetName:
+      city  =  data['properties']['relativeLocation']['properties']['city']
+      state =    data['properties']['relativeLocation']['properties']['state']
+      locationName=  city+", "+state
+      ADDON.setSetting(prefix, locationName)
 
     gridX=data['properties']['gridX']
     ADDON.setSetting(prefix+'gridX',str(gridX))
@@ -194,11 +198,11 @@ def get_Points(num,LatLong):
 ##  fetches location data (weather grid point, station, etc, for lattitude,logngitude
 ########################################################################################
 
-def get_Stations(num,LatLong):
+def get_Stations(num,LatLong,resetName=False):
     
     prefix="Location"+num
     odata=None
-    stations_url=get_Points(num,LatLong)
+    stations_url=get_Points(num,LatLong,resetName)
     if stations_url:
       odata = get_url_JSON(stations_url)
 

@@ -2,6 +2,7 @@ v2.0.11
 - fix wind-chill calculation
 - if we have a direct windchill or headindex value from the api, use that instead of calculating it
 - refresh the gridpoint and forecast urls from the lattitude/longitude every couple of days to handle grid changes in the api
+- only reset location descriptive name when lat,long is entered
 
 v2.0.10
 - radar images url path changed
