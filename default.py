@@ -578,8 +578,12 @@ def fetchCurrent(num):
 
   clear_property('Current.FeelsLike')
   #calculate feels like
+  windspeed=data.get('windSpeed').get('value')
+  if not windspeed:
+    windspeed=0
+  
   try:
-    set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(data.get('windSpeed').get('value'))/3.6, data.get('relativeHumidity').get('value'), False))
+    set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(windspeed)/3.6, data.get('relativeHumidity').get('value'), False))
   except:
     clear_property('Current.FeelsLike')
 

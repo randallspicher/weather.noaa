@@ -418,7 +418,7 @@ def KPHTOBFT(spd):
     bft = ''
   return bft
 
-def FEELS_LIKE(T, V=0, Rs=0, ext=True):
+def FEELS_LIKE(Ts, Vs=0, Rs=0, ext=True):
   T=float(Ts)
   V=float(Vs)
   R=float(Rs)
