@@ -6,12 +6,13 @@
 
 import os, glob, sys, time
 import xbmc, xbmcgui, xbmcvfs, xbmcaddon
+import datetime
 
 from resources.lib.utils import FtoC, CtoF, log, ADDON, LANGUAGE, MAPSECTORS, LOOPSECTORS, MAPTYPES
 from resources.lib.utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
 from resources.lib.utils import get_url_JSON, get_url_image 
 from resources.lib.utils import get_month, get_timestamp, get_weekday, get_time
-
+from dateutil.parser import parse
 
 WEATHER_WINDOW  = xbmcgui.Window(12600)
 WEATHER_ICON  = xbmcvfs.translatePath('%s.png')
@@ -65,11 +66,6 @@ def refresh_locations():
   set_property('Locations', str(locations))
   log('available locations: %s' % str(locations))
 
-def get_initial(loc):
-  url = 'https://api.weather.gov/points/%s' % loc
-  log("url:"+url)
-  responsedata=get_url_JSON(url)  
-  return responsedata
   
 def code_from_icon(icon):
   if icon:
@@ -116,37 +112,35 @@ def enterLocation(num):
   
   Latitude=dialog.input(LANGUAGE(32341),defaultt=Latitude,type=xbmcgui.INPUT_ALPHANUM)
   
-#  xbmc.Keyboard(line, heading, hidden)
-#  keyboard = xbmc.Keyboard(Latitude, 32341, False)
-#  keyboard.doModal()
-#  if (keyboard.isConfirmed()):
-#    Latitude= keyboard.getText()
   if not Latitude:
     ADDON.setSetting("Location"+num+"LatLong","")
     return False
 
   Longitude=dialog.input(heading=LANGUAGE(32342),defaultt=Longitude,type=xbmcgui.INPUT_ALPHANUM)
 
-#  keyboard = xbmc.Keyboard(Longitude, 32342, False)
-#  keyboard.doModal()
-#  if (keyboard.isConfirmed()):
-#    Longitude= keyboard.getText()
   if not Longitude:
     ADDON.setSetting("Location"+num+"LatLong","")
     return False
   LatLong=Latitude+","+Longitude
   ADDON.setSetting("Location"+num+"LatLong",LatLong)
-  fetchLocation(num,LatLong)
+  get_Stations(num,LatLong)
   return
+
 
 ########################################################################################
 ##  fetches location data (weather grid point, station, etc, for lattitude,logngitude
+##  returns url for fetching local weather stations
 ########################################################################################
 
-def fetchLocation(num,LatLong):
+
+
+def get_Points(num,LatLong):
+
   prefix="Location"+num
   log('searching for location: %s' % LatLong)
-  data = get_initial(LatLong)
+  url = 'https://api.weather.gov/points/%s' % LatLong
+  log("url:"+url)
+  data=get_url_JSON(url)  
   log('location data: %s' % data)
   if not data:
     log('failed to retrieve location data')
@@ -188,8 +182,25 @@ def fetchLocation(num,LatLong):
     ADDON.setSetting(prefix+'radarStation',  radarStation)
     
 
+    #current_datetime = parse("now")
+    current_datetime = datetime.datetime.now()
+    ADDON.setSetting(prefix+'lastPointsCheck',  str(current_datetime))
+
+
     stations_url =  data['properties']['observationStations']
-    odata = get_url_JSON(stations_url)
+    return stations_url
+
+########################################################################################
+##  fetches location data (weather grid point, station, etc, for lattitude,logngitude
+########################################################################################
+
+def get_Stations(num,LatLong):
+    
+    prefix="Location"+num
+    odata=None
+    stations_url=get_Points(num,LatLong)
+    if stations_url:
+      odata = get_url_JSON(stations_url)
 
     if odata and 'features' in odata:
       stations={}
@@ -491,10 +502,12 @@ def fetchAltDaily(num):
       set_property('Current.ChancePrecipitation', '');
 
     # calculate feels like
+    clear_property('Current.FeelsLike')
     try:
       set_property('Current.FeelsLike', FEELS_LIKE( FtoC(data.get('Temp')), float(data.get('Winds'))/2.237, int(data.get('Relh')), False))
     except:
-      set_property('Current.FeelsLike', '')
+      clear_property('Current.FeelsLike')
+      #set_property('Current.FeelsLike', '')
 
     # if we have windchill or heatindex directly, then use that instead
     if data.get('WindChill'):
@@ -560,12 +573,11 @@ def fetchCurrent(num):
     set_property('Current.ChancePrecipitation', '');
 
   clear_property('Current.FeelsLike')
-
   #calculate feels like
   try:
     set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(data.get('windSpeed').get('value'))/3.6, data.get('relativeHumidity').get('value'), False))
   except:
-    set_property('Current.FeelsLike', '')
+    clear_property('Current.FeelsLike')
 
   # if we have windchill or heat index directly, then use that instead
   if data.get('windChill').get('value'):
@@ -846,7 +858,7 @@ if sys.argv[1].startswith('FetchLocation'):
   if not LatLong:
     enterLocation(num)
   elif LatLong:
-    fetchLocation(num,LatLong)
+    get_Stations(num,LatLong)
 
 elif sys.argv[1].startswith('Map'):
 
@@ -860,7 +872,17 @@ else:
   station=ADDON.getSetting('Location'+str(num)+'Station')
   if station == '' :
     log("calling location with %s" % (LatLong))
-    fetchLocation(str(num),LatLong)
+    get_Stations(str(num),LatLong)
+
+  try:   
+    lastPointsCheck=ADDON.getSetting('Location'+str(num)+'lastPointsCheck')
+    last_check=parse(lastPointsCheck)
+    current_datetime = datetime.datetime.now()
+    next_check=last_check+datetime.timedelta(days=2)
+    if (next_check < current_datetime):
+      get_Points(str(num),LatLong)
+  except: 
+    get_Points(str(num),LatLong)
 
   refresh_locations()
 
