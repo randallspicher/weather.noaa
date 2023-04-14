@@ -169,6 +169,46 @@ WEATHER_CODES = {
     'night/blizzard':  '15', #'Blizzard'
     'night/fog':    '20', #'Fog/mist'
 
+    # special hanlding of forecast.weather.com url patterns that use "nxyz" pattersn for night
+    'day/nskc':    '31', #'Fair/clear'
+    'day/nfew':    '29', #'A few clouds'
+    'day/nsct':    '29', #'Partly cloudy'
+    'day/nbkn':    '27', #'Mostly cloudy'
+    'day/novc':    '26', #'Overcast'
+    'day/nwind_skc':  '24', #'Fair/clear and windy'
+    'day/nwind_few':  '29', #'A few clouds and windy'
+    'day/nwind_sct':  '29', #'Partly cloudy and windy'
+    'day/nwind_bkn':  '27', #'Mostly cloudy and windy'
+    'day/nwind_ovc':  '26', #'Overcast and windy'
+    'day/nsnow':    '16', #'Snow'
+    'day/nrain_snow':  '5', #'Rain/snow'
+    'day/nrain_sleet':  '6', #'Rain/sleet'
+    'day/nsnow_sleet':  '7', #'Rain/sleet'
+    'day/nfzra':    '10', #'Freezing rain'
+    'day/nrain_fzra':  '10', #'Rain/freezing rain'
+    'day/nsnow_fzra':  '10', #'Freezing rain/snow'
+    'day/nsleet':    '18', #'Sleet'
+    'day/nrain':    '40', #'Rain'
+    'day/nrain_showers':  '11', #'Rain showers (high cloud cover)'
+    'day/nrain_showers_hi':'12', #'Rain showers (low cloud cover)'
+    'day/ntsra':    '37', #'Thunderstorm (high cloud cover)'
+    'day/ntsra_sct':  '38', #'Thunderstorm (medium cloud cover)'
+    'day/ntsra_hi':  '39', #'Thunderstorm (low cloud cover)'
+    'day/ntornado':  '0', #'Tornado'
+    'day/nhurricane':  '2', #'Hurricane conditions'
+    'day/ntropical_storm':  '1', #'Tropical storm conditions'
+    'day/ndust':    '19', #'Dust'
+    'day/nsmoke':    '22', #'Smoke'
+    'day/nhaze':    '21', #'Haze'
+    'day/nhot':    '36', #'Hot'
+    'day/ncold':    '25', #'Cold'
+    'day/nblizzard':  '15', #'Blizzard'
+    'day/nfog':    '20', #'Fog/mist'
+ 
+        
+
+
+
     '': 'na' 
   }
 

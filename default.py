@@ -70,14 +70,41 @@ def refresh_locations():
 def code_from_icon(icon):
   if icon:
     #xbmc.log('icon: %s' % (icon) ,level=xbmc.LOGDEBUG)
+
+
+    daynight="day"  
+
+    #special handling of forecast.weather.gov "dualimage" icon generator urls
+    #https://forecast.weather.gov/DualImage.php?i=bkn&j=shra&jp=30
+    #https://forecast.weather.gov/DualImage.php?i=shra&j=bkn&ip=30
+    if 'DualImage' in icon:
+      params = icon.split("?")[1].split("&")
+      code="day"
+      rain=None
+      for param in params:
+        thing=param.split("=")     
+        p=thing[0]
+        v=thing[1]
+        if p == "i":
+          code="%s/%s" % ("day",v)
+        if p == "ip" or p == "jp":
+          if rain is None or v > rain:
+            rain=v
+
+      return code, rain
+        
+
     if '?' in icon:
       icon=icon.rsplit('?', 1)[0]
 
-    sun="day"  
-#    if "/day/" in icon:
-#      sun="day"
-    if "/night/" in icon:
-      sun="night"
+    # strip off file extension if we have one
+    icon=icon.replace(".png","")    
+    icon=icon.replace(".jpg","")    
+
+    if "/day/" in icon:
+      daynight="day"
+    elif "/night/" in icon:
+      daynight="night"
 
     rain = None
     code = None
@@ -85,7 +112,7 @@ def code_from_icon(icon):
     # take last icon code in the process
     for checkcode in icon.rsplit('/'):
       thing=checkcode.split(",")
-      code="%s/%s" % (sun,thing[0])
+      code="%s/%s" % (daynight,thing[0])
       if len(thing) > 1:
         train=thing[1]
         if rain is None or train > rain:
@@ -340,10 +367,11 @@ def fetchDaily(num):
       set_property('Daily.%i.LongDate'  % (count+1), get_month(startstamp, 'ml'))
       set_property('Daily.%i.ShortDate'  % (count+1), get_month(startstamp, 'ms'))
     
-    if rain:
+    if rain and str(rain) and not "0" == str(rain):
       set_property('Daily.%i.ChancePrecipitation'  % (count+1), str(rain) + '%')
     else:
-      set_property('Daily.%i.ChancePrecipitation'  % (count+1), '')
+      ##set_property('Daily.%i.ChancePrecipitation'  % (count+1), '')
+      clear_property('Daily.%i.ChancePrecipitation'  % (count+1))
 
 
 
@@ -458,10 +486,11 @@ def fetchAltDaily(num):
       set_property('Daily.%i.ShortDate'  % (count+1), get_month(startstamp, 'ms'))
 
     rain = item['pop']
-    if rain:
+    if rain and str(rain) and not "0" == str(rain):
       set_property('Daily.%i.ChancePrecipitation'  % (count+1), str(rain) + '%')
     else:
-      set_property('Daily.%i.ChancePrecipitation'  % (count+1), '')
+      ##set_property('Daily.%i.ChancePrecipitation'  % (count+1), '')
+      clear_property('Daily.%i.ChancePrecipitation'  % (count+1))
       
 
 
@@ -471,6 +500,7 @@ def fetchAltDaily(num):
     icon = "http://forecast.weather.gov/newimages/large/%s" % data.get('Weatherimage')
     code, rain = code_from_icon(icon)
     weathercode = WEATHER_CODES.get(code)
+
     set_property('Current.Location', data.get('name'))
     set_property('Current.RemoteIcon',icon) 
     set_property('Current.OutlookIcon', '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
@@ -483,40 +513,45 @@ def fetchAltDaily(num):
       temp=data.get('Temp')
       set_property('Current.Temperature',str(FtoC(temp))) # api values are in C
     except:
-      set_property('Current.Temperature','') 
+      #set_property('Current.Temperature','') 
+      clear_property('Current.Temperature') 
 
     try:
       set_property('Current.Wind', str(round(float(data.get('Winds'))*1.609298167)))
     except:
-      set_property('Current.Wind','')
+      #set_property('Current.Wind','')
+      clear_property('Current.Wind')
 
     try:
       set_property('Current.WindDirection', xbmc.getLocalizedString(WIND_DIR(int(data.get('Windd')))))
     except:
-      set_property('Current.WindDirection', '')
+      #set_property('Current.WindDirection', '')
+      clear_property('Current.WindDirection')
 
     try:
       set_property('Current.WindGust'  , str(SPEED(float(data.get('Gust'))/2.237)) + SPEEDUNIT)
     except:
-      set_property('Current.WindGust'  , '')
+      clear_property('Current.WindGust')
+      ##set_property('Current.WindGust'  , '')
 
-    if rain:
-      set_property('Current.ChancePrecipitation', str(rain)+'%');
+    if rain and str(rain) and not "0" == str(rain):
+      set_property('Current.ChancePrecipitation', str(rain)+'%')
     else :
-      set_property('Current.ChancePrecipitation', '');
+      clear_property('Current.ChancePrecipitation')
 
     # calculate feels like
     clear_property('Current.FeelsLike')
     try:
-      set_property('Current.FeelsLike', FEELS_LIKE( FtoC(data.get('Temp')), float(data.get('Winds'))/2.237, int(data.get('Relh')), False))
+      feels = FEELS_LIKE( FtoC(data.get('Temp')), float(data.get('Winds'))/2.237, int(data.get('Relh')), False)
+      set_property('Current.FeelsLike', str(feels))
     except:
       clear_property('Current.FeelsLike')
       #set_property('Current.FeelsLike', '')
 
     # if we have windchill or heatindex directly, then use that instead
-    if data.get('WindChill'):
+    if data.get('WindChill') and not "NA" == data.get('WindChill'):
       set_property('Current.FeelsLike', str(FtoC(data.get('WindChill'))) )
-    if data.get('HeatIndex'):
+    if data.get('HeatIndex') and not "NA" == data.get('HeatIndex'):
       set_property('Current.FeelsLike', str(FtoC(data.get('HeatIndex'))) )
 
     
@@ -554,27 +589,32 @@ def fetchCurrent(num):
   try:
     set_property('Current.Humidity'  , str(round(data.get('relativeHumidity').get('value'))))
   except:
-    set_property('Current.Humidity'    , '')
+    ##set_property('Current.Humidity'    , '')
+    clear_property('Current.Humidity')
         
   try:
     temp=int(round(data.get('temperature').get('value')))
     set_property('Current.Temperature',str(temp)) # api values are in C
   except:
-    set_property('Current.Temperature','') 
+    ##set_property('Current.Temperature','') 
+    clear_property('Current.Temperature') 
   try:
     set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value')))))
   except:
-    set_property('Current.Wind','')
+    ##set_property('Current.Wind','')
+    clear_property('Current.Wind')
 
   try:
     set_property('Current.WindDirection', xbmc.getLocalizedString(WIND_DIR(int(round(data.get('windDirection').get('value'))))))
   except:
-    set_property('Current.WindDirection', '')
+    #set_property('Current.WindDirection', '')
+    clear_property('Current.WindDirection')
 
-  if rain:
-    set_property('Current.ChancePrecipitation', str(rain)+'%');
+  if rain and str(rain) and not "0" == str(rain):
+    set_property('Current.ChancePrecipitation', str(rain)+'%')
   else :
-    set_property('Current.ChancePrecipitation', '');
+    #set_property('Current.ChancePrecipitation', '')
+    clear_property('Current.ChancePrecipitation')
 
   clear_property('Current.FeelsLike')
   #calculate feels like
@@ -755,10 +795,11 @@ def fetchHourly(num):
     ##  set_property('Hourly.%i.Temperature'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
   
 
-    if rain:
+    if rain and str(rain) and not "0" == str(rain):
       set_property('Hourly.%i.ChancePrecipitation'  % (count+1), str(rain) + '%')
     else:
-      set_property('Hourly.%i.ChancePrecipitation'  % (count+1), '')
+      ##set_property('Hourly.%i.ChancePrecipitation'  % (count+1), '')
+      clear_property('Hourly.%i.ChancePrecipitation'  % (count+1))
   count = 1
 
 
