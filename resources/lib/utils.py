@@ -37,15 +37,18 @@ def get_url_JSON(url):
   try:
     xbmc.log('fetching url: %s' % url,level=xbmc.LOGDEBUG)
     try:
-      timeout = 10
+      timeout = 30
       socket.setdefaulttimeout(timeout)
       # this call to urllib.request.urlopen now uses the default timeout
       # we have set in the socket module
       req = urllib.request.Request(url)
       req.add_header('User-Agent', ' Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-      response = urllib.request.urlopen(req)
-
-      #responsedata = decode_utf8(urlopen(url, timeout=25).read())
+      try:
+        response = urllib.request.urlopen(req)
+      except:
+        time.sleep(60)
+        response = urllib.request.urlopen(req)
+        
       responsedata = response.read()
       data = json.loads(responsedata)
       log('data: %s' % data)
@@ -63,13 +66,18 @@ def get_url_JSON(url):
 def get_url_response(url):
   try:
     xbmc.log('fetching url: %s' % url,level=xbmc.LOGDEBUG)
-    timeout = 10
+    timeout = 30
     socket.setdefaulttimeout(timeout)
     # this call to urllib.request.urlopen now uses the default timeout
     # we have set in the socket module
     req = urllib.request.Request(url)
     req.add_header('User-Agent', ' Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-    response = urllib.request.urlopen(req)
+
+    try:
+      response = urllib.request.urlopen(req)
+    except:
+      time.sleep(60)
+      response = urllib.request.urlopen(req)
 
     responsedata = response.read()
     log('data: %s' % responsedata)
