@@ -4,7 +4,7 @@
 #from future import standard_library
 #standard_library.install_aliases()
 
-import os, glob, sys, time
+import os, glob, sys, time, re
 import xbmc, xbmcgui, xbmcvfs, xbmcaddon
 import datetime
 
@@ -704,6 +704,8 @@ def fetchHourly(num):
   else:
     xbmc.log('failed to find proper hourly weather from %s' % url,level=xbmc.LOGERROR)
     return
+  #api is currently returning a 0 % rain icon url, which is not valid, so need to clean it
+  iconreplacepattern1 = re.compile(r"[,]0$")
 
 # extended properties
   for count, item in enumerate(data['periods'], start = 0):
@@ -714,6 +716,7 @@ def fetchHourly(num):
       if '?' in icon:
         icon=icon.rsplit('?', 1)[0]
       code, rain=code_from_icon(icon)
+      icon=iconreplacepattern1.sub("",icon)
     set_property('Hourly.%i.RemoteIcon'  % (count+1), icon)  
 
     weathercode = WEATHER_CODES.get(code)
