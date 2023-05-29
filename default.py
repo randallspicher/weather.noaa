@@ -78,18 +78,28 @@ def code_from_icon(icon):
     #https://forecast.weather.gov/DualImage.php?i=bkn&j=shra&jp=30
     #https://forecast.weather.gov/DualImage.php?i=shra&j=bkn&ip=30
     if 'DualImage' in icon:
+#      xbmc.log('icon: %s' % icon,level=xbmc.LOGERROR)
+  
       params = icon.split("?")[1].split("&")
+#      xbmc.log('params: %s' % params,level=xbmc.LOGERROR)
+
       code="day"
       rain=None
       for param in params:
+#       xbmc.log('param: %s' % param,level=xbmc.LOGERROR)
+
         thing=param.split("=")     
         p=thing[0]
         v=thing[1]
+#        xbmc.log('p: %s' % p,level=xbmc.LOGERROR)
+#        xbmc.log('v: %s' % v,level=xbmc.LOGERROR)
         if p == "i":
           code="%s/%s" % ("day",v)
         if p == "ip" or p == "jp":
           if rain is None or v > rain:
             rain=v
+#      xbmc.log('code: %s' % code,level=xbmc.LOGERROR)
+#      xbmc.log('rain: %s' % rain,level=xbmc.LOGERROR)
 
       return code, rain
         
@@ -113,10 +123,23 @@ def code_from_icon(icon):
     for checkcode in icon.rsplit('/'):
       thing=checkcode.split(",")
       code="%s/%s" % (daynight,thing[0])
+      
       if len(thing) > 1:
         train=thing[1]
         if rain is None or train > rain:
           rain=train
+
+      # forcast.gov urls may have codes like  sct30, which means "scattered clouds 30% chance of rain" ,so regex for it
+      cresult = re.search(r"([a-z]+)(\d*)", thing[0])
+      if cresult and cresult.group(1):
+        code="%s/%s" % (daynight,cresult.group(1))
+      if cresult and cresult.group(2):
+        train=cresult.group(2)
+        if rain is None or train > rain:
+          rain=train
+
+#    xbmc.log('code: %s' % code,level=xbmc.LOGERROR)
+#    xbmc.log('rain: %s' % rain,level=xbmc.LOGERROR)
 
     return code, rain
     
