@@ -390,6 +390,10 @@ def fetchDaily(num):
       set_property('Daily.%i.LongDate'  % (count+1), get_month(startstamp, 'ml'))
       set_property('Daily.%i.ShortDate'  % (count+1), get_month(startstamp, 'ms'))
     
+    rain=0
+    if item['probabilityOfPrecipitation'] and item['probabilityOfPrecipitation']['value'] :
+      rain=item['probabilityOfPrecipitation']['value'] 
+    
     if rain and str(rain) and not "0" == str(rain):
       set_property('Daily.%i.ChancePrecipitation'  % (count+1), str(rain) + '%')
     else:
@@ -804,7 +808,6 @@ def fetchHourly(num):
     set_property('Hourly.%i.ShortOutlook'  % (count+1), FORECAST.get(item['shortForecast'], item['shortForecast']))
     set_property('Hourly.%i.OutlookIcon'  % (count+1), WEATHER_ICON % weathercode)
     set_property('Hourly.%i.FanartCode'  % (count+1), weathercode)
-    #set_property('Hourly.%i.Humidity'    % (count+1), str(item['main'].get('humidity','')) + '%')
     set_property('Hourly.%i.WindDirection'  % (count+1), item['windDirection'])
     set_property('Hourly.%i.WindSpeed'  % (count+1), item['windSpeed'])
 
@@ -818,11 +821,39 @@ def fetchHourly(num):
     ##  set_property('Hourly.%i.Temperature'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
   
 
+    rain=0
+    if item['probabilityOfPrecipitation'] and item['probabilityOfPrecipitation']['value'] :
+      rain=item['probabilityOfPrecipitation']['value'] 
+    
     if rain and str(rain) and not "0" == str(rain):
       set_property('Hourly.%i.ChancePrecipitation'  % (count+1), str(rain) + '%')
     else:
-      ##set_property('Hourly.%i.ChancePrecipitation'  % (count+1), '')
       clear_property('Hourly.%i.ChancePrecipitation'  % (count+1))
+
+    humid=0
+    if item['relativeHumidity'] and item['relativeHumidity']['value'] :
+      humid=item['relativeHumidity']['value'] 
+    
+    if humid and str(humid) and not "0" == str(humid):
+      set_property('Hourly.%i.Humidity'  % (count+1), str(humid) + '%')
+    else:
+      clear_property('Hourly.%i.Humidity'  % (count+1))
+
+    dewpoint=0
+    if item['dewpoint'] and item['dewpoint']['value'] :
+      dewpoint=item['dewpoint']['value'] 
+    
+    if dewpoint and str(dewpoint) and not "0" == str(dewpoint):
+      if 'F' in TEMPUNIT:
+        set_property('Hourly.%i.DewPoint'  % (count+1), u'%s%s' % (CtoF(dewpoint), TEMPUNIT) )
+      elif 'C' in TEMPUNIT:
+        set_property('Hourly.%i.DewPoint'  % (count+1), u'%s%s' % (DewPoint, TEMPUNIT))
+    else:
+      clear_property('Hourly.%i.DewPoint'  % (count+1))
+
+
+
+
   count = 1
 
 
