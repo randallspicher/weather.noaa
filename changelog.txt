@@ -1,6 +1,6 @@
 v2.0.12
 - handle more forecast.weather.gov icon differences
-- get direct data for dewpoint/humidity from api
+- get more data for dewpoint/humidity from api
 
 v2.0.11
 - fix wind-chill calculation

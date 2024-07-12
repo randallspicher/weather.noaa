@@ -810,6 +810,10 @@ def fetchHourly(num):
     set_property('Hourly.%i.FanartCode'  % (count+1), weathercode)
     set_property('Hourly.%i.WindDirection'  % (count+1), item['windDirection'])
     set_property('Hourly.%i.WindSpeed'  % (count+1), item['windSpeed'])
+    windspeed=item['windSpeed']
+    if not windspeed:
+      windspeed=0
+    
 
     #set_property('Hourly.%i.Temperature'    % (count+1),  str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
 
@@ -851,6 +855,10 @@ def fetchHourly(num):
     else:
       clear_property('Hourly.%i.DewPoint'  % (count+1))
 
+    try:
+      set_property('Hourly.%i.FeelsLike', FEELS_LIKE(item('temperature'), float(windspeed)/3.6, humid, False))
+    except:
+      clear_property('Hourly.%i.FeelsLike')
 
 
 
