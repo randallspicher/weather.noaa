@@ -9,7 +9,8 @@ import xbmc, xbmcgui, xbmcvfs, xbmcaddon
 import datetime
 
 from resources.lib.utils import FtoC, CtoF, log, ADDON, LANGUAGE, MAPSECTORS, LOOPSECTORS, MAPTYPES
-from resources.lib.utils import WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
+from resources.lib.utils import WEATHER_CODES, FORECAST, WIND_DIR, SPEEDUNIT, zip_x 
+from resources.lib.utils import FEELS_LIKE_F_MPH, FEELS_LIKE_C_KPH, WIND_CHILL_F_MPH, WIND_CHILL_C_KPH, HEAT_INDEX_F, HEAT_INDEX_C
 from resources.lib.utils import get_url_JSON, get_url_image 
 from resources.lib.utils import get_month, get_timestamp, get_weekday, get_time
 from dateutil.parser import parse
@@ -322,18 +323,18 @@ def fetchDaily(num):
     if item['isDaytime'] == True:
       ##Since we passed units into api, we may need to convert to C, or may not
       if 'F' in TEMPUNIT:
-        set_property('Day%i.HighTemp'  % (count), str(FtoC(item['temperature'])))
-        set_property('Day%i.LowTemp'  % (count), str(FtoC(item['temperature'])))
+        set_property('Day%i.HighTemp'  % (count), str(int(round(FtoC(item['temperature'])))))
+        set_property('Day%i.LowTemp'  % (count), str(int(round(FtoC(item['temperature'])))))
       elif 'C' in TEMPUNIT:
-        set_property('Day%i.HighTemp'  % (count), str(item['temperature']))
-        set_property('Day%i.LowTemp'  % (count), str(item['temperature']))
+        set_property('Day%i.HighTemp'  % (count), str(int(round(item['temperature']))))
+        set_property('Day%i.LowTemp'  % (count), str(int(round(item['temperature']))))
     if item['isDaytime'] == False:
       if 'F' in TEMPUNIT:
-        set_property('Day%i.HighTemp'  % (count), str(FtoC(item['temperature'])))
-        set_property('Day%i.LowTemp'  % (count), str(FtoC(item['temperature'])))
+        set_property('Day%i.HighTemp'  % (count), str(int(round(FtoC(item['temperature'])))))
+        set_property('Day%i.LowTemp'  % (count), str(int(round(FtoC(item['temperature'])))))
       elif 'C' in TEMPUNIT:
-        set_property('Day%i.HighTemp'  % (count), str(item['temperature']))
-        set_property('Day%i.LowTemp'  % (count), str(item['temperature']))
+        set_property('Day%i.HighTemp'  % (count), str(int(round(item['temperature']))))
+        set_property('Day%i.LowTemp'  % (count), str(int(round(item['temperature']))))
     set_property('Day%i.Outlook'    % (count), item['shortForecast'])
     set_property('Day%i.FanartCode'  % (count), weathercode)
     set_property('Day%i.OutlookIcon'% (count), WEATHER_ICON % weathercode)
@@ -360,12 +361,6 @@ def fetchDaily(num):
       ## we passed units to api, so we got back C or F, so don't need to convert
       set_property('Daily.%i.TempDay'    % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
       set_property('Daily.%i.HighTemperature'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-      #if 'F' in TEMPUNIT:
-      #  set_property('Daily.%i.TempDay'    % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-      #  set_property('Daily.%i.HighTemperature'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-      #elif 'C' in TEMPUNIT:
-      #  set_property('Daily.%i.TempDay'    % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-      #  set_property('Daily.%i.HighTemperature'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
       set_property('Daily.%i.TempNight'  % (count+1), '')
       set_property('Daily.%i.LowTemperature'  % (count+1), '')
 
@@ -376,12 +371,8 @@ def fetchDaily(num):
       set_property('Daily.%i.TempDay'    % (count+1), '')
       set_property('Daily.%i.HighTemperature'  % (count+1), '')
       ## we passed units to api, so we got back C or F, so don't need to convert
-      #if 'F' in TEMPUNIT:
       set_property('Daily.%i.TempNight'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
       set_property('Daily.%i.LowTemperature'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-      #elif 'C' in TEMPUNIT:
-      #  set_property('Daily.%i.TempNight'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-      #  set_property('Daily.%i.LowTemperature'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
 
     if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
       set_property('Daily.%i.LongDate'  % (count+1), get_month(startstamp, 'dl'))
@@ -481,30 +472,28 @@ def fetchAltDaily(num):
       set_property('Daily.%i.LongDay'    % (count+1), item['startPeriodName'])
       set_property('Daily.%i.ShortDay'  % (count+1), get_weekday(startstamp,'s')+" (d)")
 
-      if 'F' in TEMPUNIT:
-        set_property('Daily.%i.TempDay'    % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-        set_property('Daily.%i.HighTemperature'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-      elif 'C' in TEMPUNIT:
-        set_property('Daily.%i.TempDay'    % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-        set_property('Daily.%i.HighTemperature'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-#      set_property('Daily.%i.TempDay'    % (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
-#      set_property('Daily.%i.HighTemperature'  % (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
       set_property('Daily.%i.TempNight'  % (count+1), '')
       set_property('Daily.%i.LowTemperature'  % (count+1), '')
+      if 'F' in TEMPUNIT:
+        set_property('Daily.%i.TempDay'    % (count+1), u'%s%s' % (int(round(item['temperature'])), TEMPUNIT))
+        set_property('Daily.%i.HighTemperature'  % (count+1), u'%s%s' % (int(round(item['temperature'])), TEMPUNIT))
+      elif 'C' in TEMPUNIT:
+        set_property('Daily.%i.TempDay'    % (count+1), u'%s%s' % (int(round(FtoC(item['temperature']))), TEMPUNIT))
+        set_property('Daily.%i.HighTemperature'  % (count+1), u'%s%s' % (int(round(FtoC(item['temperature']))), TEMPUNIT))
 
     if item['tempLabel'] == 'Low':
       set_property('Daily.%i.LongDay'    % (count+1), item['startPeriodName'])
       set_property('Daily.%i.ShortDay'  % (count+1), get_weekday(startstamp,'s')+" (n)")
+
       set_property('Daily.%i.TempDay'    % (count+1), '')
       set_property('Daily.%i.HighTemperature'  % (count+1), '')
       if 'F' in TEMPUNIT:
-        set_property('Daily.%i.TempNight'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
-        set_property('Daily.%i.LowTemperature'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+        set_property('Daily.%i.TempNight'  % (count+1), u'%s%s' % (int(round(item['temperature'])), TEMPUNIT))
+        set_property('Daily.%i.LowTemperature'  % (count+1), u'%s%s' % (int(round(item['temperature'])), TEMPUNIT))
       elif 'C' in TEMPUNIT:
-        set_property('Daily.%i.TempNight'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-        set_property('Daily.%i.LowTemperature'  % (count+1), u'%s%s' % (FtoC(item['temperature']), TEMPUNIT))
-      #set_property('Daily.%i.TempNight'  % (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
-      #set_property('Daily.%i.LowTemperature'  % (count+1), u'%s\N{DEGREE SIGN}%s' % (item['temperature'], "F"))
+        set_property('Daily.%i.TempNight'  % (count+1), u'%s%s' % (int(round(FtoC(item['temperature']))), TEMPUNIT))
+        set_property('Daily.%i.LowTemperature'  % (count+1), u'%s%s' % (int(round(FtoC(item['temperature']))), TEMPUNIT))
+
     if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
       set_property('Daily.%i.LongDate'  % (count+1), get_month(startstamp, 'dl'))
       set_property('Daily.%i.ShortDate'  % (count+1), get_month(startstamp, 'ds'))
@@ -534,11 +523,11 @@ def fetchAltDaily(num):
     set_property('Current.FanartCode', weathercode)
     set_property('Current.Condition', FORECAST.get(data.get('Weather'), data.get('Weather')))
     set_property('Current.Humidity'  , str(data.get('Relh')))
-    set_property('Current.DewPoint', str(FtoC(data.get('Dewp'))))
+    set_property('Current.DewPoint', str(int(round(FtoC(data.get('Dewp'))))))
         
     try:
       temp=data.get('Temp')
-      set_property('Current.Temperature',str(FtoC(temp))) # api values are in C
+      set_property('Current.Temperature',str(int(round(FtoC(temp))))) 
     except:
       #set_property('Current.Temperature','') 
       clear_property('Current.Temperature') 
@@ -555,11 +544,11 @@ def fetchAltDaily(num):
       #set_property('Current.WindDirection', '')
       clear_property('Current.WindDirection')
 
-    try:
-      set_property('Current.WindGust'  , str(SPEED(float(data.get('Gust'))/2.237)) + SPEEDUNIT)
-    except:
-      clear_property('Current.WindGust')
-      ##set_property('Current.WindGust'  , '')
+#    try:
+#      set_property('Current.WindGust'  , str(SPEED(float(data.get('Gust'))/2.237)) + SPEEDUNIT)
+#    except:
+#      clear_property('Current.WindGust')
+#      ##set_property('Current.WindGust'  , '')
 
     if rain and str(rain) and not "0" == str(rain):
       set_property('Current.ChancePrecipitation', str(rain)+'%')
@@ -569,17 +558,23 @@ def fetchAltDaily(num):
     # calculate feels like
     clear_property('Current.FeelsLike')
     try:
-      feels = FEELS_LIKE( FtoC(data.get('Temp')), float(data.get('Winds'))/2.237, int(data.get('Relh')), False)
-      set_property('Current.FeelsLike', str(feels))
+      wind=data.get('Winds')
+      if not wind:
+          wind=0
+      feelslike = FEELS_LIKE_C_KPH( FtoC(data.get('Temp')), float(wind)/2.237, int(data.get('Relh')))
+      if feelslike:
+        set_property('Current.FeelsLike', str(int(round(feelslike))))
+      else:
+        clear_property('Current.FeelsLike')
     except:
       clear_property('Current.FeelsLike')
       #set_property('Current.FeelsLike', '')
 
-    # if we have windchill or heatindex directly, then use that instead
-    if data.get('WindChill') and not "NA" == data.get('WindChill'):
-      set_property('Current.FeelsLike', str(FtoC(data.get('WindChill'))) )
-    if data.get('HeatIndex') and not "NA" == data.get('HeatIndex'):
-      set_property('Current.FeelsLike', str(FtoC(data.get('HeatIndex'))) )
+#    # if we have windchill or heatindex directly, then use that instead
+#    if data.get('WindChill') and not "NA" == data.get('WindChill'):
+#      set_property('Current.FeelsLike', str(FtoC(data.get('WindChill'))) )
+#    if data.get('HeatIndex') and not "NA" == data.get('HeatIndex'):
+#      set_property('Current.FeelsLike', str(FtoC(data.get('HeatIndex'))) )
 
     
 
@@ -650,15 +645,19 @@ def fetchCurrent(num):
     windspeed=0
   
   try:
-    set_property('Current.FeelsLike', FEELS_LIKE(data.get('temperature').get('value'), float(windspeed)/3.6, data.get('relativeHumidity').get('value'), False))
+    feelslike=FEELS_LIKE_C_KPH(data.get('temperature').get('value'), float(windspeed), data.get('relativeHumidity').get('value'))  
+    if feelslike:  
+      set_property('Current.FeelsLike', int(round(feelslike)))
+    else:
+      clear_property('Current.FeelsLike')
   except:
     clear_property('Current.FeelsLike')
 
   # if we have windchill or heat index directly, then use that instead
   if data.get('windChill').get('value'):
-    set_property('Current.FeelsLike', str(data.get('windChill').get('value')) )
+    set_property('Current.FeelsLike', str(int(round(data.get('windChill').get('value')))) )
   if data.get('heatIndex').get('value'):
-    set_property('Current.FeelsLike', str(data.get('heatIndex').get('value')) )
+    set_property('Current.FeelsLike', str(int(round(data.get('heatIndex').get('value')))) )
 
   try:
     temp=int(round(data.get('dewpoint').get('value',0)))
@@ -670,10 +669,10 @@ def fetchCurrent(num):
 
 ## extended properties
 
-  try:
-    set_property('Current.WindGust'  , SPEED(float(data.get('windGust').get('value',0))/3.6) + SPEEDUNIT)
-  except:
-    set_property('Current.WindGust'  , '')
+#  try:
+#    set_property('Current.WindGust'  , SPEED(float(data.get('windGust').get('value',0))/3.6) + SPEEDUNIT)
+#  except:
+#    set_property('Current.WindGust'  , '')
 
   try:
     set_property('Current.SeaLevel'  , str(data.get('seaLevelPressure').get('value',0)))
@@ -808,17 +807,22 @@ def fetchHourly(num):
     set_property('Hourly.%i.ShortOutlook'  % (count+1), FORECAST.get(item['shortForecast'], item['shortForecast']))
     set_property('Hourly.%i.OutlookIcon'  % (count+1), WEATHER_ICON % weathercode)
     set_property('Hourly.%i.FanartCode'  % (count+1), weathercode)
-    set_property('Hourly.%i.WindDirection'  % (count+1), item['windDirection'])
-    set_property('Hourly.%i.WindSpeed'  % (count+1), item['windSpeed'])
     windspeed=item['windSpeed']
-    if not windspeed:
-      windspeed=0
-    
+
+    if windspeed and (windspeed == "0 mph" or windspeed == "0 km/h"):
+      windspeed=""
+
+    if windspeed and item['windDirection']:
+      set_property('Hourly.%i.WindDirection'  % (count+1), item['windDirection'])
+      set_property('Hourly.%i.WindSpeed'  % (count+1), windspeed)
+    else:
+      clear_property('Hourly.%i.WindDirection'  % (count+1))
+      clear_property('Hourly.%i.WindSpeed'  % (count+1))
 
     #set_property('Hourly.%i.Temperature'    % (count+1),  str(item['temperature'])+u'\N{DEGREE SIGN}'+item['temperatureUnit'])
 
     ## we passed units to api, so we got back C or F, so don't need to convert
-    set_property('Hourly.%i.Temperature'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
+    set_property('Hourly.%i.Temperature'  % (count+1), u'%s%s' % (int(round(item['temperature'])), TEMPUNIT))
     ##if 'F' in TEMPUNIT:
     ##  set_property('Hourly.%i.Temperature'  % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
     ##elif 'C' in TEMPUNIT:
@@ -848,20 +852,82 @@ def fetchHourly(num):
       dewpoint=item['dewpoint']['value'] 
     
     if dewpoint and str(dewpoint) and not "0" == str(dewpoint):
+      ## API is always returning dewpoint in C rather then obeying our prefered units, so convert
       if 'F' in TEMPUNIT:
-        set_property('Hourly.%i.DewPoint'  % (count+1), u'%s%s' % (CtoF(dewpoint), TEMPUNIT) )
+        set_property('Hourly.%i.DewPoint'  % (count+1), u'%s%s' % (int(round(CtoF(dewpoint))), TEMPUNIT))
       elif 'C' in TEMPUNIT:
-        set_property('Hourly.%i.DewPoint'  % (count+1), u'%s%s' % (DewPoint, TEMPUNIT))
+        set_property('Hourly.%i.DewPoint'  % (count+1), u'%s%s' % (int(round(dewpoint)), TEMPUNIT))
     else:
       clear_property('Hourly.%i.DewPoint'  % (count+1))
 
-    try:
-      set_property('Hourly.%i.FeelsLike', FEELS_LIKE(item('temperature'), float(windspeed)/3.6, humid, False))
-    except:
-      clear_property('Hourly.%i.FeelsLike')
-
-
-
+    if 'F' in TEMPUNIT:
+      try:
+        windspeed=0  
+        if item['windSpeed'] and item['windSpeed'].endswith(" mph"):  
+          windspeed=item['windSpeed'].rstrip(" mph")
+        feelslike=FEELS_LIKE_F_MPH(item['temperature'], windspeed, humid)
+        if feelslike:
+          set_property('Hourly.%i.FeelsLike'  % (count+1), u'%s%s' % (int(round(feelslike)), TEMPUNIT))
+        else:
+          clear_property('Hourly.%i.FeelsLike'  % (count+1))
+      except:
+        ##xbmc.log('Error Loading Feels-like %s %s %s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
+        clear_property('Hourly.%i.FeelsLike'  % (count+1))
+      try:
+        windspeed=0  
+        if item['windSpeed'] and item['windSpeed'].endswith(" mph"):  
+          windspeed=item['windSpeed'].rstrip(" mph")
+        windchill=WIND_CHILL_F_MPH(item['temperature'], windspeed)
+        if windchill:
+          set_property('Hourly.%i.WindChill'  % (count+1), u'%s%s' % (int(round(windchill)), TEMPUNIT))
+        else:
+          clear_property('Hourly.%i.WindChill'  % (count+1))
+      except:
+        ##xbmc.log('Error Loading  %s %s %s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
+        clear_property('Hourly.%i.WindChill'  % (count+1))
+      try:
+        heatindex=HEAT_INDEX_F(item['temperature'], humid)
+        if heatindex:
+          set_property('Hourly.%i.HeatIndex'  % (count+1), u'%s%s' % (int(round(heatindex)), TEMPUNIT))
+        else:
+          clear_property('Hourly.%i.HeatIndex'  % (count+1))
+      except:
+        ##xbmc.log('Error Loading  %s %s %s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
+        clear_property('Hourly.%i.HeatIndex'  % (count+1))
+    elif 'C' in TEMPUNIT:
+      try:
+        windspeed=0
+        if item['windSpeed'] and item['windSpeed'].endswith(" km/h"):
+          windspeed=item['windSpeed'].rstrip(" km/h")
+        feelslike=FEELS_LIKE_C_KPH(item['temperature'], windspeed, humid)
+        if feelslike:
+          set_property('Hourly.%i.FeelsLike'  % (count+1), u'%s%s' % (int(round(feelslike)), TEMPUNIT))
+        else:
+          clear_property('Hourly.%i.FeelsLike'  % (count+1))
+      except:
+        clear_property('Hourly.%i.FeelsLike'  % (count+1))
+      try:
+        windspeed=0  
+        if item['windSpeed'] and item['windSpeed'].endswith(" km/h"):  
+          windspeed=item['windSpeed'].rstrip(" km/h")
+        windchill=WIND_CHILL_C_KPH(item['temperature'], windspeed)
+        if windchill:
+          set_property('Hourly.%i.WindChill'  % (count+1), u'%s%s' % (int(round(windchill)), TEMPUNIT))
+        else:
+          clear_property('Hourly.%i.WindChill'  % (count+1))
+      except:
+        #xbmc.log('Error Loading  %s %s %s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
+        clear_property('Hourly.%i.WindChill'  % (count+1))
+      try:
+        heatindex=HEAT_INDEX_C(item['temperature'], humid)
+        if heatindex:
+          set_property('Hourly.%i.HeatIndex'  % (count+1), u'%s%s' % (int(round(heatindex)), TEMPUNIT))
+        else:
+          clear_property('Hourly.%i.HeatIndex'  % (count+1))
+      except:
+        #xbmc.log('Error Loading  %s %s %s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
+        clear_property('Hourly.%i.HeatIndex'  % (count+1))
+    
   count = 1
 
 
@@ -1087,8 +1153,9 @@ else:
 del MONITOR, xbmc, xbmcgui, xbmcvfs, xbmcaddon, WEATHER_WINDOW
 # clean up everything we referenced from the utils to prevent any dangling classes hanging around
 del FtoC, CtoF, log, ADDON, LANGUAGE, MAPSECTORS, LOOPSECTORS, MAPTYPES
-del WEATHER_CODES, FORECAST, FEELS_LIKE, SPEED, WIND_DIR, SPEEDUNIT, zip_x 
-del get_url_JSON, get_url_image
+del WEATHER_CODES, FORECAST, WIND_DIR, SPEEDUNIT, zip_x 
+del FEELS_LIKE_F_MPH, FEELS_LIKE_C_KPH, WIND_CHILL_F_MPH, WIND_CHILL_C_KPH, HEAT_INDEX_F, HEAT_INDEX_C
+del get_url_JSON, get_url_image 
 del get_month, get_timestamp, get_weekday, get_time
 
 

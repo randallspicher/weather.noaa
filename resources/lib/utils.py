@@ -343,70 +343,74 @@ FORECAST = { 'thunderstorm with light rain': LANGUAGE(32201),
     'rain': LANGUAGE(32276) 
   }
 
-def SPEED(mps):
-  try:
-    val = float(mps)
-  except:
-    return ''
+#def SPEED(mps):
+#  try:
+#    val = float(mps)
+#  except:
+#    return ''
+#
+#  if SPEEDUNIT == 'km/h':
+#    speed = mps * 3.6
+#  elif SPEEDUNIT == 'm/min':
+#    speed = mps * 60
+#  elif SPEEDUNIT == 'ft/h':
+#    speed = mps * 11810.88
+#  elif SPEEDUNIT == 'ft/min':
+#    speed = mps * 196.84
+#  elif SPEEDUNIT == 'ft/s':
+#    speed = mps * 3.281
+#  elif SPEEDUNIT == 'mph':
+#    speed = mps * 2.237
+#  elif SPEEDUNIT == 'knots':
+#    speed = mps * 1.944
+#  elif SPEEDUNIT == 'Beaufort':
+#    speed = KPHTOBFT(mps* 3.6)
+#  elif SPEEDUNIT == 'inch/s':
+#    speed = mps * 39.37
+#  elif SPEEDUNIT == 'yard/s':
+#    speed = mps * 1.094
+#  elif SPEEDUNIT == 'Furlong/Fortnight':
+#    speed = mps * 6012.886
+#  else:
+#    speed = mps
+#  return str(int(round(speed)))
 
-  if SPEEDUNIT == 'km/h':
-    speed = mps * 3.6
-  elif SPEEDUNIT == 'm/min':
-    speed = mps * 60
-  elif SPEEDUNIT == 'ft/h':
-    speed = mps * 11810.88
-  elif SPEEDUNIT == 'ft/min':
-    speed = mps * 196.84
-  elif SPEEDUNIT == 'ft/s':
-    speed = mps * 3.281
-  elif SPEEDUNIT == 'mph':
-    speed = mps * 2.237
-  elif SPEEDUNIT == 'knots':
-    speed = mps * 1.944
-  elif SPEEDUNIT == 'Beaufort':
-    speed = KPHTOBFT(mps* 3.6)
-  elif SPEEDUNIT == 'inch/s':
-    speed = mps * 39.37
-  elif SPEEDUNIT == 'yard/s':
-    speed = mps * 1.094
-  elif SPEEDUNIT == 'Furlong/Fortnight':
-    speed = mps * 6012.886
-  else:
-    speed = mps
-  return str(int(round(speed)))
 
 
 def FtoC(Fahrenheit):
   try:
     Celsius = (float(Fahrenheit) - 32.0) * 5.0/9.0 
-    return str(int(round(Celsius))) 
+    return Celsius 
   except:
     return
     
 def CtoF(Celsius):
   try:
     Fahrenheit = (float(Celsius) * 9.0/5.0) + 32.0
-    return str(int(round(Fahrenheit))) 
+    return Fahrenheit 
   except:
     return
-def TEMP(deg):
-  if TEMPUNIT == u'\N{DEGREE SIGN}'+'F':
-    temp = deg * 1.8 + 32
-  elif TEMPUNIT == u'K':
-    temp = deg + 273.15
-  elif TEMPUNIT == u'°Ré':
-    temp = deg * 0.8
-  elif TEMPUNIT == u'°Ra':
-    temp = deg * 1.8 + 491.67
-  elif TEMPUNIT == u'°Rø':
-    temp = deg * 0.525 + 7.5
-  elif TEMPUNIT == u'°D':
-    temp = deg / -0.667 + 150
-  elif TEMPUNIT == u'°N':
-    temp = deg * 0.33
-  else:
-    temp = deg
-  return str(int(round(temp)))
+
+
+
+#def TEMP(deg):
+#  if TEMPUNIT == u'\N{DEGREE SIGN}'+'F':
+#    temp = deg * 1.8 + 32
+#  elif TEMPUNIT == u'K':
+#    temp = deg + 273.15
+#  elif TEMPUNIT == u'°Ré':
+#    temp = deg * 0.8
+#  elif TEMPUNIT == u'°Ra':
+#    temp = deg * 1.8 + 491.67
+#  elif TEMPUNIT == u'°Rø':
+#    temp = deg * 0.525 + 7.5
+#  elif TEMPUNIT == u'°D':
+#    temp = deg / -0.667 + 150
+#  elif TEMPUNIT == u'°N':
+#    temp = deg * 0.33
+#  else:
+#    temp = deg
+#  return str(int(round(temp)))
 
 def WIND_DIR(deg):
   if deg >= 349 or deg <= 11:
@@ -442,80 +446,172 @@ def WIND_DIR(deg):
   elif deg >= 327 and deg <= 348:
     return 86
 
-def KPHTOBFT(spd):
-  if (spd < 1.0):
-    bft = '0'
-  elif (spd >= 1.0) and (spd < 5.6):
-    bft = '1'
-  elif (spd >= 5.6) and (spd < 12.0):
-    bft = '2'
-  elif (spd >= 12.0) and (spd < 20.0):
-    bft = '3'
-  elif (spd >= 20.0) and (spd < 29.0):
-    bft = '4'
-  elif (spd >= 29.0) and (spd < 39.0):
-    bft = '5'
-  elif (spd >= 39.0) and (spd < 50.0):
-    bft = '6'
-  elif (spd >= 50.0) and (spd < 62.0):
-    bft = '7'
-  elif (spd >= 62.0) and (spd < 75.0):
-    bft = '8'
-  elif (spd >= 75.0) and (spd < 89.0):
-    bft = '9'
-  elif (spd >= 89.0) and (spd < 103.0):
-    bft = '10'
-  elif (spd >= 103.0) and (spd < 118.0):
-    bft = '11'
-  elif (spd >= 118.0):
-    bft = '12'
-  else:
-    bft = ''
-  return bft
+#def KPHTOBFT(spd):
+#  if (spd < 1.0):
+#    bft = '0'
+#  elif (spd >= 1.0) and (spd < 5.6):
+#    bft = '1'
+#  elif (spd >= 5.6) and (spd < 12.0):
+#    bft = '2'
+#  elif (spd >= 12.0) and (spd < 20.0):
+#    bft = '3'
+#  elif (spd >= 20.0) and (spd < 29.0):
+#    bft = '4'
+#  elif (spd >= 29.0) and (spd < 39.0):
+#    bft = '5'
+#  elif (spd >= 39.0) and (spd < 50.0):
+#    bft = '6'
+#  elif (spd >= 50.0) and (spd < 62.0):
+#    bft = '7'
+#  elif (spd >= 62.0) and (spd < 75.0):
+#    bft = '8'
+#  elif (spd >= 75.0) and (spd < 89.0):
+#    bft = '9'
+#  elif (spd >= 89.0) and (spd < 103.0):
+#    bft = '10'
+#  elif (spd >= 103.0) and (spd < 118.0):
+#    bft = '11'
+#  elif (spd >= 118.0):
+#    bft = '12'
+#  else:
+#    bft = ''
+#  return bft
 
-def FEELS_LIKE(Ts, Vs=0, Rs=0, ext=True):
-  T=float(Ts)
-  V=float(Vs)
-  R=float(Rs)
+
   
-  if T <= 10.0 and V >= 8.0:
-    FeelsLike = WIND_CHILL(T, V)
-  elif T >= 26.0:
-    FeelsLike = HEAT_INDEX(T, R)
-  else:
-    FeelsLike = T
-  if ext:
-    return TEMP( FeelsLike )
-  else:
-    return str(int(round(FeelsLike)))
-
-def WIND_CHILL(Ts, Vs):
+def FEELS_LIKE_C_KPH(Ts, Vs=0, Hs=0):
+  if not Vs:
+    Vs=0
   T=float(Ts)
   V=float(Vs)
-  FeelsLike= 13.12 + (0.6215 * T) - (11.37 * (V**0.16)) + (0.3965 * (V**0.16))
-  return FeelsLike
+  H=float(Hs)
+  # first check if we have a wind-chill value  
+  windchill =  WIND_CHILL_C_KPH(T, V)
+  if windchill and windchill < T :  
+    return windchill
+  else:     # otherwise, check for heat index
+    heatindex = HEAT_INDEX_C(T, H)
+    if heatindex and heatindex > T and heatindex > 80 :
+      return heatindex
+  # otherwise, neither windchill nor heatindex apply
+  return ''
 
-    #Tf=(float(Ts) * 9.0/5.0) + 32.0
-    #Vm=(float(Vs) * 0.6213711922 )
-    #Ff=35.74 + ( 0.6215 * Tf ) - 35.75 (Vm**0.16) + 0.4275 Tf (Vm**0.16)
-    #return FtoC(FeelsLike)
+
+def FEELS_LIKE_F_MPH(Ts, Vs=0, Hs=0):
+#  xbmc.log('Running FEELS_LIKE_F_MPH: %s %s %s' % (Ts, Vs, Hs),level=xbmc.LOGERROR)
+
+  if not Vs:
+    Vs=0
+  T=float(Ts)
+  V=float(Vs)
+  H=float(Hs)
+  ###xbmc.log'Running FEELS_LIKE_F_MPH: %s %s %s' % (T, V, H),level=xbmc.LOGERROR)
+  # first check if we have a wind-chill value  
+  windchill =  WIND_CHILL_F_MPH(T, V)
+  ###xbmc.log'windchill returns: %s' % (windchill),level=xbmc.LOGERROR)
+
+  if windchill and windchill < T:  
+    return windchill
+  else:     # otherwise, check for heat index
+    heatindex = HEAT_INDEX_F(T, H)
+    ##xbmc.log'heatindex returns: %s' % (heatindex),level=xbmc.LOGERROR)
+
+    if heatindex and heatindex > T+2 and heatindex > 80 :
+      return heatindex
+  # otherwise, neither windchill nor heatindex apply
+  return ''
+    
+
+def WIND_CHILL_F_MPH(Ts, Vs):
+  T=float(Ts)
+  V=float(Vs)
+  ###xbmc.log'wind_chill_f_mph  %sF %s mph' % (T, V),level=xbmc.LOGERROR)
+  if T <= 50.0 and V >= 3.0:
+    ###xbmc.log'We are in windchill range %s' % (T),level=xbmc.LOGERROR)
+    WC=35.74 + 0.6215*T - 35.75*(V^0.16) + 0.4275*T*(V^0.16)
+    if WC < T-2.0:
+      ###xbmc.log'WindChill for %sF %s mph = %sF' % (T, V, WC),level=xbmc.LOGERROR)
+      return WC
+  # otherwise, windchill is not relevant, so return
+  return
+  
+  
+def WIND_CHILL_C_KPH(Ts, Vs):
+  T=float(Ts)
+  V=float(Vs)
+
+  TF = CtoF(T)
+  Vmph = V/1.609344
+  windchill=WIND_CHILL_F_MPH(TF,Vmph)
+  if windchill:
+     return FtoC(windchill)
+  # otherwise, no windchill so return
+  return
 
 
-
-### https://en.wikipedia.org/wiki/Heat_index
-def HEAT_INDEX(Ts, Rs):
+# https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
+def HEAT_INDEX_F(Ts, Rs):
   T=float(Ts)
   R=float(Rs)
-  T = T * 1.8 + 32.0 # calaculation is done in F
-  FeelsLike = -42.379 + (2.04901523 * T) + (10.14333127 * R) + (-0.22475541 * T * R) + (-0.00683783 * T**2) + (-0.05481717 * R**2) + (0.00122874 * T**2 * R) + (0.00085282 * T * R**2) + (-0.00000199 * T**2 * R**2)
-  FeelsLike = (FeelsLike - 32.0) / 1.8 # convert to C
-  return FeelsLike
+
+  ##xbmc.log'Heat_index_F %sF %s' % (T, R),level=xbmc.LOGERROR)
+
+  if T <40:  # too cold for heat indexes
+    return
+
+   # Try simple formula first
+  HI = 0.5 * (T + 61.0 + ((T-68.0)*1.2) + (R*0.094))
+ 
+  ##xbmc.log'Initial HI is %sF' % (HI),level=xbmc.LOGERROR)
+
+  # Test if simply formula is applicable
+  
+  if HI > 80:  # then we need to use the full fancy formula
+    ##xbmc.log'HI is over 80 %sF' % (HI),level=xbmc.LOGERROR)
+    HI = ( -42.379 
+           + 2.04901523*T 
+           + 10.14333127*R 
+           - .22475541*T*R 
+           - .00683783*T*T 
+           - .05481717*R*R 
+           + .00122874*T*T*R 
+           + .00085282*T*R*R 
+           - .00000199*T*T*R*R
+          )
+    ##xbmc.log('Fancy hi 1 is %sF' % (HI),level=xbmc.LOGERROR)
+
+    if R < 12 and T >80 and T <115:
+      ADJUSTMENT = ( (13.0-R)/4.0 ) * math.sqrt( ( 17.0-math.fabs( T-95.0) ) / 17.0 )
+      HI = HI - ADJUSTMENT
+      ##xbmc.log('adjusted hi 2 is %sF' % (HI),level=xbmc.LOGERROR)
+
+    if R > 85 and T >80 and T <87:
+      ADJUSTMENT = ( (R-85.0)/10.0 ) * ( (87.0-T)/5.0 )
+      HI = HI + ADJUSTMENT  
+      ##xbmc.log('adjusted hi 3 is %sF' % (HI),level=xbmc.LOGERROR)
+
+  ##xbmc.log'Final HI is %sF' % (HI),level=xbmc.LOGERROR)
+ 
+  if HI > 80 and HI > (T+2):  # if we have a heat-index, over 80 (and it's highter then the normal temp) then return it
+    ##xbmc.log'Heat Index for %sF %sH = %sF' % (T, R, HI),level=xbmc.LOGERROR)
+    return HI
+
+
+def HEAT_INDEX_C(Ts, Rs):
+  T=float(Ts)
+  R=float(Rs)
+  TF = CtoF(T) # calaculation is done in F
+  HI = HEAT_INDEX_F(TF, R)
+  if HI: 
+    return FtoC(HI)
+  # otherwise, no relevennt heat index so return
+    
 
 #### thanks to FrostBox @ http://forum.kodi.tv/showthread.php?tid=114637&pid=937168#pid937168
-def DEW_POINT(Tc=0, RH=93.0, ext=True, minRH=( 0, 0.075 )[ 0 ]):
+def DEW_POINT(Tc=0, R=93.0, ext=True, minR=( 0, 0.075 )[ 0 ]):
   Es = 6.11 * 10.0**( 7.5 * Tc / ( 237.7 + Tc ) )
-  RH = RH or minRH
-  E = ( RH * Es ) / 100
+  R = R or minR
+  E = ( R * Es ) / 100
   try:
     DewPoint = ( -430.22 + 237.7 * math.log( E ) ) / ( -math.log( E ) + 19.08 )
   except ValueError:
