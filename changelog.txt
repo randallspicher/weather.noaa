@@ -1,3 +1,6 @@
+v2.0.13
+- enable location lookup by address via census.gov
+
 v2.0.12
 - handle more forecast.weather.gov icon differences
 - get more data for dewpoint/humidity from api

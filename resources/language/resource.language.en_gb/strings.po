@@ -480,8 +480,25 @@ msgctxt "#32343"
 msgid "Enter Location"
 msgstr ""
 
-##RESERVED
-## 32344-32348
+msgctxt "#32344"
+msgid "Lookup by Address (census.gov)"
+msgstr ""
+
+msgctxt "#32345"
+msgid "Enter Address (num + street + city or zip)"
+msgstr ""
+
+msgctxt "#32346"
+msgid "Location not found"
+msgstr ""
+
+msgctxt "#32347"
+msgid "census.gov did not find that address.  Street, Number, and Zipcode or City + State are usually required"
+msgstr ""
+
+msgctxt "#32348"
+msgid "census.gov found these addresses, select one if correct"
+msgstr ""
 
 msgctxt "#32349"
 msgid "Select Map Region"

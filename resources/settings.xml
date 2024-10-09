@@ -13,7 +13,18 @@
 						<data>RunScript(weather.noaa,EnterLocation,1)</data>
 					</control>
 				</setting>
-				<setting id="Location1StationName" type="string" label="32336" help="" parent="">
+				<setting id="Location1Address" type="string" label="32344" help="" parent="">
+					<level>0</level>
+					<default></default>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action">
+						<data>RunScript(weather.noaa,EnterAddress,1)</data>
+					</control>
+				</setting>
+
+     			<setting id="Location1StationName" type="string" label="32336" help="" parent="">
 					<level>0</level>
 					<default />
 					<constraints>
@@ -231,6 +242,17 @@
 						<data>RunScript(weather.noaa,EnterLocation,2)</data>
 					</control>
 				</setting>
+				<setting id="Location2Address" type="string" label="32344" help="" parent="">
+					<level>0</level>
+					<default></default>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action">
+						<data>RunScript(weather.noaa,EnterAddress,2)</data>
+					</control>
+				</setting>
+				
 				<setting id="Location2StationName" type="string" label="32336" help="" parent="">
 					<level>0</level>
 					<default />
@@ -447,6 +469,17 @@
 						<data>RunScript(weather.noaa,EnterLocation,3)</data>
 					</control>
 				</setting>
+				<setting id="Location3Address" type="string" label="32344" help="" parent="">
+					<level>0</level>
+					<default></default>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action">
+						<data>RunScript(weather.noaa,EnterAddress,3)</data>
+					</control>
+				</setting>
+
 				<setting id="Location3StationName" type="string" label="32336" help="" parent="">
 					<level>0</level>
 					<default />
@@ -663,6 +696,21 @@
 						<data>RunScript(weather.noaa,EnterLocation,4)</data>
 					</control>
 				</setting>
+				<setting id="Location4Address" type="string" label="32344" help="" parent="">
+					<level>0</level>
+					<default></default>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action">
+						<data>RunScript(weather.noaa,EnterAddress,4)</data>
+					</control>
+				</setting>
+				
+				
+				
+				
+				
 				<setting id="Location4StationName" type="string" label="32336" help="" parent="">
 					<level>0</level>
 					<default />
@@ -879,6 +927,17 @@
 						<data>RunScript(weather.noaa,EnterLocation,5)</data>
 					</control>
 				</setting>
+				<setting id="Location5Address" type="string" label="32344" help="" parent="">
+					<level>0</level>
+					<default></default>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action">
+						<data>RunScript(weather.noaa,EnterAddress,5)</data>
+					</control>
+				</setting>
+
 				<setting id="Location5StationName" type="string" label="32336" help="" parent="">
 					<level>0</level>
 					<default />

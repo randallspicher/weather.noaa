@@ -145,12 +145,50 @@ def code_from_icon(icon):
     return code, rain
     
 
+
+def get_lat_long_by_address(num):
+
+  dialog = xbmcgui.Dialog()
+  saddress=dialog.input(heading=LANGUAGE(32345),defaultt='',type=xbmcgui.INPUT_ALPHANUM)
+  saddress=saddress.replace(" ", "+")
+  url="https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=%s&benchmark=4&format=json" % (saddress)
+
+  data=get_url_JSON(url)  
+ 
+  ##xbmc.log('DEBUG data== %s' % data,level=xbmc.LOGERROR)
+
+
+  if data and 'result' in data and 'addressMatches' in data['result'] and len(data['result']['addressMatches']) > 0 :
+    addresslist=[]
+    addresses={}
+    for count,item in enumerate(data['result']['addressMatches']):
+      locx=round(item['coordinates']['x'],4)
+      locy=round(item['coordinates']['y'],4)
+      locfull=str(locy) + ',' + str(locx)
+      address=item['matchedAddress']
+      addresslist.append(address)
+      addresses[address]=locfull
+
+    dialog = xbmcgui.Dialog()
+    i=dialog.select(LANGUAGE(32348),addresslist)
+    # clean up reference to dialog object
+    del dialog
+    if i >= 0:
+      LatLong=addresses[addresslist[i]]
+      ADDON.setSetting("Location"+num+"Address",addresslist[i])
+      ADDON.setSetting("Location"+num+"LatLong",LatLong)
+      get_Stations(num,LatLong,True)
+  else:
+      dialog = xbmcgui.Dialog()
+      dialog.ok(heading=LANGUAGE(32346),message=LANGUAGE(32347))      
+      del dialog
+  return
+
+
+
 ########################################################################################
 ##  Dialog for getting Latitude and Longitude
 ########################################################################################
-
-
-
 def enterLocation(num):  
 ##  log("argument: %s" % (sys.argv[1]))
 
@@ -271,7 +309,6 @@ def get_Stations(num,LatLong,resetName=False):
       i=dialog.select(LANGUAGE(32331),stationlist)
       # clean up reference to dialog object
       del dialog
-
 
       ADDON.setSetting(prefix+'Station',stations[stationlist[i]])
       ADDON.setSetting(prefix+'StationName',stationlist[i])
@@ -1031,6 +1068,11 @@ set_property('WeatherProviderLogo', xbmcvfs.translatePath(os.path.join(ADDON.get
 if sys.argv[1].startswith('EnterLocation'):
   num=sys.argv[2]
   enterLocation(num)
+
+if sys.argv[1].startswith('EnterAddress'):
+  num=sys.argv[2]
+  get_lat_long_by_address(num)
+
 
 if sys.argv[1].startswith('FetchLocation'):
   num=sys.argv[2]
