@@ -13,7 +13,7 @@ from .utils import *
 #from lib.utils import WEATHER_CODES, FORECAST, WIND_DIR, SPEEDUNIT, zip_x 
 #from lib.utils import FEELS_LIKE_F_MPH, FEELS_LIKE_C_KPH, WIND_CHILL_F_MPH, WIND_CHILL_C_KPH, HEAT_INDEX_F, HEAT_INDEX_C
 #from lib.utils import get_url_JSON, get_url_image  
-#from lib.utils import get_month, get_timestamp, get_weekday, get_time
+#from lib.utils import get_datestr, get_timestamp, get_weekday, get_time
 from dateutil.parser import parse
 
 
@@ -421,12 +421,12 @@ class noaa:
                 set_property('Daily.%i.TempNight'    % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
                 set_property('Daily.%i.LowTemperature'    % (count+1), u'%s%s' % (item['temperature'], TEMPUNIT))
     
-            if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
-                set_property('Daily.%i.LongDate'    % (count+1), get_month(startstamp, 'dl'))
-                set_property('Daily.%i.ShortDate'    % (count+1), get_month(startstamp, 'ds'))
+            if [1] == 'd' or DATEFORMAT[0] == 'D':
+                set_property('Daily.%i.LongDate'    % (count+1), get_datestr(startstamp, 'dl'))
+                set_property('Daily.%i.ShortDate'    % (count+1), get_datestr(startstamp, 'ds'))
             else:
-                set_property('Daily.%i.LongDate'    % (count+1), get_month(startstamp, 'ml'))
-                set_property('Daily.%i.ShortDate'    % (count+1), get_month(startstamp, 'ms'))
+                set_property('Daily.%i.LongDate'    % (count+1), get_datestr(startstamp, 'ml'))
+                set_property('Daily.%i.ShortDate'    % (count+1), get_datestr(startstamp, 'ms'))
             
             rain=0
             if item['probabilityOfPrecipitation'] and item['probabilityOfPrecipitation']['value'] :
@@ -542,11 +542,11 @@ class noaa:
                     set_property('Daily.%i.LowTemperature'    % (count+1), u'%s%s' % (int(round(FtoC(float(item['temperature'])))), TEMPUNIT))
     
             if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
-                set_property('Daily.%i.LongDate'    % (count+1), get_month(startstamp, 'dl'))
-                set_property('Daily.%i.ShortDate'    % (count+1), get_month(startstamp, 'ds'))
+                set_property('Daily.%i.LongDate'    % (count+1), get_datestr(startstamp, 'dl'))
+                set_property('Daily.%i.ShortDate'    % (count+1), get_datestr(startstamp, 'ds'))
             else:
-                set_property('Daily.%i.LongDate'    % (count+1), get_month(startstamp, 'ml'))
-                set_property('Daily.%i.ShortDate'    % (count+1), get_month(startstamp, 'ms'))
+                set_property('Daily.%i.LongDate'    % (count+1), get_datestr(startstamp, 'ml'))
+                set_property('Daily.%i.ShortDate'    % (count+1), get_datestr(startstamp, 'ms'))
     
             rain = item['pop']
             if rain and str(rain) and not "0" == str(rain):
@@ -610,6 +610,7 @@ class noaa:
                         wind=0
                 feelslike = FEELS_LIKE_C_KPH( FtoC(data.get('Temp')), float(wind)/2.237, int(data.get('Relh')))
                 if feelslike:
+                    #xbmc.log('feelslike: %s' % (feelslike),level=xbmc.LOGERROR)
                     set_property('Current.FeelsLike', str(int(round(feelslike))))
                 else:
                     clear_property('Current.FeelsLike')
@@ -694,7 +695,8 @@ class noaa:
         try:
             feelslike=FEELS_LIKE_C_KPH(data.get('temperature').get('value'), float(windspeed), data.get('relativeHumidity').get('value'))    
             if feelslike:    
-                set_property('Current.FeelsLike', int(round(feelslike)))
+                #xbmc.log('feelslike: %s' % (feelslike),level=xbmc.LOGERROR)
+                set_property('Current.FeelsLike', str(int(round(feelslike))))
             else:
                 clear_property('Current.FeelsLike')
         except:
@@ -702,8 +704,10 @@ class noaa:
     
         # if we have windchill or heat index directly, then use that instead
         if data.get('windChill').get('value'):
+            #xbmc.log('windchill direct: %s' % (str(int(round(data.get('windChill').get('value'))))),level=xbmc.LOGERROR)
             set_property('Current.FeelsLike', str(int(round(data.get('windChill').get('value')))) )
         if data.get('heatIndex').get('value'):
+            #xbmc.log('windchill direct: %s' % (str(int(round(data.get('heatIndex').get('value'))))),level=xbmc.LOGERROR)
             set_property('Current.FeelsLike', str(int(round(data.get('heatIndex').get('value')))) )
     
         try:
@@ -836,19 +840,19 @@ class noaa:
             starttime=item['startTime']
             startstamp=get_timestamp(starttime)
             if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
-                set_property('Hourly.%i.LongDate'    % (count+1), get_month(startstamp, 'dl'))
-                set_property('Hourly.%i.ShortDate'    % (count+1), get_month(startstamp, 'ds'))
+                set_property('Hourly.%i.LongDate'    % (count+1), get_fulldatestr(startstamp, 'dl'))
+                set_property('Hourly.%i.ShortDate'    % (count+1), get_fulldatestr(startstamp, 'ds'))
             else:
-                set_property('Hourly.%i.LongDate'    % (count+1), get_month(startstamp, 'ml'))
-                set_property('Hourly.%i.ShortDate'    % (count+1), get_month(startstamp, 'ms'))
+                set_property('Hourly.%i.LongDate'    % (count+1), get_fulldatestr(startstamp, 'ml'))
+                set_property('Hourly.%i.ShortDate'    % (count+1), get_fulldatestr(startstamp, 'ms'))
         
             set_property('Hourly.%i.Time'            % (count+1), get_time(startstamp))
             if DATEFORMAT[1] == 'd' or DATEFORMAT[0] == 'D':
-                set_property('Hourly.%i.LongDate'    % (count+1), get_month(startstamp, 'dl'))
-                set_property('Hourly.%i.ShortDate'    % (count+1), get_month(startstamp, 'ds'))
+                set_property('Hourly.%i.LongDate'    % (count+1), get_fulldatestr(startstamp, 'dl'))
+                set_property('Hourly.%i.ShortDate'    % (count+1), get_fulldatestr(startstamp, 'ds'))
             else:
-                set_property('Hourly.%i.LongDate'    % (count+1), get_month(startstamp, 'ml'))
-                set_property('Hourly.%i.ShortDate'    % (count+1), get_month(startstamp, 'ms'))
+                set_property('Hourly.%i.LongDate'    % (count+1), get_fulldatestr(startstamp, 'ml'))
+                set_property('Hourly.%i.ShortDate'    % (count+1), get_fulldatestr(startstamp, 'ms'))
     
             set_property('Hourly.%i.Outlook'    % (count+1), FORECAST.get(item['shortForecast'], item['shortForecast']))
             set_property('Hourly.%i.ShortOutlook'    % (count+1), FORECAST.get(item['shortForecast'], item['shortForecast']))
@@ -908,22 +912,23 @@ class noaa:
                 clear_property('Hourly.%i.DewPoint'    % (count+1))
     
             if 'F' in TEMPUNIT:
+                ##xbmc.log('api windspeed %s' % (item['windSpeed']),level=xbmc.LOGERROR)
+                windspeed=0   
+                if item['windSpeed'] and item['windSpeed'].endswith(" mph"):    
+                    windspeed=item['windSpeed'].rstrip(" mph")
+                ##xbmc.log('windspeed %s' % (windspeed),level=xbmc.LOGERROR)
+                ##xbmc.log('T:%s W:%s H:%s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
+
                 try:
-                    windspeed=0    
-                    if item['windSpeed'] and item['windSpeed'].endswith(" mph"):    
-                        windspeed=item['windSpeed'].rstrip(" mph")
                     feelslike=FEELS_LIKE_F_MPH(item['temperature'], windspeed, humid)
                     if feelslike:
                         set_property('Hourly.%i.FeelsLike'    % (count+1), u'%s%s' % (int(round(feelslike)), TEMPUNIT))
                     else:
                         clear_property('Hourly.%i.FeelsLike'    % (count+1))
                 except:
-                    ##xbmc.log('Error Loading Feels-like %s %s %s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
+                    ###xbmc.log('Error Loading Feels-like %s %s %s' % (item['temperature'], windspeed, humid),level=xbmc.LOGERROR)
                     clear_property('Hourly.%i.FeelsLike'    % (count+1))
                 try:
-                    windspeed=0    
-                    if item['windSpeed'] and item['windSpeed'].endswith(" mph"):    
-                        windspeed=item['windSpeed'].rstrip(" mph")
                     windchill=WIND_CHILL_F_MPH(item['temperature'], windspeed)
                     if windchill:
                         set_property('Hourly.%i.WindChill'    % (count+1), u'%s%s' % (int(round(windchill)), TEMPUNIT))

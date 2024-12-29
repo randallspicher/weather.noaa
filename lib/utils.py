@@ -212,12 +212,7 @@ WEATHER_CODES = {
         'day/ncold':            '25', #'Cold'
         'day/nblizzard':        '15', #'Blizzard'
         'day/nfog':             '20', #'Fog/mist'
- 
-                
-
-
-
-        '': 'na' 
+         '': 'na' 
     }
 
 MONTH_NAME_LONG = { '01' : 21,
@@ -395,24 +390,24 @@ def CtoF(Celsius):
 
 
 
-#def TEMP(deg):
-#    if TEMPUNIT == u'\N{DEGREE SIGN}'+'F':
-#        temp = deg * 1.8 + 32
-#    elif TEMPUNIT == u'K':
-#        temp = deg + 273.15
-#    elif TEMPUNIT == u'°Ré':
-#        temp = deg * 0.8
-#    elif TEMPUNIT == u'°Ra':
-#        temp = deg * 1.8 + 491.67
-#    elif TEMPUNIT == u'°Rø':
-#        temp = deg * 0.525 + 7.5
-#    elif TEMPUNIT == u'°D':
-#        temp = deg / -0.667 + 150
-#    elif TEMPUNIT == u'°N':
-#        temp = deg * 0.33
-#    else:
-#        temp = deg
-#    return str(int(round(temp)))
+def TEMP(deg):
+    if TEMPUNIT == u'\N{DEGREE SIGN}'+'F':
+        temp = deg * 1.8 + 32
+    elif TEMPUNIT == u'K':
+        temp = deg + 273.15
+    elif TEMPUNIT == u'°Ré':
+        temp = deg * 0.8
+    elif TEMPUNIT == u'°Ra':
+        temp = deg * 1.8 + 491.67
+    elif TEMPUNIT == u'°Rø':
+        temp = deg * 0.525 + 7.5
+    elif TEMPUNIT == u'°D':
+        temp = deg / -0.667 + 150
+    elif TEMPUNIT == u'°N':
+        temp = deg * 0.33
+    else:
+        temp = deg
+    return str(int(round(temp)))
 
 def WIND_DIR(deg):
     if deg >= 349 or deg <= 11:
@@ -482,6 +477,7 @@ def WIND_DIR(deg):
 
     
 def FEELS_LIKE_C_KPH(Ts, Vs=0, Hs=0):
+    #xbmc.log('Running FEELS_LIKE_C_KPH: %s %s %s' % (Ts, Vs, Hs),level=xbmc.LOGERROR)
     if not Vs:
         Vs=0
     T=float(Ts)
@@ -496,21 +492,22 @@ def FEELS_LIKE_C_KPH(Ts, Vs=0, Hs=0):
         if heatindex and heatindex > T and heatindex > 80 :
             return heatindex
     # otherwise, neither windchill nor heatindex apply
-    return ''
+    #xbmc.log('FEELS_LIKE_C_KPH: Not Applicable',level=xbmc.LOGERROR)
+    return
 
 
 def FEELS_LIKE_F_MPH(Ts, Vs=0, Hs=0):
-#    xbmc.log('Running FEELS_LIKE_F_MPH: %s %s %s' % (Ts, Vs, Hs),level=xbmc.LOGERROR)
+    #xbmc.log('Running FEELS_LIKE_F_MPH: %s %s %s' % (Ts, Vs, Hs),level=xbmc.LOGERROR)
 
     if not Vs:
         Vs=0
     T=float(Ts)
     V=float(Vs)
     H=float(Hs)
-    ###xbmc.log'Running FEELS_LIKE_F_MPH: %s %s %s' % (T, V, H),level=xbmc.LOGERROR)
+    #xbmc.log('Running FEELS_LIKE_F_MPH: %s %s %s' % (T, V, H),level=xbmc.LOGERROR)
     # first check if we have a wind-chill value    
-    windchill =    WIND_CHILL_F_MPH(T, V)
-    ###xbmc.log'windchill returns: %s' % (windchill),level=xbmc.LOGERROR)
+    windchill = WIND_CHILL_F_MPH(T, V)
+    #xbmc.log('windchill returns: %s' % (windchill),level=xbmc.LOGERROR)
 
     if windchill and windchill < T:    
         return windchill
@@ -521,19 +518,22 @@ def FEELS_LIKE_F_MPH(Ts, Vs=0, Hs=0):
         if heatindex and heatindex > T+2 and heatindex > 80 :
             return heatindex
     # otherwise, neither windchill nor heatindex apply
-    return ''
+    #xbmc.log('FEELS_LIKE_F_MPH: Not Applicable',level=xbmc.LOGERROR)
+    return
         
 
 def WIND_CHILL_F_MPH(Ts, Vs):
     T=float(Ts)
     V=float(Vs)
-    ###xbmc.log'wind_chill_f_mph    %sF %s mph' % (T, V),level=xbmc.LOGERROR)
+    ##xbmc.log('wind_chill_f_mph    %s %s' % (T, V),level=xbmc.LOGERROR)
     if T <= 50.0 and V >= 3.0:
-        ###xbmc.log'We are in windchill range %s' % (T),level=xbmc.LOGERROR)
-        WC=35.74 + 0.6215*T - 35.75*(V^0.16) + 0.4275*T*(V^0.16)
+        #xbmc.log('We are in windchill range %s' % (T),level=xbmc.LOGERROR)
+        WC=35.74 + (0.6215 * T) - (35.75 * math.pow(V,0.16)) + (0.4275 * T * math.pow(V,0.16))
+        ##xbmc.log('WindChill for %sF %s mph = %sF' % (T, V, WC),level=xbmc.LOGERROR)
         if WC < T-2.0:
-            ###xbmc.log'WindChill for %sF %s mph = %sF' % (T, V, WC),level=xbmc.LOGERROR)
+            #xbmc.log('WindChill for %sF %s mph = %sF' % (T, V, WC),level=xbmc.LOGERROR)
             return WC
+            
     # otherwise, windchill is not relevant, so return
     return
     
@@ -610,10 +610,10 @@ def HEAT_INDEX_C(Ts, Rs):
         
 
 #### thanks to FrostBox @ http://forum.kodi.tv/showthread.php?tid=114637&pid=937168#pid937168
-def DEW_POINT(Tc=0, R=93.0, ext=True, minR=( 0, 0.075 )[ 0 ]):
-    Es = 6.11 * 10.0**( 7.5 * Tc / ( 237.7 + Tc ) )
+def DEW_POINT(Tc=0.0, R=93.0, ext=True, minR=( 0, 0.075 )[ 0 ]):
+    Es = 6.11 * math.pow(10.0,( 7.5 * Tc / ( 237.7 + Tc ) ))
     R = R or minR
-    E = ( R * Es ) / 100
+    E = ( R * Es ) / 100.0
     try:
         DewPoint = ( -430.22 + 237.7 * math.log( E ) ) / ( -math.log( E ) + 19.08 )
     except ValueError:
@@ -696,7 +696,37 @@ def get_weekday(stamp, form):
     else:
         return int(weekday)
 
-def get_month(stamp, form):
+#def get_month(stamp, form):
+#    date_time = time.localtime(stamp)
+#    month = time.strftime('%m', date_time)
+#    day = time.strftime('%d', date_time)
+#    weekday = time.strftime('%u', date_time)-1
+#    if form == 'ds':
+#        label = xbmc.getLocalizedString(MONTH_NAME_SHORT[month])
+#    elif form == 'dl':
+#        label = xbmc.getLocalizedString(MONTH_NAME_LONG[month])
+#    elif form == 'ms':
+#        label = xbmc.getLocalizedString(MONTH_NAME_SHORT[month])
+#    elif form == 'ml':
+#        label = xbmc.getLocalizedString(MONTH_NAME_LONG[month])
+#    return label
+
+def get_fulldatestr(stamp,form):
+    date_time = time.localtime(stamp)
+    month = time.strftime('%m', date_time)
+    day = time.strftime('%d', date_time)
+    weekday = time.strftime('%w', date_time)
+    if form == 'ds':
+        label = xbmc.getLocalizedString(WEEK_DAY_SHORT[weekday]) + ' ' + day + ' ' + xbmc.getLocalizedString(MONTH_NAME_SHORT[month])
+    elif form == 'dl':
+        label = xbmc.getLocalizedString(WEEK_DAY_LONG[weekday]) + ' ' + day + ' ' + xbmc.getLocalizedString(MONTH_NAME_LONG[month])
+    elif form == 'ms':
+        label = xbmc.getLocalizedString(WEEK_DAY_SHORT[weekday]) + ' ' + xbmc.getLocalizedString(MONTH_NAME_SHORT[month]) + ' ' + day
+    elif form == 'ml':
+        label = xbmc.getLocalizedString(WEEK_DAY_LONG[weekday]) + ' ' + xbmc.getLocalizedString(MONTH_NAME_LONG[month]) + ' ' + day
+    return label
+
+def get_datestr(stamp,form):
     date_time = time.localtime(stamp)
     month = time.strftime('%m', date_time)
     day = time.strftime('%d', date_time)
@@ -709,6 +739,8 @@ def get_month(stamp, form):
     elif form == 'ml':
         label = xbmc.getLocalizedString(MONTH_NAME_LONG[month]) + ' ' + day
     return label
+
+
 
 # Satellite Imagery paths
 
