@@ -541,7 +541,6 @@ def WIND_CHILL_F_MPH(Ts, Vs):
 def WIND_CHILL_C_KPH(Ts, Vs):
     T=float(Ts)
     V=float(Vs)
-
     TF = CtoF(T)
     Vmph = V/1.609344
     windchill=WIND_CHILL_F_MPH(TF,Vmph)
@@ -555,19 +554,13 @@ def WIND_CHILL_C_KPH(Ts, Vs):
 def HEAT_INDEX_F(Ts, Rs):
     T=float(Ts)
     R=float(Rs)
-
     ##xbmc.log'Heat_index_F %sF %s' % (T, R),level=xbmc.LOGERROR)
-
     if T <40:    # too cold for heat indexes
         return
-
-     # Try simple formula first
+    # Try simple formula first
     HI = 0.5 * (T + 61.0 + ((T-68.0)*1.2) + (R*0.094))
- 
     ##xbmc.log'Initial HI is %sF' % (HI),level=xbmc.LOGERROR)
-
     # Test if simply formula is applicable
-    
     if HI > 80:    # then we need to use the full fancy formula
         ##xbmc.log'HI is over 80 %sF' % (HI),level=xbmc.LOGERROR)
         HI = ( -42.379 
@@ -581,23 +574,18 @@ def HEAT_INDEX_F(Ts, Rs):
                - .00000199*T*T*R*R
              )
         ##xbmc.log('Fancy hi 1 is %sF' % (HI),level=xbmc.LOGERROR)
-
         if R < 12 and T >80 and T <115:
             ADJUSTMENT = ( (13.0-R)/4.0 ) * math.sqrt( ( 17.0-math.fabs( T-95.0) ) / 17.0 )
             HI = HI - ADJUSTMENT
             ##xbmc.log('adjusted hi 2 is %sF' % (HI),level=xbmc.LOGERROR)
-
         if R > 85 and T >80 and T <87:
             ADJUSTMENT = ( (R-85.0)/10.0 ) * ( (87.0-T)/5.0 )
             HI = HI + ADJUSTMENT    
             ##xbmc.log('adjusted hi 3 is %sF' % (HI),level=xbmc.LOGERROR)
-
     ##xbmc.log'Final HI is %sF' % (HI),level=xbmc.LOGERROR)
- 
     if HI > 80 and HI > (T+2):    # if we have a heat-index, over 80 (and it's highter then the normal temp) then return it
         ##xbmc.log'Heat Index for %sF %sH = %sF' % (T, R, HI),level=xbmc.LOGERROR)
         return HI
-
 
 def HEAT_INDEX_C(Ts, Rs):
     T=float(Ts)
@@ -739,8 +727,6 @@ def get_datestr(stamp,form):
     elif form == 'ml':
         label = xbmc.getLocalizedString(MONTH_NAME_LONG[month]) + ' ' + day
     return label
-
-
 
 # Satellite Imagery paths
 
