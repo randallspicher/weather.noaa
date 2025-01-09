@@ -663,13 +663,15 @@ class noaa:
             clear_property('Current.Humidity')
                     
         try:
-            temp=int(round(data.get('temperature').get('value')))
+            #temp=int(round(data.get('temperature').get('value')))
+            temp=data.get('temperature').get('value')
             set_property('Current.Temperature',str(temp)) # api values are in C
         except:
             ##set_property('Current.Temperature','') 
             clear_property('Current.Temperature') 
         try:
-            set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value')))))
+            #set_property('Current.Wind', str(int(round(data.get('windSpeed').get('value')))))
+            set_property('Current.Wind', str(data.get('windSpeed').get('value')))
         except:
             ##set_property('Current.Wind','')
             clear_property('Current.Wind')
@@ -686,7 +688,9 @@ class noaa:
             #set_property('Current.ChancePrecipitation', '')
             clear_property('Current.ChancePrecipitation')
     
-        clear_property('Current.FeelsLike')
+        #set_property('Current.FeelsLike', '')
+        clear_property('Current.WindChill')
+        clear_property('Current.HeatIndex')
         #calculate feels like
         windspeed=data.get('windSpeed').get('value')
         if not windspeed:
@@ -696,22 +700,35 @@ class noaa:
             feelslike=FEELS_LIKE_C_KPH(data.get('temperature').get('value'), float(windspeed), data.get('relativeHumidity').get('value'))    
             if feelslike:    
                 #xbmc.log('feelslike: %s' % (feelslike),level=xbmc.LOGERROR)
-                set_property('Current.FeelsLike', str(int(round(feelslike))))
+                #feels like wants raw celcius value
+                set_property('Current.FeelsLike', str(feelslike))
             else:
-                clear_property('Current.FeelsLike')
+                set_property('Current.FeelsLike', str(temp))
         except:
-            clear_property('Current.FeelsLike')
+            set_property('Current.FeelsLike', str(temp))
     
         # if we have windchill or heat index directly, then use that instead
         if data.get('windChill').get('value'):
             #xbmc.log('windchill direct: %s' % (str(int(round(data.get('windChill').get('value'))))),level=xbmc.LOGERROR)
-            set_property('Current.FeelsLike', str(int(round(data.get('windChill').get('value')))) )
+            if 'F' in TEMPUNIT:
+                set_property('Current.WindChill', u'%s%s' % (int(round(CtoF(data.get('windChill').get('value')))), TEMPUNIT))
+            elif 'C' in TEMPUNIT:
+                set_property('Current.WindChill', u'%s%s' % (int(round(data.get('windChill').get('value'))), TEMPUNIT))
+            #feels like wants raw celcius value
+            set_property('Current.FeelsLike', str(data.get('windChill').get('value')))
+ 
         if data.get('heatIndex').get('value'):
             #xbmc.log('windchill direct: %s' % (str(int(round(data.get('heatIndex').get('value'))))),level=xbmc.LOGERROR)
-            set_property('Current.FeelsLike', str(int(round(data.get('heatIndex').get('value')))) )
+            if 'F' in TEMPUNIT:
+                set_property('Current.heatIndex', u'%s%s' % (int(round(CtoF(data.get('heatIndex').get('value')))), TEMPUNIT))
+            elif 'C' in TEMPUNIT:
+                set_property('Current.heatIndex', u'%s%s' % (int(round(data.get('heatIndex').get('value'))), TEMPUNIT))
+            #feels like wants raw celcius value
+            set_property('Current.FeelsLike', str(data.get('heatIndex').get('value')))
     
         try:
-            temp=int(round(data.get('dewpoint').get('value',0)))
+            #temp=int(round(data.get('dewpoint').get('value',0)))
+            temp=data.get('dewpoint').get('value')
             set_property('Current.DewPoint', str(temp)) # api values are in C
         except:
             set_property('Current.DewPoint', '') 
@@ -759,6 +776,11 @@ class noaa:
         # we are storing lat,long as comma separated already, so that is convienent for us and we can just drop it into the url
         latlong=ADDON.getSetting('Location'+str(num)+'LatLong')
         url="https://api.weather.gov/alerts/active?status=actual&point=%s" % (latlong)
+
+        #if 'F' in TEMPUNIT:
+        #    url="%s&units=us" % url        
+        #elif 'C' in TEMPUNIT:
+        #    url="%s&units=si" % url        
     
         alerts=get_url_JSON(url)
         # if we have a valid response then clear our current alerts
