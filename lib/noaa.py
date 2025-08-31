@@ -6,6 +6,8 @@
 
 import os, glob, sys, time, re
 import xbmc, xbmcgui, xbmcvfs, xbmcaddon
+
+
 import datetime
 
 from .utils import *
@@ -1023,7 +1025,7 @@ class noaa:
     
         for key,value in MAPTYPES.items():
             t_keys.append(key)
-            t_values.append(value)        
+            t_values.append(value['name'])        
     
     
         dialog = xbmcgui.Dialog()
@@ -1039,7 +1041,7 @@ class noaa:
     
         if ti > 0:
     
-            if ("LOOP" == t_sel):
+            if ("RADAR_LOOP" == t_sel):
                 Sectors=LOOPSECTORS
             else:
                 Sectors=MAPSECTORS    
@@ -1062,8 +1064,8 @@ class noaa:
             si=dialog.select(LANGUAGE(32349),s_values,0,si)
             s_sel=s_keys[si]
             ADDON.setSetting(mapid+"Sector",s_sel)
-            ADDON.setSetting(mapid+"Label",Sectors[s_sel]['name']+":"+MAPTYPES[t_sel])
-            ADDON.setSetting(mapid+"Select",Sectors[s_sel]['name']+":"+MAPTYPES[t_sel])
+            ADDON.setSetting(mapid+"Label",Sectors[s_sel]['name']+":"+MAPTYPES[t_sel]['name'])
+            ADDON.setSetting(mapid+"Select",Sectors[s_sel]['name']+":"+MAPTYPES[t_sel]['name'])
         else:
             ADDON.setSetting(mapid+"Label","")
             ADDON.setSetting(mapid+"Select","")
@@ -1191,12 +1193,15 @@ class noaa:
                     maptype = ADDON.getSetting('Map%iType' % (mcount))
                     maplabel = ADDON.getSetting('Map%iLabel' % (mcount))
         
+        
+                    ###xbmc.log('mapsector:maptype %s:%s' % (mapsector,maptype),level=xbmc.LOGERROR)
+
                     if (mapsector and maptype):
         
-                        if ("LOOP" == maptype):
+                        imagepath=xbmcvfs.translatePath(xbmcaddon.Addon().getAddonInfo('profile'))
+                        if ("RADAR_LOOP" == maptype):
                         # want looping radar gifs
                             path=LOOPSECTORS.get(mapsector)['path']
-                            imagepath=xbmcvfs.translatePath(xbmcaddon.Addon().getAddonInfo('profile'))
                             url="https://radar.weather.gov/%s" % (path)
                             radarfilename="radar_%s_%s.gif" % (mapsector,nowtime)
                             dest=imagepath+radarfilename
@@ -1206,11 +1211,38 @@ class noaa:
                             set_property('Map.%i.Heading' % (mcount), "%s" % (maplabel) )
                             clear_property('Map.%i.Layer' % (mcount))
                         else:
-                        # want normal satellite images
-                            path=MAPSECTORS.get(mapsector)['path']
-                            if mapsector != 'glm-e' and mapsector != 'glm-w':
-                                path=path.replace("%s",maptype)
-                                url="https://cdn.star.nesdis.noaa.gov/%s?%s" % (path,nowtime)
+
+                            xname=MAPSECTORS.get(mapsector)['name']
+                            xsat=MAPSECTORS.get(mapsector)['sat']
+                            xloc=MAPSECTORS.get(mapsector)['loc']
+                            xstatic=MAPSECTORS.get(mapsector)['static']
+                            xloop=MAPSECTORS.get(mapsector)['loop']
+                            xtype=MAPTYPES.get(maptype)['type']
+                            xsubtype=MAPTYPES.get(maptype)['subtype']
+                            ximagetype=MAPTYPES.get(maptype)['imagetype']
+                            ximagename=""
+                            if ximagetype == "loop":
+                                ximagename="%s-%s-%s-%s" % (xsat,xloc,xsubtype,xloop)
+                            else:
+                                ximagename=xstatic
+                            
+                            url=""
+                            if (xloc=='CONUS'):
+                                url="https://cdn.star.nesdis.noaa.gov/%s/%s/CONUS/%s/%s?%s" % (xsat,xtype,xsubtype,ximagename,nowtime)
+                            else:
+                                url="https://cdn.star.nesdis.noaa.gov/%s/%s/SECTOR/%s/%s/%s?%s" % (xsat,xtype,xloc.lower(),xsubtype,ximagename,nowtime)
+
+#                            path=MAPSECTORS.get(mapsector)['path']
+#                            if mapsector != 'glm-e' and mapsector != 'glm-w':
+#                                path=path.replace("%s,%s",maptype)
+#                                url="https://cdn.star.nesdis.noaa.gov/%s?%s" % (path,nowtime)
+
+                            ###xbmc.log('URL %s' % (url),level=xbmc.LOGERROR)
+
+                            if ximagetype == "loop":
+                                imagename="%s-%s-%s-%s" % (xsat,xloc,xsubtype,xloop)
+                                dest=imagepath+imagename
+                                url=get_url_image(url, dest)
                         
                             set_property('Map.%i.Area' % (mcount), url)
                             set_property('Map.%i.Heading' % (mcount), "%s" % (maplabel) )

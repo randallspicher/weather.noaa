@@ -540,11 +540,11 @@ msgid "US West"
 msgstr ""
 
 msgctxt "#32362"
-msgid "GLM Fed East"
+msgid ""
 msgstr ""
 
 msgctxt "#32363"
-msgid "GLM Fed West"
+msgid ""
 msgstr ""
 
 msgctxt "#32364"
@@ -699,7 +699,7 @@ msgid "Sandwich RGB"
 msgstr ""
 
 msgctxt "#32403"
-msgid ""
+msgid "True Color/IR Loop"
 msgstr ""
 
 msgctxt "#32404"
@@ -707,11 +707,11 @@ msgid "Air Mass RBG"
 msgstr ""
 
 msgctxt "#32405"
-msgid "Day Cloud Phase RBG"
+msgid "Fire Temperature"
 msgstr ""
 
 msgctxt "#32406"
-msgid "Nighttime Microphysics"
+msgid ""
 msgstr ""
 
 msgctxt "#32407"
@@ -784,5 +784,37 @@ msgstr ""
 
 msgctxt "#32424"
 msgid "CO2 Longwave"
+msgstr ""
+
+msgctxt "#32425"
+msgid "Lightning Mapper Loop"
+msgstr ""
+
+msgctxt "#32426"
+msgid "Air Mass RBG Loop"
+msgstr ""
+
+msgctxt "#32427"
+msgid "Day Night Cloud Micro Combo"
+msgstr ""
+
+msgctxt "#32428"
+msgid "Day Night Cloud Micro Combo Loop"
+msgstr ""
+
+msgctxt "#32429"
+msgid "Fire Temperature Loop"
+msgstr ""
+
+msgctxt "#32430"
+msgid "Sandwich RGB Loop"
+msgstr ""
+
+msgctxt "#32431"
+msgid ""
+msgstr ""
+
+msgctxt "#32432"
+msgid ""
 msgstr ""
 
