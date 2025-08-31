@@ -1162,9 +1162,12 @@ class noaa:
         
                 #clean up previously fetched radar loop images
                 imagepath=xbmcvfs.translatePath(xbmcaddon.Addon().getAddonInfo('profile'))
-                for f in glob.glob(imagepath+"radar*.gif"):
+                imagepath=imagepath+"cache/"
+                if not os.path.isdir(imagepath):
+                    os.makedirs(imagepath)
+                for f in glob.glob(imagepath+"*.gif"):
                     os.remove(f)
-                
+                        
                 if ("true" == radarLoop):
                     #kodi will not loop gifs from a url, we have to actually 
                     #download to a local file to get it to loop
@@ -1198,13 +1201,13 @@ class noaa:
 
                     if (mapsector and maptype):
         
-                        imagepath=xbmcvfs.translatePath(xbmcaddon.Addon().getAddonInfo('profile'))
+                        
                         if ("RADAR_LOOP" == maptype):
                         # want looping radar gifs
                             path=LOOPSECTORS.get(mapsector)['path']
                             url="https://radar.weather.gov/%s" % (path)
-                            radarfilename="radar_%s_%s.gif" % (mapsector,nowtime)
-                            dest=imagepath+radarfilename
+                            imagename="radar_%s_%s.gif" % (mapsector,nowtime)
+                            dest=imagepath+imagename
                             loop_image=get_url_image(url, dest)
         
                             set_property('Map.%i.Area' % (mcount), loop_image)
@@ -1240,7 +1243,7 @@ class noaa:
                             ###xbmc.log('URL %s' % (url),level=xbmc.LOGERROR)
 
                             if ximagetype == "loop":
-                                imagename="%s-%s-%s-%s" % (xsat,xloc,xsubtype,xloop)
+                                imagename="%s-%s-%s-%s-%s" % (xsat,xloc,xsubtype,nowtime,xloop)
                                 dest=imagepath+imagename
                                 url=get_url_image(url, dest)
                         
